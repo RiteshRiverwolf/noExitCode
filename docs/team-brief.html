@@ -1,0 +1,1246 @@
+<title>The Air-Gapped Workbench</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+  :root {
+    --paper:      #eaeeef;
+    --surface:    #f8fafa;
+    --surface-2:  #e0e6e7;
+    --ink:        #0d1518;
+    --ink-soft:   #43555a;
+    --ink-faint:  #6d8084;
+    --line:       #c8d2d4;
+    --line-soft:  #dde4e5;
+    --primary:    #14494f;
+    --primary-2:  #2b7079;
+    --accent:     #a26f0c;
+    --accent-bg:  #f2e6cc;
+
+    --sev-minor:  #a26f0c;
+    --sev-crit:   #9c1f26;
+    --ok:         #1d6b45;
+
+    --measure: 68ch;
+    --r: 3px;
+
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:      #0b1113;
+      --surface:    #131c1f;
+      --surface-2:  #1b262a;
+      --ink:        #e4eaeb;
+      --ink-soft:   #a1b2b6;
+      --ink-faint:  #7a8d91;
+      --line:       #263438;
+      --line-soft:  #1c282c;
+      --primary:    #63b4bb;
+      --primary-2:  #8fd0d5;
+      --accent:     #d6a441;
+      --accent-bg:  #2e2513;
+
+      --sev-minor:  #d6a441;
+      --sev-crit:   #e8636c;
+      --ok:         #4fb07c;
+
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper:      #0b1113;
+    --surface:    #131c1f;
+    --surface-2:  #1b262a;
+    --ink:        #e4eaeb;
+    --ink-soft:   #a1b2b6;
+    --ink-faint:  #7a8d91;
+    --line:       #263438;
+    --line-soft:  #1c282c;
+    --primary:    #63b4bb;
+    --primary-2:  #8fd0d5;
+    --accent:     #d6a441;
+    --accent-bg:  #2e2513;
+
+    --sev-minor:  #d6a441;
+    --sev-crit:   #e8636c;
+    --ok:         #4fb07c;
+
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 28px 96px;
+  }
+
+  /* ---------- masthead ---------- */
+
+  .masthead {
+    border-bottom: 2px solid var(--primary);
+    padding: 40px 0 22px;
+    margin-bottom: 40px;
+  }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    align-items: baseline;
+  }
+  .eyebrow .sep { color: var(--line); }
+  .eyebrow .muted { color: var(--ink-faint); }
+
+  h1 {
+    font-family: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700;
+    font-size: clamp(2.1rem, 5.4vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.021em;
+    margin: 14px 0 0;
+    text-wrap: balance;
+    color: var(--ink);
+  }
+
+  .standfirst {
+    font-size: 1.14rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: var(--measure);
+    margin: 16px 0 0;
+  }
+
+  /* ---------- sections ---------- */
+
+  section { margin: 0 0 56px; }
+
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 8px;
+    margin-bottom: 22px;
+  }
+
+  .sec-num {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    flex: none;
+    padding-top: 2px;
+  }
+
+  h2 {
+    font-family: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 1.44rem;
+    letter-spacing: -0.011em;
+    line-height: 1.2;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  h3 {
+    font-family: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 1.06rem;
+    letter-spacing: -0.005em;
+    margin: 30px 0 10px;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+
+  p { margin: 0 0 15px; max-width: var(--measure); }
+  section > p:last-child { margin-bottom: 0; }
+
+  strong { font-weight: 600; color: var(--ink); }
+  em { font-style: italic; }
+
+  a { color: var(--primary-2); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  ul, ol { margin: 0 0 15px; padding-left: 20px; max-width: var(--measure); }
+  li { margin-bottom: 7px; }
+  li::marker { color: var(--ink-faint); }
+
+  code, .mono {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.875em;
+  }
+  code {
+    background: var(--surface-2);
+    padding: 1px 5px;
+    border-radius: var(--r);
+  }
+
+  pre {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.8rem;
+    line-height: 1.55;
+    background: var(--surface);
+    border: 1px solid var(--line-soft);
+    border-left: 3px solid var(--primary);
+    padding: 12px 16px;
+    margin: 0 0 18px;
+    max-width: var(--measure);
+    overflow-x: auto;
+    color: var(--ink);
+  }
+  pre .c { color: var(--ink-faint); }
+
+  /* ---------- callout ---------- */
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--surface);
+    padding: 18px 22px;
+    margin: 22px 0;
+    max-width: var(--measure);
+  }
+  .callout > :last-child { margin-bottom: 0; }
+  .callout .label {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  /* ---------- tables ---------- */
+
+  .scroll { overflow-x: auto; margin: 0 0 18px; }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.925rem;
+    min-width: 520px;
+  }
+  th, td {
+    text-align: left;
+    padding: 9px 14px 9px 0;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+  th {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 7px;
+  }
+  td.tag {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-weight: 600;
+    color: var(--primary);
+    white-space: nowrap;
+  }
+
+  /* ---------- pills ---------- */
+
+  .pill {
+    display: inline-block;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid currentColor;
+    white-space: nowrap;
+  }
+  .p-yes  { color: var(--ok); }
+  .p-no   { color: var(--sev-crit); }
+  .p-part { color: var(--sev-minor); }
+
+  /* ---------- layer stack ---------- */
+
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin: 4px 0 20px;
+  }
+
+  .layer {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 16px;
+    align-items: start;
+    background: var(--surface);
+    border: 1px solid var(--line-soft);
+    border-left: 3px solid var(--primary);
+    padding: 13px 16px;
+  }
+  .layer .lid {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    padding-top: 3px;
+  }
+  .layer .lname {
+    font-family: "Archivo", sans-serif;
+    font-weight: 600;
+    font-size: 0.99rem;
+    margin-bottom: 3px;
+  }
+  .layer .ldesc {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .layer .who {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-left: 8px;
+  }
+  .layer.boundary {
+    border-left-color: var(--accent);
+    background: var(--accent-bg);
+  }
+  .layer .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .layer .pair > div + div {
+    border-left: 1px solid var(--line);
+    padding-left: 16px;
+  }
+
+  /* ---------- pipeline ---------- */
+
+  .pipe {
+    display: flex;
+    flex-direction: column;
+    margin: 6px 0 20px;
+    max-width: 760px;
+  }
+  .step {
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 15px;
+    align-items: start;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .step:last-child { border-bottom: none; }
+  .step .dot {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--paper);
+    background: var(--primary);
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    margin-top: 1px;
+  }
+  .step .sname { font-weight: 600; font-size: 0.97rem; }
+  .step .swhat { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.5; }
+  .step .stool {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+    margin-top: 3px;
+  }
+
+  /* ---------- key-value grid ---------- */
+
+  .kv {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(224px, 1fr));
+    gap: 1px;
+    background: var(--line-soft);
+    border: 1px solid var(--line-soft);
+    margin: 4px 0 20px;
+  }
+  .kv > div {
+    background: var(--surface);
+    padding: 14px 16px;
+  }
+  .kv .k {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 5px;
+  }
+  .kv .v { font-size: 0.93rem; line-height: 1.45; }
+
+  /* ---------- footer ---------- */
+
+  .foot {
+    border-top: 1px solid var(--line);
+    padding-top: 18px;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+    max-width: var(--measure);
+  }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 18px 72px; }
+    .layer { grid-template-columns: 44px 1fr; gap: 11px; }
+    .layer .pair { grid-template-columns: 1fr; gap: 10px; }
+    .layer .pair > div + div {
+      border-left: none;
+      padding-left: 0;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">
+      <span>SIH 2026</span><span class="sep">/</span>
+      <span>Problem 26117</span><span class="sep">/</span>
+      <span class="muted">MRPL · Team brief · Revised 10 Sep 2026</span>
+    </div>
+    <h1>The Air-Gapped Workbench</h1>
+    <p class="standfirst">
+      What we are building, how it works, and what we test next. This revision
+      follows Ritesh's review of the first version — section 11 lists what
+      changed and why.
+    </p>
+  </header>
+
+  <!-- 01 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <h2>The problem, in plain terms</h2>
+    </div>
+
+    <p>
+      A refinery produces a lot of routine paperwork: approval notes, inspection
+      reports, engineering calculations, board presentations, small internal
+      tools. Much of it is confidential — process diagrams, financials, vendor
+      negotiations, unreleased designs.
+    </p>
+    <p>
+      So staff can't use ChatGPT or Claude for it. The problem statement says that
+      leaves two bad options: do the work by hand, or quietly paste confidential
+      material into public tools anyway. We don't have MRPL figures on how often
+      the second happens, so we present it as the problem statement's premise, not
+      as something we found.
+    </p>
+    <p>
+      Open-weight models are now good enough to build a genuinely useful assistant
+      that runs on hardware the organisation owns. That's the project.
+    </p>
+
+    <div class="callout">
+      <span class="label">One-line version</span>
+      <p>
+        An offline workbench that reads confidential documents, links every
+        critical number back to the exact place it came from, flags anything
+        uncertain for a person, and hands back a checked draft — running on the
+        organisation's own computer, with nothing leaving the building.
+      </p>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <h2>What it has to do</h2>
+    </div>
+
+    <div class="kv">
+      <div>
+        <div class="k">Act, not just answer</div>
+        <div class="v">
+          Break a job into steps, use tools (read files, run code, search the
+          manuals), check its own work, and retry if something fails.
+        </div>
+      </div>
+      <div>
+        <div class="k">Pick its own model</div>
+        <div class="v">
+          A coding request and a document summary get handled by different models
+          automatically. The user never chooses.
+        </div>
+      </div>
+      <div>
+        <div class="k">Produce real files</div>
+        <div class="v">
+          A Word approval note, working code, a calculation with its steps — not a
+          chat reply someone has to retype.
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="label">Important</span>
+      <p>
+        These three aren't unique. Free, open-source products — AnythingLLM and
+        Onyx — already do versions of all three. So we don't win by having them.
+      </p>
+      <p>
+        We win on <strong>evidence</strong>: every number in our output links to
+        the exact cell it came from, uncertain readings go to a person instead of
+        being guessed, and every draft carries a record of the checks it passed.
+      </p>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <h2>What we think gets graded</h2>
+    </div>
+
+    <p>
+      We pulled these six out of the problem statement's "Expected Solution"
+      paragraph. Everything we build traces back to one of them.
+    </p>
+
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr><th style="width:52px">Ref</th><th>What must be demonstrated</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="tag">R1</td><td>A working local deployment on one workstation with a mid-range GPU</td></tr>
+          <tr><td class="tag">R2</td><td>The system picking a model automatically across <strong>at least two</strong> different task types</td></tr>
+          <tr><td class="tag">R3</td><td>A full task, for example: read a scanned inspection report → pull out the findings → draft an approval note <strong>as a Word file</strong></td></tr>
+          <tr><td class="tag">R4</td><td>A coding task run and verified <strong>inside a sandbox</strong></td></tr>
+          <tr><td class="tag">R5</td><td>A multimodal task — understanding an image or a scanned document</td></tr>
+          <tr><td class="tag">R6</td><td><strong>Visible proof</strong>, via logs or a network monitor, that no external call is made</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      <strong>This is our reading, not a confirmed marking scheme.</strong> We
+      haven't seen the official SIH statement or its judging criteria. Treat
+      these six as tests we set ourselves, and get the official version — it's
+      the first question in section 14.
+    </p>
+  </section>
+
+  <!-- 04 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <h2>How we're scoping it</h2>
+    </div>
+
+    <p>
+      The problem statement's description mentions some things its demo
+      paragraph doesn't name.
+    </p>
+
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr><th>Capability</th><th style="width:140px">In description</th><th style="width:160px">In demo paragraph</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Scanned PDFs</td><td><span class="pill p-yes">Yes</span></td><td><span class="pill p-yes">Yes</span></td></tr>
+          <tr><td>Handwritten notes</td><td><span class="pill p-yes">Yes</span></td><td><span class="pill p-no">Not named</span></td></tr>
+          <tr><td>Engineering drawings (P&amp;ID)</td><td><span class="pill p-yes">Yes</span></td><td><span class="pill p-no">Not named</span></td></tr>
+          <tr><td>Word / PPT / Excel output</td><td><span class="pill p-yes">Yes</span></td><td><span class="pill p-part">Word only</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Not being named doesn't mean judges won't ask about them. So rather than
+      calling them optional, our position is:
+    </p>
+    <ul>
+      <li><strong>Printed scans first</strong> — that's where open models are genuinely strong.</li>
+      <li><strong>Handwriting, in restricted places:</strong> handwritten dates, equipment tags and numbers in known boxes on a form, not free-form notes. We'll measure it on realistic samples.</li>
+      <li><strong>Drawings, as a smaller useful feature:</strong> find the right drawing revision, locate a tag, show where it is for a person to confirm. Full diagram reconstruction stays a stretch goal and we never describe it as done.</li>
+      <li><strong>Word first.</strong> PowerPoint or Excel only if confirmed as required.</li>
+    </ul>
+    <p>
+      On handwriting: the frightening figure we quoted before — about 28.5%
+      character error for the best closed model — comes from a benchmark of
+      historical and badly degraded documents in 29 languages. It isn't a fair
+      picture of a modern refinery form. The honest answer is that we don't know
+      yet, and we'll find out.
+    </p>
+
+    <div class="callout">
+      <span class="label">The principle</span>
+      <p>
+        In a refinery, an assistant that confidently computes on a misread digit
+        is worse than one that asks. Uncertain readings go to a person, together
+        with a picture of the exact cell in question.
+      </p>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <h2>How the system is put together</h2>
+    </div>
+
+    <p>Seven layers. Read from the bottom up — each depends on the one below.</p>
+
+    <div class="stack">
+      <div class="layer boundary">
+        <div class="lid">L0</div>
+        <div>
+          <div class="lname">The sovereignty boundary</div>
+          <div class="ldesc">
+            Outbound network traffic is blocked and every attempt is logged, with
+            packet capture as an independent check. It has to cover the Windows
+            host as well as the Linux layer, not just one of them.
+          </div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="lid">L1</div>
+        <div>
+          <div class="lname">Models</div>
+          <div class="ldesc">
+            Small open models on our own GPU, loaded in stages: the reading model
+            first, then released, then the reasoning model. Models are listed in a
+            settings file, and any new model must pass a compatibility test before
+            it's used.
+          </div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="lid">L2</div>
+        <div>
+          <div class="lname">The document library</div>
+          <div class="ldesc">
+            An organised library, not a pile of text chunks: a catalogue, a summary
+            card for every document, and a record of revisions. Section 08 explains it.
+          </div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="lid">L3</div>
+        <div>
+          <div class="lname">Tools</div>
+          <div class="ldesc">
+            Reading scans, making Word files, running code in a sandbox, looking
+            things up in the library. Each is a small local service (the MCP
+            standard) that both our agents and AnythingLLM can use.
+          </div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="lid">L4</div>
+        <div class="pair">
+          <div>
+            <div class="lname">Our agent team<span class="who">we build</span></div>
+            <div class="ldesc">
+              Handles inspection reports, coding tasks and adding new documents.
+              Section 06 explains it.
+            </div>
+          </div>
+          <div>
+            <div class="lname">AnythingLLM<span class="who">we reuse</span></div>
+            <div class="ldesc">
+              Free, open-source platform. Handles general chat, chooses the model
+              for it, and searches documents.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="lid">L5</div>
+        <div>
+          <div class="lname">The gateway</div>
+          <div class="ldesc">
+            Sends each request to the right place — the agent team or AnythingLLM —
+            and records every run.
+          </div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="lid">L6</div>
+        <div>
+          <div class="lname">Our own interface</div>
+          <div class="ldesc">
+            Chat and upload, plus three things no off-the-shelf interface has: a live
+            timeline of the agents at work, an evidence viewer, and the network panel.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Why build on AnythingLLM</h3>
+    <p>
+      It's MIT-licensed and free, runs fully offline, has a switch to turn its
+      usage reporting off, and — we checked in its source code — its programming
+      interface can run its agents, so our own interface can sit on top of it.
+      Before we commit, it gets a one-day test on our machine. If it fails, Onyx is
+      the fallback, and because our tools are built to a common standard, they
+      move with us.
+    </p>
+  </section>
+
+  <!-- 06 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">06</span>
+      <h2>How the agent team works</h2>
+    </div>
+
+    <p>
+      Eight specialists, each with one job and a fixed way of handing work to the
+      next. Multiple agents, but no free-for-all.
+    </p>
+
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr><th style="width:24%">Agent</th><th>Job</th><th style="width:22%">Runs on</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Supervisor</strong></td><td>Reads the request, picks the plan, handles retries and handing over to a person</td><td>General model</td></tr>
+          <tr><td><strong>Document Reader</strong></td><td>Turns a scan into text and tables</td><td>PaddleOCR-VL</td></tr>
+          <tr><td><strong>Evidence Builder</strong></td><td>Turns every table row into a checked record: value, unit, measurement point, and the exact cell it came from</td><td>Model + checking code</td></tr>
+          <tr><td><strong>Rules Engine</strong></td><td>Decides whether to escalate: is any reading below its minimum?</td><td><strong>Plain code — no model</strong></td></tr>
+          <tr><td><strong>Standards Researcher</strong></td><td>Finds the clause that governs each finding</td><td>Library lookup + search</td></tr>
+          <tr><td><strong>Report Writer</strong></td><td>Fills the Word template; numbers are copied from the records, the model only writes the prose</td><td>python-docx + model</td></tr>
+          <tr><td><strong>QA Checker</strong></td><td>Four checks: numbers match the evidence, the file is complete, claims are supported, the layout is clean</td><td>Code + vision model</td></tr>
+          <tr><td><strong>Coder</strong></td><td>Writes code and tests it in the sandbox</td><td>Coding or general model</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <span class="label">The line to use with judges</span>
+      <p>
+        <strong>The model explains, the code decides.</strong> Whether a report
+        needs escalating is decided by a rule that gives the same answer every
+        time — not by a language model's judgement. The result is one of three:
+        escalate, no rule triggered, or needs a person to look.
+      </p>
+    </div>
+
+    <h3>Two ideas we borrowed from 2026 research</h3>
+    <p>
+      <strong>ICM (a method from the University of Edinburgh).</strong> Each agent is
+      a folder holding its own instruction file and an output folder. Every
+      handoff between agents is a file anyone can open and read — including a judge.
+      Each agent also sees only the few thousand words of instructions it needs,
+      rather than everything at once, which matters on a small GPU.
+    </p>
+    <p>
+      <strong>Procedural graphs (a Google paper).</strong> A map of how the agents
+      connect, with a short note on each link: when to move on, how, and what to
+      watch out for. The agent sees the notes for where it currently is. Our
+      thickness trap becomes one of those warnings:
+    </p>
+<pre><span class="c"># the link from reading the document to building evidence</span>
+pitfalls: a routine-sounding summary does not mean no escalation;
+          check every reading against its minimum</pre>
+    <p>
+      The interface draws this map with the current step lit up, so what judges
+      see is exactly what's steering the system.
+    </p>
+
+    <h3>What we say honestly</h3>
+    <ul>
+      <li>The Rules Engine is code, not AI — and that's a strength, not something to hide.</li>
+      <li>The inspection workflow follows a known procedure with a few real choices: re-read a doubtful cell, search again, redraft, or send to a person.</li>
+      <li>The Supervisor genuinely plans open-ended requests.</li>
+      <li>Both research ideas were tested only on much bigger models than ours. We say so, and we test them on ours.</li>
+    </ul>
+  </section>
+
+  <!-- 07 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">07</span>
+      <h2>The demo</h2>
+    </div>
+
+    <div class="pipe">
+      <div class="step">
+        <div class="dot">1</div>
+        <div>
+          <div class="sname">A scanned inspection report is uploaded</div>
+          <div class="swhat">The gateway sends it to the agent team.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot">2</div>
+        <div>
+          <div class="sname">Read it</div>
+          <div class="swhat">Text and every table — findings and thickness measurements.</div>
+          <div class="stool">PaddleOCR-VL · small · Apache 2.0</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot">3</div>
+        <div>
+          <div class="sname">Build the evidence</div>
+          <div class="swhat">One checked record per reading, tied to its exact cell. Dropped rows or missing units are flagged, and doubtful cells are re-read a second way.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot">4</div>
+        <div>
+          <div class="sname">Apply the rules</div>
+          <div class="swhat">Plain code: escalate, no rule triggered, or needs a person.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot">5</div>
+        <div>
+          <div class="sname">Find the governing clause</div>
+          <div class="swhat">Exact lookup of clause numbers first, then search.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot">6</div>
+        <div>
+          <div class="sname">Write the approval note</div>
+          <div class="swhat">A Word file from a template. Numbers are copied straight from the evidence; the model writes only the explanatory text.</div>
+          <div class="stool">python-docx</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot">7</div>
+        <div>
+          <div class="sname">Check it four ways</div>
+          <div class="swhat">Numbers match the evidence; the file is complete; every claim is supported; the layout renders cleanly.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="dot">8</div>
+        <div>
+          <div class="sname">Hand over a draft</div>
+          <div class="swhat">With its check record and any fields needing review. A draft for an engineer to sign — not an approval.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>What the judges see live</h3>
+    <ul>
+      <li>The trap report caught: every finding looks minor, one thickness reading is below minimum.</li>
+      <li>A genuinely unclear reading sent to a person, with a picture of that cell.</li>
+      <li>Clicking a number in the draft opens the exact cell it came from and the rule that used it.</li>
+      <li>The finished Word draft with its check record.</li>
+      <li>A coding attempt that fails a test we wrote, gets fixed, and passes.</li>
+      <li>A separately labelled network test, then the clean run.</li>
+    </ul>
+
+    <div class="callout">
+      <span class="label">About the network test</span>
+      <p>
+        We want to prove the monitor works by letting it catch a deliberate
+        outbound call. But the problem statement asks us to show no external calls
+        at any point. Doing both in one run contradicts itself.
+      </p>
+      <p>
+        So: a clearly labelled test window where the monitor catches a blocked
+        call, then a separate clean run of the real task. Our claim is precise:
+        <em>"with outbound traffic blocked, the monitors saw no successful external
+        connection during this recorded run."</em>
+      </p>
+    </div>
+  </section>
+
+  <!-- 08 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">08</span>
+      <h2>Keeping the knowledge base current</h2>
+    </div>
+
+    <p>
+      Dumping every document into one searchable pile fails in practice. It can't
+      tell which revision is current, it returns fragments of procedures, and it's
+      bad at exact references like <code>OISD-STD-116 Cl. 7.3</code> or a tag like
+      <code>R-2247</code>.
+    </p>
+
+    <h3>An organised library</h3>
+    <p>
+      Every document gets a folder, a one-page summary card (what it covers, its
+      revision, a map of its sections), and an entry in a register that records
+      its revision, whether it's current, what it replaced, and who may see it. A
+      catalogue lists everything in one line each.
+    </p>
+
+    <h3>How agents look things up</h3>
+    <ol>
+      <li>Exact clause numbers and tags — looked up in the register by code.</li>
+      <li>Otherwise, read the catalogue and summary cards to pick the right documents.</li>
+      <li>Read the relevant sections directly.</li>
+      <li>Only then, meaning-based search within those documents.</li>
+    </ol>
+
+    <h3>Adding a new document</h3>
+    <p>
+      Receive it → pull out the text and tables → work out what it is and which
+      equipment it covers → draft its summary card → compare it with what we
+      already have → <strong>an engineer approves it</strong> → publish it.
+    </p>
+    <ul>
+      <li><strong>Nothing is used before it's approved.</strong></li>
+      <li><strong>Old revisions are marked out of date, never deleted.</strong> Every answer says which revision it used.</li>
+      <li><strong>Only the new document is processed</strong>, not the whole library again.</li>
+    </ul>
+
+    <div class="callout">
+      <span class="label">Example</span>
+      <p>
+        The manual for a new pump controller, tag P-1107, arrives. Its summary card
+        records the model, its alarm codes, its log format and its limits. An
+        engineer approves it. Later someone asks for a script to flag
+        high-pressure alarms in P-1107's log: the Coder reads the card, then only
+        the log-format and alarm sections, writes the script, and tests it on
+        sample lines from the manual.
+      </p>
+      <p>
+        If the manual is revised, we can list every script and approval note that
+        relied on the old version. Refineries call this
+        <strong>Management of Change</strong> — worth saying out loud to judges.
+      </p>
+    </div>
+  </section>
+
+  <!-- 09 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">09</span>
+      <h2>Decisions we've made, and why</h2>
+    </div>
+
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr><th style="width:30%">Decision</th><th>Reasoning</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>12GB is our floor, not our ceiling</strong></td>
+            <td>Our test machine has an RTX 4070 with 12GB. The problem statement allows a smaller model at the venue. If it works on 12GB, better hardware only helps.</td>
+          </tr>
+          <tr>
+            <td><strong>Build on AnythingLLM, with our own interface</strong></td>
+            <td>Don't rebuild what's free and good. But the parts judges need to see — the agent timeline, evidence viewer, network panel — need our own screens.</td>
+          </tr>
+          <tr>
+            <td><strong>The model explains, the code decides</strong></td>
+            <td>A safety decision should give the same answer every time and be explainable to an engineer.</td>
+          </tr>
+          <tr>
+            <td><strong>Tools as small local services (MCP), not AnythingLLM add-ons</strong></td>
+            <td>AnythingLLM add-ons must be written in JavaScript; our tools are Python. MCP runs locally with no internet and works with both our agents and AnythingLLM.</td>
+          </tr>
+          <tr>
+            <td><strong>An organised library, not a pile</strong></td>
+            <td>Exact references, revisions and approval are what a refinery actually needs. Search is a tool inside the library, not the whole thing.</td>
+          </tr>
+          <tr>
+            <td><strong>A tightly locked-down sandbox</strong></td>
+            <td>Uploaded documents — a vendor's file, say — can hide instructions aimed at the AI. So code runs in a fresh, locked container: no network, no access to other files, strict time and memory limits.</td>
+          </tr>
+          <tr>
+            <td><strong>Prefer MIT and Apache-2.0 licences</strong></td>
+            <td>MRPL is a public sector undertaking, so licensing gets scrutinised.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">10</span>
+      <h2>What we plan to test</h2>
+    </div>
+
+    <p>Each test changes one thing at a time, so we know what caused a difference.</p>
+
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:24%">Area</th>
+            <th>What we compare</th>
+            <th style="width:30%">What decides it</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>The platform</strong></td>
+            <td>AnythingLLM, in a one-day test on our machine</td>
+            <td>The whole task works offline, end to end</td>
+          </tr>
+          <tr>
+            <td><strong>The escalation decision</strong></td>
+            <td>A model deciding alone vs evidence records plus rules</td>
+            <td>Missed escalations</td>
+          </tr>
+          <tr>
+            <td><strong>Reading documents</strong></td>
+            <td>PaddleOCR-VL, GLM-OCR, and a cell-by-cell reading method</td>
+            <td>Mistakes on critical numbers, and how many go to a person</td>
+          </tr>
+          <tr>
+            <td><strong>Finding clauses</strong></td>
+            <td>Meaning-based search alone vs exact lookup plus search</td>
+            <td>Finds the right clause in the right revision</td>
+          </tr>
+          <tr>
+            <td><strong>Models</strong></td>
+            <td>One general model vs adding a coding model</td>
+            <td>Coding tasks passing tests the model didn't write</td>
+          </tr>
+          <tr>
+            <td><strong>The air-gap</strong></td>
+            <td>Firewall, per-process monitoring, packet capture</td>
+            <td>Anything trying to connect out that we didn't expect</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Our test data, and its limits</h3>
+    <p>
+      <strong>Real documents</strong> — a public-domain US Chemical Safety Board
+      investigation of a refinery pipe rupture (132 pages) and a public MRPL tender
+      (486 pages). They're good for testing how well pages are <em>read</em>. They
+      can't tell us whether a value landed in the right table cell, or whether an
+      escalation decision was right.
+    </p>
+    <p>
+      <strong>Generated inspection reports</strong> — 12 of them, where we know the
+      right answer for every field. Useful for finding bugs, but too few to prove
+      the system works: with only six escalation cases, getting all six right still
+      can't rule out, with 95% confidence, a miss rate as high as 39%. We need more
+      varied layouts, real scans checked by a person, and pairs of reports that
+      differ by a single digit.
+    </p>
+  </section>
+
+  <!-- 11 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">11</span>
+      <h2>What changed after Ritesh's review</h2>
+    </div>
+
+    <p>
+      Ritesh's review of the first brief was right on most points. We checked the
+      biggest claims ourselves before changing anything.
+    </p>
+
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr><th style="width:38%">The first brief said</th><th>Now</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Onyx doesn't do routing, file generation, sandboxing or vision</td><td><strong>Wrong.</strong> Onyx and AnythingLLM already do versions of these. We compete on evidence instead</td></tr>
+          <tr><td>Build everything ourselves</td><td>Build on AnythingLLM; build only what's specific to us</td></tr>
+          <tr><td>The AI decides whether to escalate</td><td>Code decides, from checked evidence</td></tr>
+          <tr><td>Agents coordinate freely</td><td>Same agents, fixed handoffs, a visible map</td></tr>
+          <tr><td>A vision model checking the finished file is enough</td><td>Four separate checks</td></tr>
+          <tr><td>The sandbox is safe because our own AI writes the code</td><td>Uploaded documents can hide instructions — lock it down properly</td></tr>
+          <tr><td>"No external calls" and a deliberate test call in the same run</td><td>Separate test window; precise wording</td></tr>
+          <tr><td>R1–R6 are the marking scheme</td><td>Our reading, until we see the official version</td></tr>
+          <tr><td>Handwriting is unsolved and not graded</td><td>Hard, scoped to restricted fields, grading unconfirmed</td></tr>
+          <tr><td>Ollama contacted GitHub</td><td>Its desktop app runs an update check about 4 seconds after starting, then hourly; where it connects is unconfirmed</td></tr>
+          <tr><td>Real PDFs give free ground truth</td><td>They test reading only, not table structure or decisions</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">12</span>
+      <h2>Where we are</h2>
+    </div>
+
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr><th style="width:120px">Status</th><th>Item</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="pill p-yes">Done</span></td><td>Problem statement analysed; models, tools, datasets and competitors researched</td></tr>
+          <tr><td><span class="pill p-yes">Done</span></td><td>Two real source documents found and checked</td></tr>
+          <tr><td><span class="pill p-yes">Done</span></td><td>Generator for test inspection reports, with the right answers attached</td></tr>
+          <tr><td><span class="pill p-yes">Done</span></td><td>Ritesh's review answered; all documents revised</td></tr>
+          <tr><td><span class="pill p-part">Next</span></td><td>One-day AnythingLLM test on our machine</td></tr>
+          <tr><td><span class="pill p-part">Then</span></td><td>The evidence-record format, and the thinnest end-to-end run: read → rule → Word file</td></tr>
+          <tr><td><span class="pill p-no">Not started</span></td><td>Agent team, our interface, library and intake, tools, network monitor</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      The thinking is well ahead of the code. That was the right order — the
+      research and the review changed several things we'd otherwise have built
+      wrong — but building starts now.
+    </p>
+  </section>
+
+  <!-- 13 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">13</span>
+      <h2>Risks we're carrying</h2>
+    </div>
+
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr><th style="width:34%">Risk</th><th>What we're doing about it</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Competitors already have our feature list</strong></td>
+            <td>Compete on evidence and reliability. If a judge asks "why not just use AnythingLLM?", the answer is: we do — and we add the evidence-first inspection workflow it doesn't have.</td>
+          </tr>
+          <tr>
+            <td><strong>AnythingLLM may not work as its docs say</strong></td>
+            <td>The one-day test comes first. Onyx is the fallback, and our tools move with us.</td>
+          </tr>
+          <tr>
+            <td><strong>The borrowed ideas were tested on bigger models</strong></td>
+            <td>Test them on our small models early.</td>
+          </tr>
+          <tr>
+            <td><strong>Handwriting accuracy on real forms is unknown</strong></td>
+            <td>Restricted fields, real measurements, and a person reviews anything unclear.</td>
+          </tr>
+          <tr>
+            <td><strong>Documents hiding instructions for the AI</strong></td>
+            <td>A locked-down sandbox, and each agent can only do its own job.</td>
+          </tr>
+          <tr>
+            <td><strong>Software that connects out on its own</strong></td>
+            <td>We already found one case (Ollama's desktop app). We audit every component, AnythingLLM included.</td>
+          </tr>
+          <tr>
+            <td><strong>Too little test data to prove reliability</strong></td>
+            <td>Build proper test sets, and report results as provisional until we have them.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 14 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">14</span>
+      <h2>What we need from the team</h2>
+    </div>
+
+    <p>Things we can't answer by testing.</p>
+
+    <div class="kv">
+      <div>
+        <div class="k">01 · Official statement</div>
+        <div class="v">
+          The official problem statement, with its version and judging criteria.
+          This decides whether our six tests are the right ones.
+        </div>
+      </div>
+      <div>
+        <div class="k">02 · Language</div>
+        <div class="v">
+          Is MRPL's material in English, an Indian language, or mixed? This decides
+          whether Sarvam — Apache-2.0, trained in India — becomes a requirement.
+        </div>
+      </div>
+      <div>
+        <div class="k">03 · Handwriting</div>
+        <div class="v">
+          Roughly how much of the real material is handwritten, and what does it
+          look like?
+        </div>
+      </div>
+      <div>
+        <div class="k">04 · Venue hardware</div>
+        <div class="v">
+          What GPU, memory and operating system will be available at the demo?
+        </div>
+      </div>
+      <div>
+        <div class="k">05 · Who sees what</div>
+        <div class="v">
+          Which documents should which people be able to see? We now record this
+          for every document from day one.
+        </div>
+      </div>
+      <div>
+        <div class="k">06 · Framework comparison</div>
+        <div class="v">
+          Do we still compare several agent frameworks, as the original plan said,
+          or pick one once the first end-to-end run works?
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="foot">
+    Full detail — architecture, research, licences, datasets and findings — lives
+    in the project's <span class="mono">docs/</span> and
+    <span class="mono">results/</span> folders. This brief is the summary; those
+    are the working record.
+  </div>
+
+</div>

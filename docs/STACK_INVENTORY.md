@@ -3,9 +3,14 @@
 Candidate open-weight models and libraries, with benchmark evidence and the
 multi-agent topology they plug into.
 
-**Revision 1 — 2026-09-04.** Compiled from published benchmarks and vendor
-claims, not yet from our own testing. Everything here is a **candidate**; the
-benchmarks in `results/` decide winners. Sources listed at the end.
+**Revision 2 — 2026-09-10.** Sections 3.7–3.13 revised after Ritesh's review
+and the decision to build on AnythingLLM. **Part 1 is no longer the
+architecture description** — that is [`ARCHITECTURE.md`](ARCHITECTURE.md) rev 2.
+Part 1 is kept for the Fugu/TRINITY research and routing options it records.
+
+Compiled from published benchmarks and vendor claims, not yet from our own
+testing. Everything here is a **candidate**; the benchmarks in `results/`
+decide winners. Sources listed at the end.
 
 > **Health warning on every number below.** Vendor-published scores are marked
 > *(vendor)*. Leaderboard scores reflect the leaderboard's conditions, not our
@@ -359,10 +364,11 @@ decoding — structured-output reliability is a hard requirement), `semantic-rou
 | TGI | Apache 2.0 | ❌ Docker | Optional |
 | LM Studio | proprietary | ✅ | ⚠️ **Not open source — local convenience only, never shipped** |
 
-**SGLang is now a leading Subsystem 2 candidate**, not an also-ran. Multi-model
-from one process attacks our swap problem directly, and native structured output
-attacks the deliverable-reliability problem. Sources explicitly recommend
-evaluating it before vLLM for agentic systems in 2026.
+**SGLang remains a strong candidate** if multi-model serving or throughput
+becomes the bottleneck: multi-model from one process attacks the swap problem,
+and native structured output helps deliverable reliability. **Revised
+2026-09-10:** the baseline starts on llama.cpp (ARCHITECTURE §5.2) and moves to
+SGLang or vLLM only when a measured bottleneck justifies it.
 
 ### 3.3 Subsystem 3 — Vision / OCR
 
@@ -397,60 +403,110 @@ render-to-PDF, the backbone of the Verifier round-trip).
 `mitmproxy` (MIT). Windows: `pktmon`, Firewall outbound-block. **Linux-only bar
 the last — deferred until WSL2 goes in.**
 
-### 3.7 Routing layer — added after PS analysis
+### 3.7 Routing — revised 2026-09-10
 
-| Library | License | Notes |
+Two levels, both logged with the rule that fired and the model chosen:
+
+- **Gateway rules (ours):** inspection, coding and intake requests go to the
+  agent team; general chat and document questions go to AnythingLLM. Inside
+  the team, the router chooses by workflow stage, required capability,
+  available memory and previous failures — not just "an image exists".
+  Running code needs no model at all; only writing or repairing code does.
+- **AnythingLLM's Model Router** for general chat: rule-based (keywords, token
+  count, message count, image attached), first match wins, optional LLM
+  classifier. MIT, built in.
+
+`vllm-project/semantic-router` (Apache 2.0) and RouteLLM are **dropped from the
+first build** — the built-in router plus our rules cover R2. Revisit only if
+testing shows routing errors.
+
+### 3.8 Platform and frontend — AnythingLLM underneath, our interface on top
+
+| Item | Decision | Evidence |
 |---|---|---|
-| **`vllm-project/semantic-router`** | **Apache 2.0** | **Leading candidate for PS requirement R2.** Official vLLM project — "programmable Mixture-of-Models router for heterogeneous LLM inference". v0.3, June 2026. Routes on model specialisation, compute type, deployment location. Backed by published papers incl. *When to Reason* (reasoning-mode selection) |
-| `semantic-router` (Aurelio) | MIT | Lighter embedding-based alternative |
-| RouteLLM | Apache 2.0 | Strong/weak model routing trained on preference data |
-| Hand-rolled rule router | — | **Keep regardless** — the fallback and the audit story |
+| **AnythingLLM** | Base platform, run in Docker | MIT; offline; `DISABLE_TELEMETRY=true`; developer API (workspaces, upload, chat with threads and streaming, API keys) |
+| Agents through the API | Confirmed | `server/utils/chats/apiChatHandler.js` checks `EphemeralAgentHandler.isAgentInvocation` in both sync and streaming chat and runs `startAgentCluster()` |
+| Search without chat | Available | `/v1/workspace/{slug}/vector-search` |
+| **Our frontend** | Build it | The panels judges need — agent timeline, evidence viewer, network monitor — don't exist in any stock UI |
 
-⚠️ `vllm-project/semantic-router` installs via a `curl` script — an air-gap
-smell. **Verify offline install path early.**
+⚠️ Open bug [#5271](https://github.com/Mintplex-Labs/anything-llm/issues/5271):
+documents uploaded through the API on the **Windows desktop** app (v1.11.2) are
+embedded but not added to the workspace; not reproduced on Linux. **Run
+AnythingLLM in Docker.**
 
-### 3.8 UI shell — buy, don't build
+Alternatives: Onyx (fallback base, §3.12), LibreChat (MIT). Open WebUI's
+licence still requires keeping its branding above 50 users.
 
-The PS benchmarks UX against "the way they use Claude or Codex". Building that
-is months we don't have and isn't what's graded.
+### 3.9 Sandboxed execution (R4) — threat model corrected
 
-| Option | License | Fit |
+Rev 1 argued Docker was enough because "our own model writes the code for one
+trusted user". **That missed indirect prompt injection:** uploaded documents
+(vendor files, correspondence) are untrusted and can carry instructions that
+steer a tool-using agent. Even offline, a bad program can corrupt inputs, alter
+drafts, read unrelated files or exhaust resources.
+
+Docker stays the baseline, justified by explicit controls: a fresh container per
+task; non-root; no network; dropped capabilities; `no-new-privileges`; seccomp
+and a host MAC policy where available; read-only inputs and root filesystem;
+one narrow writable output folder; no host home directory and no Docker socket;
+memory, CPU, PID, time and output-size limits; dependencies preloaded; the GPU
+model service kept outside the sandbox. gVisor is the step up; microVMs remain
+optional. These controls reduce risk; they don't make the kernel boundary
+complete.
+
+### 3.10 Tools — MCP servers, not AnythingLLM skills
+
+| Option | Verdict | Why |
 |---|---|---|
-| **LibreChat** | **MIT** | Most ChatGPT-like; team auth; **native MCP agents**; multi-model in one thread |
-| **AnythingLLM** | **MIT** | RAG-first, workspace-centric, no-code agent builder, desktop app |
-| Open WebUI | ⚠️ custom | ~140k stars, best all-rounder, one Docker command — **but see below** |
+| **MCP servers written with FastMCP** (included in the official MCP Python SDK) | **Use** | Our tools are Python (PaddleOCR, python-docx, sandbox). One implementation serves our agents and AnythingLLM's agents. Local transport, no internet |
+| AnythingLLM custom agent skills | Don't use | JavaScript/Node.js only; run only inside AnythingLLM |
 
-⚠️ **Open WebUI relicensed BSD-3 → custom "Open WebUI License" (v0.6.6+, April
-2025) with a CLA.** Deployments over **50 users / rolling 30 days must retain
-Open WebUI branding** — name, logo and identifiers cannot be removed. Under 50
-users exempt. Awkward for a "sovereign, our-own-system" pitch and for SIH
-authorship claims. **Lean LibreChat or AnythingLLM.**
+AnythingLLM supports MCP over stdio (default), SSE and streamable HTTP — tools
+only, not resources or prompts. **When AnythingLLM runs in Docker, run our MCP
+servers on the host over localhost HTTP**; otherwise stdio starts them inside
+its container, which would then need Python, PaddleOCR and GPU access.
+Localhost traffic counts as approved local traffic for the network monitor.
 
-### 3.9 Sandboxed execution (PS requirement R4)
+### 3.11 Agent structure — two 2026 papers, adapted
 
-| Option | Isolation | Cost | Verdict |
-|---|---|---|---|
-| **Docker + hardening** | Shared kernel; drop caps, read-only mounts, `--network none`, CPU/mem/PID limits | Low | **Likely sufficient — start here** |
-| gVisor | User-space kernel, syscall interception | Medium | Credible hardening step if pushed |
-| Firecracker microVM | Hardware-enforced, own kernel; 100–125ms boot, **5–30ms snapshot-restore** | High | Over-engineering here. Name as production upgrade path |
-
-**Threat model matters more than the tier.** 2026 guidance says shared-kernel
-Docker is inadequate for untrusted AI code — but that guidance assumes
-multi-tenant SaaS running third-party code. Ours is generated by our own local
-model, for one trusted internal user, on an air-gapped host with default-drop
-egress. Realistic threats are **accidental** (runaway loop, stray `rm`), not
-hypervisor escape. Reasoning from the actual threat model is the defensible
-answer; cargo-culting microVMs is not.
-
-⚠️ All three need Linux (KVM/gVisor) — **third independent driver toward WSL2.**
-
-### 3.10 Prior art — evaluate before building
-
-| Platform | License | Relevance |
+| Source | What we take | Caveats |
 |---|---|---|
-| **Onyx** (ex-Danswer) | **MIT** | **Closest existing system.** Air-gapped, 40+ connectors, permission-aware retrieval, RBAC, audit, agents; local via Ollama/vLLM/SGLang; in ITAR/FedRAMP/CMMC use. **Lacks all four of R2–R5** — see [PS_ANALYSIS §4](PS_ANALYSIS.md) |
-| Cognee | open source | Air-gapped memory/KG layer; pgvector/Qdrant/Neo4j/Kuzu/LanceDB backends |
-| ibl.ai, Katonic, Airrived | commercial | Sovereign-AI positioning; useful for competitive framing only |
+| **ICM — Interpretable Context Methodology** ([arXiv 2603.16021](https://arxiv.org/abs/2603.16021), Van Clief & McDermott, Mar 2026) | Each agent is a numbered stage folder with a `CONTEXT.md` (inputs, process, output contract); handoffs are files; plain scripts for steps that need no model; 2–8K focused tokens per stage vs 40K+ loading everything | Tested only with Claude Opus/Sonnet; no formal comparison; automatic branching awkward (we keep branching in code); does not cover knowledge bases, many documents or revisions |
+| **Procedural Graphs** ([arXiv 2609.09153](https://arxiv.org/abs/2609.09153), Lu, Chen, Wu, Arık — Google, Sep 2026) | A small graph of steps whose links carry *condition / guidance / pitfalls*; the agent sees its current step's neighbourhood. First or joint first in 21 of 24 settings; BFCL v3 58 → 67%; GDPval 71.4 → 78.8 with fewer steps | Only large closed models tested; guidance costs an extra model call per step (+33–55% tokens) — we insert the notes by template instead (untested variant); self-improvement evidence noisy; no public code |
+| **State machine** — LangGraph or plain Python | Enforces allowed transitions, retry limits, persistence | Compare only after the slice works: interrupt after extraction, restart offline, finish without repeating work or losing source links |
+
+### 3.12 Prior art — corrected
+
+Rev 1 said Onyx lacked all of R2–R5. **That was wrong** — it rested on a
+marketing page that didn't mention the features.
+
+| Product | Licence | Already does |
+|---|---|---|
+| **AnythingLLM** | MIT | Rule-based [Model Router](https://docs.anythingllm.com/model-router/overview); [Document Generation Agent](https://docs.anythingllm.com/agent/usage/document-generation-agent) (Word, Excel, PowerPoint); agents with MCP |
+| **Onyx** | MIT core ([onyx-foss](https://github.com/onyx-dot-app/onyx-foss)); `ee/` features under a separate licence (SAML SSO, advanced permissions, white-labelling) | Built-in [code execution](https://docs.onyx.app/overview/core_features/code_interpreter) in a Docker sandbox with no network; file creation; image handling (per the review); 40+ connectors |
+| LibreChat | MIT | Self-hosted code interpreter (per the review); MCP agents |
+| Dify | Modified Apache 2.0 (multi-tenant SaaS restricted) | Visual workflows — not needed |
+| Langflow | MIT | Visual LangGraph builder — not needed |
+| Cognee, ibl.ai, Katonic, Airrived | various | Sovereign-AI positioning |
+
+**Implication:** we don't differentiate on routing, file generation or
+sandboxing. We differentiate on evidence — per-cell provenance, deterministic
+rules with explicit uncertainty, verified drafts, and a revision-controlled
+document library.
+
+### 3.13 Vector store
+
+**LanceDB**, AnythingLLM's default: embedded, local files, one namespace per
+workspace; "Accuracy Optimized" adds re-ranking. AnythingLLM's docs describe
+similarity search plus re-ranking and nothing on keyword search, which is weak
+at exact IDs ("OISD-STD-116 Cl. 7.3", "R-2247"). So clause numbers and
+equipment tags are resolved by **registry lookup in code first**, and LanceDB
+serves open-ended questions inside the chosen documents.
+
+Local alternatives AnythingLLM supports: Chroma, PGVector, Milvus (one setting,
+`VECTOR_DB`). Never the cloud options (Pinecone, AstraDB, Zilliz). Neo4j and
+graph retrieval stay parked until a measured cross-document failure justifies
+them. Library structure and intake: [ARCHITECTURE §6](ARCHITECTURE.md).
 
 ---
 

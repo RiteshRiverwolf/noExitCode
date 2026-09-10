@@ -1,50 +1,60 @@
-# F001 — Ollama contacts GitHub on startup, by default
+# F001 — Ollama's Windows desktop app runs an update check at startup, by default
 
-**Severity:** Medium — sovereignty-relevant, trivially fixable
+**Severity:** Medium — sovereignty-relevant, easily avoided
 **Found:** 2026-09-04, incidentally, while probing the environment
-**Relevant to:** Subsystem 2 (serving), Subsystem 6 (air-gap)
+**Corrected:** 2026-09-10 — see "Correction" below
+**Observed on:** Ollama 0.30.3, Windows 11 Pro
+**Relevant to:** model serving, network proof
 
-## What happened
+## What we observed
 
-Running `ollama list` on a machine with no Ollama server running caused the
-client to start one. Its own startup log:
+Running `ollama list` with no server running caused the Windows desktop app to
+start (`source=app_windows.go`). Its log:
 
 ```
-level=INFO source=updater.go:355 msg="beginning update checker" interval=1h0m0s
-level=INFO source=updater.go:133 msg="New update available at
+17:26:21.673 level=INFO source=app_windows.go:282 msg="starting Ollama" version=0.30.3
+17:26:24.682 level=INFO source=updater.go:355 msg="beginning update checker" interval=1h0m0s
+17:26:25.991 level=INFO source=updater.go:133 msg="New update available at
   https://github.com/ollama/ollama/releases/download/v0.33.3/OllamaSetup.exe"
 ```
 
-Ollama 0.30.3 reached `github.com` within ~4 seconds of process start, with no
-user action, and scheduled itself to repeat **every hour**.
+Established by this log:
+
+- An update check ran automatically and reported a result **about 4.3 seconds**
+  after the app started, with no user action.
+- It is scheduled to repeat **every hour**.
+- It is the **Windows desktop app** doing this (`app_windows.go`, `updater.go`).
+
+## Correction
+
+Revision 1 of this finding, and the first team brief, said Ollama "contacted
+GitHub". **The log does not show that.** The GitHub address is the *download
+link the check returned*, not necessarily the server the check contacted.
+
+Ritesh's review reports that the desktop updater's source defines a 3-second
+initial delay, an hourly interval and an **ollama.com** update URL. That is
+consistent with our timing (a 3-second delay plus a network round trip). We
+have not confirmed the destination ourselves.
+
+Also not established: whether `ollama serve` on its own, or Ollama on Linux,
+does this. Our observation covers only the Windows desktop app, version 0.30.3.
 
 ## Why it matters
 
-The core requirement is "100% on-premise, zero external network calls, provable
-via logs/network monitor". A model server that beacons hourly to GitHub fails
-that on its own, regardless of whether any inference data leaves. On an
-air-gapped MRPL network the call fails, but the *attempt* still appears in
-egress logs — and a security reviewer looking at a firewall log full of hourly
-denied connections to github.com is going to ask why.
-
-This is a discovery worth generalising: the brief's Subsystem 6 asks whether
-"a Python package with an accidental phone-home default" attempts an unexpected
-call. Here the phone-home was in the *model server*, found before Subsystem 6
-started, by reading a log we happened to have on screen. Every component in the
-final stack needs this same check.
+The PS asks us to show that no external calls are made. A component that
+attempts an outbound connection hourly fills the egress log with denied
+attempts that a security reviewer will ask about, even though outbound blocking
+stops them. The same check is needed for every component in the stack —
+including AnythingLLM, which documents its own telemetry controls.
 
 ## Mitigation
 
-Set `OLLAMA_NOPRUNE`/updater env or, per Ollama docs, the update check is
-disabled by running the server directly (`ollama serve`) rather than via the
-desktop app wrapper — the checker lives in the Windows app shell
-(`app_windows.go`), not the server binary. **To be verified empirically in
-Subsystem 2, not trusted from this note.**
-
-Air-gap does not depend on this fix; default-drop egress catches it either way.
-The point is to make the egress log clean and explainable.
+Use llama.cpp as the first-choice server (ARCHITECTURE §5.2), or run the Ollama
+server without the desktop app. Outbound blocking catches the attempt either
+way; the point is a clean, explainable log.
 
 ## Status
 
-- [ ] Verify `ollama serve` alone does not contact GitHub (Subsystem 2)
-- [ ] Confirm under packet capture, not just by reading Ollama's own log (Subsystem 6)
+- [ ] Confirm the check's destination under packet capture, with version recorded
+- [ ] Confirm whether `ollama serve` alone makes any outbound attempt
+- [ ] Audit AnythingLLM the same way with `DISABLE_TELEMETRY=true`

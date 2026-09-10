@@ -1,7 +1,7 @@
 # SIH26117 — Datasets & Test Corpus
 
 What we test on, where it comes from, and what we are legally allowed to do with
-it. Revision 1, 2026-09-04.
+it. Revision 2, 2026-09-10 — §3 corrected and §4 added after Ritesh's review.
 
 ---
 
@@ -58,21 +58,51 @@ publicly, but propagating named individuals' contact details into a demo corpus
 is needlessly careless — **strip or pseudonymise PII before any document goes
 into the KB or on a slide.**
 
-### 3. The method that falls out of this: born-digital PDFs are self-labelling OCR benchmarks
+### 3. Text layers as a reading benchmark — with limits
 
-Both documents have a **text layer**. That means:
+Both documents have a **text layer**, which gives a cheap way to test OCR on
+real pages:
 
 ```
 render page at high fidelity  →  apply scan degradation  →  OCR
                                                              ↓
                           compare against the PDF's own embedded text
-                                    = free ground truth
 ```
 
-**Real documents with zero manual labelling.** This is a much better OCR
-benchmark than either synthetic documents or hand-labelled scans, and it works
-at whatever scale we want — 132 + 486 pages of real industrial text, gradeable
-across the full degradation curve. Subsystem 3 should be built on this.
+**Correction, 2026-09-10.** Revision 1 called this "free ground truth" and
+"self-labelling". Ritesh's review showed that overstated it:
+
+- **The text layer can be wrong** — broken reading order, missing characters,
+  mis-associated table cells. Check it visually on a sample before trusting it.
+- **It measures recognition, not structure.** Matching the text layer says
+  nothing about whether the right value landed in the right table row and
+  column, or whether an escalation decision is right.
+- **The CSB report is context, not a target document.** It is an investigation
+  narrative, not a completed inspection form, and not the standard MRPL works
+  to.
+
+So it is a good **diagnostic** for character recognition across the
+degradation curve, and nothing more. Critical-field accuracy — right value,
+right unit, right row — needs labelled cases.
+
+### 4. Limits of our synthetic corpus
+
+The 12 generated reports are a **debugging set, not validation**:
+
+- **Twelve reports rendered four ways are still twelve reports.** Keep every
+  version of a report on the same side of any split.
+- **A system can learn the generator's layout.** Hold out whole templates,
+  authors and scan conditions for testing.
+- **Small numbers prove little.** With six escalation cases and zero misses,
+  the 95% upper bound on the miss rate is still about 39% (1 − 0.05^(1/6)).
+  Even 300 independent cases with zero misses only bound it at about 1%.
+
+Needed next: a development set for tuning; a frozen test set with held-out
+templates; a separate challenge set; real scans or photos with critical fields
+checked by a person; and **counterfactual pairs** — two reports identical
+except for one digit, unit, equipment ID or threshold source. Measure on a
+balanced set for diagnosis and on a realistic mix for workload. See
+ARCHITECTURE §10.
 
 ### What synthetic generation is still for
 
@@ -102,13 +132,13 @@ CSB language rather than invented.
 Synthetic but domain-authentic. Generated from templates, rendered to PDF, then
 degraded to simulate scanning (skew, noise, JPEG artefacts, mild blur).
 
-| Artefact | Purpose | Rubric |
+| Artefact | Purpose | Acceptance test |
 |---|---|---|
 | Equipment inspection reports (printed) | The R3 input | R3, R5 |
 | SOP / standard-operating documents with **cross-references between them** | KB grounding + multi-hop retrieval | R3 |
 | Approval-note templates | Deliverable target | R3 |
 | Calculation sheets | Excel + coding path | R4 |
-| Handwritten annotation overlays | Confidence-gating path | *(capability, not rubric)* |
+| Handwritten annotation overlays | Confidence-gating path | *(described capability; not named in the Expected Solution)* |
 
 **Ground truth is emitted alongside every document** — a JSON sidecar with every
 field value. That is what makes accuracy measurable rather than vibes-based.

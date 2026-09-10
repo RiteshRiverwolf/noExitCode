@@ -1,9 +1,18 @@
 # P&ID Digitisation — Approach Note
 
-**Status: stretch goal. Not in the demo rubric.** See
-[PS_ANALYSIS §2](PS_ANALYSIS.md) — P&IDs appear in the PS Background and
-Description but not in the Expected Solution checklist (R1–R6). Nothing here
-starts until the rubric is covered end to end.
+**Status: stretch goal.** P&IDs appear in the PS Background and Description
+but aren't named in the Expected Solution paragraph. That doesn't prove judges
+won't ask about drawings (see [PS_ANALYSIS §2](PS_ANALYSIS.md)), so the plan
+has two levels:
+
+- **Useful drawing support** (once the core slice works): find the right
+  drawing revision in the library, locate an equipment tag on it, and show the
+  source region for a person to confirm. This reuses the OCR stack and the
+  document library.
+- **Full P&ID digitisation** (stretch): symbol detection, line connectivity and
+  graph construction, as described below. Never presented as done.
+
+Nothing here starts until the core acceptance tests (R1–R6) pass end to end.
 
 Written 2026-09-04 in response to "are we training a YOLO model?"
 

@@ -1,6 +1,23 @@
 # F002 — Open-source handwriting OCR is the weakest link in the whole PS
 
-**Severity:** High — this is a stated hard requirement with no strong open solution
+> **Correction, 2026-09-10.** Two statements below are stronger than the
+> evidence supports.
+>
+> 1. The 28.5% CER figure most likely comes from **METATR** (Boillet, Tarride
+>    and Kermorvant, May 2026), whose 29-language collection includes
+>    historical scripts, difficult layouts and degraded material. It is not a
+>    measurement of MRPL-style forms and not a universal ceiling, so
+>    "unsolved" and "one character in four" overstate it. CER also counts
+>    insertions and deletions, so it is not simply the share of characters
+>    misread.
+> 2. Handwriting being absent from the Expected Solution does not establish
+>    that it is ungraded — see PS_ANALYSIS §2.
+>
+> The practical recommendations below still stand: confidence gating,
+> constrained fields, fine-tuning on domain data, and an early spike on
+> realistic samples.
+
+**Severity:** Medium (was High) — a described capability with weak open solutions; scope narrowed to restricted fields
 **Found:** 2026-09-04, during benchmark research (before any local testing)
 **Relevant to:** Subsystem 3, and the feasibility of the PS as written
 

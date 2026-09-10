@@ -69,8 +69,12 @@ reviewer.
 
 ### 3. No prior research report
 
-`docs/PS26117.md` and `docs/architecture_assessment.md` do not exist and are not
-forthcoming. The brief's step 5 ("flag anything that contradicts the prior
-research report") is therefore **dropped**. These test results are the primary
-record, not a check on an earlier one. Requirements are taken from the Context
-section of `SIH26117_exploration_brief.md`.
+`docs/architecture_assessment.md` does not exist and is not forthcoming, so the
+brief's step 5 ("flag anything that contradicts the prior research report") is
+**dropped**; these results are the primary record, not a check on an earlier
+one.
+
+**Updated 2026-09-10:** the problem statement text itself was supplied by the
+team on 2026-09-04 and is in [`PS26117.md`](PS26117.md). Requirements are read
+from there (see [`PS_ANALYSIS.md`](PS_ANALYSIS.md)), not from the brief's
+Context section.
