@@ -1,0 +1,20 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Generated corpus -- reproducible from a seed:
+#   python bench/make_corpus.py --count 12 --out data/corpus
+data/corpus/
+
+# External source documents stay out of version control.
+# The MRPL tender contains real employees' names, phone numbers and emails,
+# and several other sources restrict redistribution. See docs/DATASETS.md
+# for where to download each one.
+data/external/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
