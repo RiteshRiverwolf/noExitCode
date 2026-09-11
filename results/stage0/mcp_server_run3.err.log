@@ -1,0 +1,16 @@
+INFO:     Started server process [32176]
+INFO:     Waiting for application startup.
+StreamableHTTP session manager started
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8765 (Press CTRL+C to quit)
+Created new transport with session ID: afe2b7a5b63f45189a50e39f74a9ab25
+Created new transport with session ID: 83232d900be5491e833050628c7055a0
+Terminating session: 83232d900be5491e833050628c7055a0
+Created new transport with session ID: fd148d134d484b60b62ee3224de8f730
+Session afe2b7a5b63f45189a50e39f74a9ab25 idle timeout
+Terminating session: afe2b7a5b63f45189a50e39f74a9ab25
+Created new transport with session ID: 8a8ea39b8d424cfb8888cdea49318ad2
+Terminating session: 8a8ea39b8d424cfb8888cdea49318ad2
+Created new transport with session ID: c08aa1403189485999d0a14bd670a28d
+Session fd148d134d484b60b62ee3224de8f730 idle timeout
+Terminating session: fd148d134d484b60b62ee3224de8f730

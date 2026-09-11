@@ -1,0 +1,116 @@
+Stage 0 offline phase - 2026-09-11T13:31:35.6311070+05:30
+host.docker.internal resolves to 192.168.65.254 (IPv4) inside the container
+pinned in /etc/hosts: 192.168.65.254 host.docker.internal
+iptables backend: iptables
+
+== egress policy applied ==
+Chain STAGE0_EGRESS (1 references)
+    pkts      bytes target     prot opt in     out     source               destination         
+       0        0 ACCEPT     all  --  *      lo      0.0.0.0/0            0.0.0.0/0           
+       0        0 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+       0        0 ACCEPT     tcp  --  *      *       0.0.0.0/0            192.168.65.254       tcp dpt:11434
+       0        0 ACCEPT     tcp  --  *      *       0.0.0.0/0            192.168.65.254       tcp dpt:8765
+       0        0 NFLOG      all  --  *      *       0.0.0.0/0            0.0.0.0/0            nflog-prefix S0DROP nflog-group 5
+       0        0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           
+
+== window A: canary ==
+container -> https://example.com (by name) : exit=6   (expected: exit=6 or 28)
+container -> https://1.1.1.1 (by IP)       : exit=28   (expected: exit=28)
+container -> host Ollama                   : 200   (expected: 200)
+container -> host MCP tool                 : 400   (expected: 400 or 406, i.e. reached)
+
+-- DROP counter, window A --
+Chain STAGE0_EGRESS (1 references)
+    pkts      bytes target     prot opt in     out     source               destination         
+       0        0 ACCEPT     all  --  *      lo      0.0.0.0/0            0.0.0.0/0           
+      12      812 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+       1       60 ACCEPT     tcp  --  *      *       0.0.0.0/0            192.168.65.254       tcp dpt:11434
+       1       60 ACCEPT     tcp  --  *      *       0.0.0.0/0            192.168.65.254       tcp dpt:8765
+       9      534 NFLOG      all  --  *      *       0.0.0.0/0            0.0.0.0/0            nflog-prefix S0DROP nflog-group 5
+       9      534 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           
+
+== window B2: full task with egress blocked, language data pre-seeded ==
+
+-- DROP counter, window B2 --
+Chain STAGE0_EGRESS (1 references)
+    pkts      bytes target     prot opt in     out     source               destination         
+      20     6446 ACCEPT     all  --  *      lo      0.0.0.0/0            0.0.0.0/0           
+     557    75110 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+       9      540 ACCEPT     tcp  --  *      *       0.0.0.0/0            192.168.65.254       tcp dpt:11434
+       2      120 ACCEPT     tcp  --  *      *       0.0.0.0/0            192.168.65.254       tcp dpt:8765
+       2      138 NFLOG      all  --  *      *       0.0.0.0/0            0.0.0.0/0            nflog-prefix S0DROP nflog-group 5
+       2      138 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0           
+
+== window B1: scan upload with eng.traineddata moved aside ==
+moved aside: C:\SIH 2026\stage0\anythingllm\models\tesseract\eng.traineddata
+container after B1: status=exited exit=1 oom=false finished=2026-09-11T08:02:19.654275025Z
+-- last container log lines --
+[36m[backend][0m [32minfo[39m: [36m[EncryptionManager][0m Loaded existing key & salt for encrypting arbitrary data.
+node:internal/event_target:1062
+[36m[collector][0m [32minfo[39m: [36m[OCRLoader][0m OCRLoader initialized with language support for: English
+[36m[collector][0m [32minfo[39m: [36m[OCRLoader][0m Starting OCR of insp_1002_p1.png
+  process.nextTick(() => { throw err; });
+                           ^
+
+Error: TypeError: fetch failed
+    at Worker.<anonymous> (/app/collector/node_modules/tesseract.js/src/createWorker.js:217:15)
+    at Worker.emit (node:events:517:28)
+    at MessagePort.<anonymous> (node:internal/worker:256:53)
+    at [nodejs.internal.kHybridDispatch] (node:internal/event_target:786:20)
+    at exports.emitMessage (node:internal/per_context/messageport:23:28)
+
+Node.js v18.20.8
+restored: C:\SIH 2026\stage0\anythingllm\models\tesseract\eng.traineddata
+
+-- DROP counter, window B1 --
+docker: Error response from daemon: cannot join network namespace of a non running container: container anythingllm-stage0 is exited
+
+Run 'docker run --help' for more information
+
+== capture A_canary: DNS names queried ==
+== capture A_canary: new outbound TCP connections (SYN) by destination ==
+      1 192.168.65.254	8765
+      1 192.168.65.254	11434
+== capture A_canary: non-DNS UDP by destination ==
+
+== capture A_canary_dropped: DNS names queried ==
+      2 example.com
+== capture A_canary_dropped: new outbound TCP connections (SYN) by destination ==
+      7 1.1.1.1	443
+== capture A_canary_dropped: non-DNS UDP by destination ==
+
+== capture B2_task: DNS names queried ==
+== capture B2_task: new outbound TCP connections (SYN) by destination ==
+      9 192.168.65.254	11434
+      2 192.168.65.254	8765
+      2 127.0.0.1	8888
+      1 172.17.0.2	3001
+      1 	3001
+== capture B2_task: non-DNS UDP by destination ==
+
+== capture B2_task_dropped: DNS names queried ==
+      2 1.0.17.172.in-addr.arpa
+== capture B2_task_dropped: new outbound TCP connections (SYN) by destination ==
+== capture B2_task_dropped: non-DNS UDP by destination ==
+
+== capture B1_ocr_nocache: DNS names queried ==
+== capture B1_ocr_nocache: new outbound TCP connections (SYN) by destination ==
+      2 127.0.0.1	8888
+      1 172.17.0.2	3001
+== capture B1_ocr_nocache: non-DNS UDP by destination ==
+
+== capture B1_ocr_nocache_dropped: DNS names queried ==
+      2 cdn.jsdelivr.net
+== capture B1_ocr_nocache_dropped: new outbound TCP connections (SYN) by destination ==
+== capture B1_ocr_nocache_dropped: non-DNS UDP by destination ==
+
+== Windows host: non-loopback connections by Ollama / MCP tool during window B2 ==
+(none recorded)
+
+== egress policy removed; container back to normal networking ==
+docker: Error response from daemon: cannot join network namespace of a non running container: container anythingllm-stage0 is exited
+
+Run 'docker run --help' for more information
+Error response from daemon: container 2d2faf9c1cc6fe25545e7b8c21993f18f49a936bd0954792e4025dc8f05c51d7 is not running
+
+Done. Summary: C:\SIH 2026\results\stage0\offline_summary.txt

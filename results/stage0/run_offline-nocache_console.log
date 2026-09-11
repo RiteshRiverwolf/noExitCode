@@ -1,0 +1,7 @@
+[PASS] API key accepted  (0.01s)
+[PASS] workspace created  (0.02s)
+[PASS] workspace agent model set  (0.01s)
+[FAIL] scanned report uploaded and embedded  (0.26s)
+[FAIL] text extracted from the scan (finds 'R-2247')
+
+SOME STEPS FAILED -> C:\SIH 2026\results\stage0\run_offline-nocache_20260911-133219.json

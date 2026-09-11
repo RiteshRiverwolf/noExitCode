@@ -1,0 +1,4 @@
+INFO:     127.0.0.1:28279 - "GET /mcp HTTP/1.1" 406 Not Acceptable
+INFO:     127.0.0.1:50656 - "GET /mcp HTTP/1.1" 421 Misdirected Request
+INFO:     127.0.0.1:43429 - "POST /mcp HTTP/1.1" 421 Misdirected Request
+INFO:     127.0.0.1:43430 - "POST /mcp HTTP/1.1" 421 Misdirected Request

@@ -1,0 +1,59 @@
+{
+  "started": "2026-09-11T08:02:19.345177+00:00",
+  "base": "http://127.0.0.1:3001/api",
+  "model": "llama3.1:8b",
+  "label": "offline-nocache",
+  "mode": "upload-only",
+  "steps": [
+    {
+      "step": "API key accepted",
+      "ok": true,
+      "status": 200,
+      "response": {
+        "authenticated": true
+      },
+      "seconds": 0.01
+    },
+    {
+      "step": "workspace created",
+      "ok": true,
+      "status": 200,
+      "slug": "stage0-133219",
+      "seconds": 0.02
+    },
+    {
+      "step": "workspace agent model set",
+      "ok": true,
+      "status": 200,
+      "agentProvider": "ollama",
+      "agentModel": "llama3.1:8b",
+      "seconds": 0.01
+    },
+    {
+      "step": "scanned report uploaded and embedded",
+      "ok": false,
+      "status": null,
+      "error": "ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+      "extracted_chars": 0,
+      "extracted_preview": "",
+      "seconds": 0.26
+    },
+    {
+      "step": "text extracted from the scan (finds 'R-2247')",
+      "ok": false,
+      "extracted_chars": 0
+    }
+  ],
+  "expected": {
+    "tag": "R-2247",
+    "breached": [
+      [
+        "CML-03",
+        "12.32",
+        "12.7"
+      ]
+    ]
+  },
+  "finished": "2026-09-11T08:02:19.653620+00:00",
+  "passed": false
+}

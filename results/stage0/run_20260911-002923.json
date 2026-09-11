@@ -1,0 +1,89 @@
+{
+  "started": "2026-09-10T18:58:47.671140+00:00",
+  "base": "http://127.0.0.1:3001/api",
+  "model": "llama3.1:8b",
+  "steps": [
+    {
+      "step": "API key accepted",
+      "ok": true,
+      "status": 200,
+      "response": {
+        "authenticated": true
+      },
+      "seconds": 0.01
+    },
+    {
+      "step": "workspace created",
+      "ok": true,
+      "status": 200,
+      "slug": "stage0-002847",
+      "seconds": 0.03
+    },
+    {
+      "step": "workspace agent model set",
+      "ok": true,
+      "status": 200,
+      "agentProvider": "ollama",
+      "agentModel": "llama3.1:8b",
+      "seconds": 0.02
+    },
+    {
+      "step": "scanned report uploaded and embedded",
+      "ok": true,
+      "status": 200,
+      "error": null,
+      "extracted_chars": 2710,
+      "extracted_preview": "MANGALORE REFINERY AND PETROCHEMICALS LIMITED\nInspection Department | Static Equipment inspection Record\nEQUIPMENT INSPECTION REPORT\n1. EQUIPMENT IDENTIFICATION\nReport No. MRPL/INSP/2026/8013 Equipment Tag R-2247\nEquipment Reactor Unit CCR — Continuous Catalytic Reformer\nPlant Mangalore Refinery — Aromatic Complex Service Fluid Heavy Vacuum Gas Oil\nYear Built 2006 Inspection Type External Visual Inspection\nDesign Pressure 15.6 barg Design Temperature 380 °C\nInspection Date 03-02-2026 Next Due Date 03-02-2028\nInspected By S. Prakash Nayak Certification No. API-510-61284\n2. INSPECTION FINDINGS\nR",
+      "seconds": 27.95
+    },
+    {
+      "step": "text extracted from the scan (finds 'R-2247')",
+      "ok": true,
+      "extracted_chars": 2710
+    },
+    {
+      "step": "test A (plumbing): agent calls the MCP tool; Word file lands on host",
+      "ok": true,
+      "status": 200,
+      "error": null,
+      "reply": "A document titled 'Stage 0 plumbing test' has been created with the body 'Created by an AnythingLLM agent through the developer API.' It is saved at C:\\\\SIH 2026\\\\stage0\\\\output\\\\Stage_0_plumbing_test_20260911-002918.docx.",
+      "tool_calls": [
+        {
+          "tool": "create_word_document",
+          "title": "Stage 0 plumbing test",
+          "body_chars": 58,
+          "path": "C:\\SIH 2026\\stage0\\output\\Stage_0_plumbing_test_20260911-002918.docx",
+          "sha256": "2541bd4a50d6ebb5e29cc56fafa82f282ee96780ac51b26e743fe6b6b1c00b09",
+          "ts": "2026-09-10T18:59:18.293888+00:00"
+        }
+      ],
+      "new_docx": [
+        "C:\\SIH 2026\\stage0\\output\\Stage_0_plumbing_test_20260911-002918.docx"
+      ],
+      "seconds": 3.61
+    },
+    {
+      "step": "test B (realistic): agent finds the report and writes an approval note",
+      "ok": true,
+      "status": 200,
+      "error": null,
+      "reply": "A document titled 'Approval Note R-2247' has been created with the body summarizing the findings and thickness readings of equipment R-2247. It is saved at C:\\\\SIH 2026\\\\stage0\\\\output\\\\Approval_Note_R-2247_20260911-002922.docx",
+      "tool_calls": [
+        {
+          "tool": "create_word_document",
+          "title": "Approval Note R-2247",
+          "body_chars": 160,
+          "path": "C:\\SIH 2026\\stage0\\output\\Approval_Note_R-2247_20260911-002922.docx",
+          "sha256": "531808782138d2c962700449b01aac349071d5dc40c5f708019bbf8250747f5d",
+          "ts": "2026-09-10T18:59:22.729356+00:00"
+        }
+      ],
+      "new_docx": [
+        "C:\\SIH 2026\\stage0\\output\\Approval_Note_R-2247_20260911-002922.docx"
+      ],
+      "seconds": 4.5
+    }
+  ],
+  "finished": "2026-09-10T18:59:23.809152+00:00",
+  "passed": true
+}

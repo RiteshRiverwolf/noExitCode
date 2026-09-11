@@ -428,6 +428,9 @@ testing shows routing errors.
 | Agents through the API | Confirmed | `server/utils/chats/apiChatHandler.js` checks `EphemeralAgentHandler.isAgentInvocation` in both sync and streaming chat and runs `startAgentCluster()` |
 | Search without chat | Available | `/v1/workspace/{slug}/vector-search` |
 | **Our frontend** | Build it | The panels judges need — agent timeline, evidence viewer, network monitor — don't exist in any stock UI |
+| **Stage 0 (2026-09-11)** | **Passed for Q&A and API-driven tool calls, offline** | Scan OCR, document Q&A with source, agent → our MCP tool → Word file, all with outbound traffic blocked and no internet connections ([VERDICT](../results/stage0/VERDICT.md)) |
+| Built-in agent writing reports | **Not used** | With llama3.1:8b it skipped the document search and wrote a false approval in 3 of 3 clean runs |
+| Offline install requirements | Pre-seed `eng.traineddata` (else the first scan **crashes the container**); pre-seed or patch the startup fetches; disable agent web skills; set `AUTH_TOKEN`; MCP allowed hosts; fixed host address | [F003](../results/findings/F003-anythingllm-outbound-dependencies.md) |
 
 ⚠️ Open bug [#5271](https://github.com/Mintplex-Labs/anything-llm/issues/5271):
 documents uploaded through the API on the **Windows desktop** app (v1.11.2) are
@@ -458,7 +461,7 @@ complete.
 
 | Option | Verdict | Why |
 |---|---|---|
-| **MCP servers written with FastMCP** (included in the official MCP Python SDK) | **Use** | Our tools are Python (PaddleOCR, python-docx, sandbox). One implementation serves our agents and AnythingLLM's agents. Local transport, no internet |
+| **MCP servers written with the official MCP Python SDK** (v2 `MCPServer`; v1 called it FastMCP) | **Use** | Our tools are Python (PaddleOCR, python-docx, sandbox). One implementation serves our agents and AnythingLLM's agents. Local transport, no internet |
 | AnythingLLM custom agent skills | Don't use | JavaScript/Node.js only; run only inside AnythingLLM |
 
 AnythingLLM supports MCP over stdio (default), SSE and streamable HTTP — tools

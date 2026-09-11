@@ -1,0 +1,141 @@
+{
+  "model": "granite4.1:8b",
+  "workspace": "probe-143405",
+  "runs": [
+    {
+      "variant": "V1 original",
+      "rep": 1,
+      "status": 200,
+      "seconds": 34.14,
+      "agent_tools_in_order": [
+        "rag-memory",
+        "sih-docgen-create_word_document"
+      ],
+      "searched_documents": true,
+      "word_file": true,
+      "note_correct": true,
+      "note": "Approval Note R-2247\nFindings and Severity:\nF-01: Insulation cladding damaged (Minor)\nF-02: Localized external corrosion observed (Minor)\nF-03: Support saddle anchor bolt loose (Observation)\nF-04: Corroded ladder/platform grating exceeding 20% loss (Minor)\nF-05: Minor external scaling and paint chalking (Observation)\nThickness Readings with Minimum Required Values:\nCML-01: Current 19.28 mm – Min 12.7 mm (Acceptable)\nCML-02: Current 18.05 mm – Min 12.7 mm (Acceptable)\nCML-03: Current 12.32 mm – Min 12.7 mm (Below Minimum)\nCML-04: Current 18.47 mm – Min 12.7 mm (Acceptable)\nRecommendations:\n1. Reinstate cladding and seal joints.\n2. Remove loose scale, surface prepare, and re‑apply approved coating system during next shutdown.\n3. Re‑torque anchor bolt to specification.\n4. Replace affected grating sections before next internal inspection.\n5. Include in routine painting schedule.",
+      "reply": "The inspection report for equipment R-2247 has been processed. The findings and severity, along with the thickness readings and their minimum required values, have been compiled. An approval note titled **\"Approval Note R-2247\"** summarizing these details has been created and saved as `Approval_Note_R-2247_20260911-143434.docx` in the directory `C:\\SIH 2026\\stage0\\output`. \n\nKey points from the report:\n- **Findings & Severity**:\n  - F-01: Insulation cladding damaged (Minor)\n  - F-02: Localized external corrosion observed (Minor)\n  - F-03: Support saddle anchor bolt loose (Observation)\n  - F-04: Corroded ladder/platform grating exceeding 20% loss (Minor)\n  - F-05: Minor external scaling and paint chalking (Observation)\n\n- **Thickness Readings**:\n  - CML-01: Current 19.28 mm – Minimum 12.7 mm (Acceptable)\n  - CML-02: Current 18.05 mm – Minimum 12.7 mm (Acceptable)\n  - CML-03: Current 12.32 mm – Minimum 12.7 mm (Below Minimum)\n  - CML-04: Current 18.47 mm – Minimum 12.7 mm (Acceptable)\n\n- **Recommendations**:\n  1. Reinstate cladding and seal joints.\n  2. Remove loose scale, surface prepare, and re‑apply approved coating system during next shutdown.\n  3. Re‑torque anchor bolt to specification.\n  4. Replace affected grating sections before the next internal inspection.\n  5. Include in routine painting schedule.\n\nThe document is ready for further review or distribution as needed."
+    },
+    {
+      "variant": "V1 original",
+      "rep": 2,
+      "status": 200,
+      "seconds": 16.65,
+      "agent_tools_in_order": [
+        "rag-memory",
+        "sih-docgen-create_word_document"
+      ],
+      "searched_documents": true,
+      "word_file": true,
+      "note_correct": true,
+      "note": "Approval Note R-2247\n**Findings and Severity**:\n  - F-01: Insulation cladding damaged (Minor)\n  - F-02: Localised external corrosion (Minor)\n  - F-03: Support saddle anchor bolt loose (Observation)\n  - F-04: Corroded ladder/platform grating (Minor)\n  - F-05: Minor scaling/paint chalking (Observation)\n**Thickness Readings**:\n  - CML-01: 19.28 mm (≥12.7” Acceptable)\n  - CML-02: 18.05 mm (≥12.7” Acceptable)\n  - CML-03: 12.32 mm (Below Min – requires immediate attention)\n  - CML-04: 18.47 mm (≥12.7” Acceptable)",
+      "reply": "The approval note titled **'Approval Note R-2247'** has been created and saved. It summarizes the findings and thickness readings from the inspection report for equipment R-2247.\n\nYou can find the document at:\n`C:\\SIH 2026\\stage0\\output\\Approval_Note_R-2247_20260911-143454.docx`\n\nThe note includes:\n- **Findings and Severity**:\n  - F-01: Insulation cladding damaged (Minor)\n  - F-02: Localised external corrosion (Minor)\n  - F-03: Support saddle anchor bolt loose (Observation)\n  - F-04: Corroded ladder/platform grating (Minor)\n  - F-05: Minor scaling/paint chalking (Observation)\n\n- **Thickness Readings**:\n  - CML-01: 19.28 mm (≥12.7” Acceptable)\n  - CML-02: 18.05 mm (≥12.7” Acceptable)\n  - CML-03: 12.32 mm (Below Min – requires immediate attention)\n  - CML-04: 18.47 mm (≥12.7” Acceptable)\n\nThe document is ready for review and approval."
+    },
+    {
+      "variant": "V1 original",
+      "rep": 3,
+      "status": 200,
+      "seconds": 23.42,
+      "agent_tools_in_order": [
+        "rag-memory",
+        "sih-docgen-create_word_document"
+      ],
+      "searched_documents": true,
+      "word_file": true,
+      "note_correct": true,
+      "note": "Approval Note R-2247\n**Findings and Severity**:\n  - F-01: Insulation cladding damaged/displaced (Minor)\n  - F-02: Localised external corrosion on shell plate (Minor)\n  - F-03: Support saddle anchor bolt loose (No severity noted)\n  - F-04: Corroded ladder/platform grating exceeding 20% loss (Minor)\n  - F-05: Minor scaling and paint chalking on head section (No severity noted)\n**Thickness Readings vs. Minimum Required**:\n  - CML-01 Shell course 2–180°: Current 19.28 mm ≥ Min 12.7 mm (Acceptable)\n  - CML-02 Top head‑crown: Current 18.05 mm ≥ Min 12.7 mm (Acceptable)\n  - CML-03 Shell course 2–270°: Current 12.32 mm < Min 12.7 mm (**Below Minimum**)\n  - CML-04 Bottom head‑knuckle: Current 18.47 mm ≥ Min 12.7 mm (Acceptable)",
+      "reply": "The inspection report for equipment R-2247 has been processed. The findings and thickness readings are summarized below:\n\n**Findings with Severity:**\n- F-01: Insulation cladding damaged/displaced (Minor)\n- F-02: Localised external corrosion on shell plate (Minor)\n- F-03: Support saddle anchor bolt loose (No severity noted)\n- F-04: Corroded ladder/platform grating exceeding 20% loss (Minor)\n- F-05: Minor scaling and paint chalking on head section (No severity noted)\n\n**Thickness Readings vs. Minimum Required:**\n- CML-01 Shell course 2–180°: Current 19.28 mm ≥ Min 12.7 mm (Acceptable)\n- CML-02 Top head‑crown: Current 18.05 mm ≥ Min 12.7 mm (Acceptable)\n- CML-03 Shell course 2–270°: Current 12.32 mm < Min 12.7 mm (**Below Minimum**)\n- CML-04 Bottom head‑knuckle: Current 18.47 mm ≥ Min 12.7 mm (Acceptable)\n\nAn approval note titled **Approval Note R-2247** has been created and saved as `Approval_Note_R-2247_20260911-143516.docx` at `C:\\SIH 2026\\stage0\\output\\`. This document contains the summarized findings and thickness readings."
+    },
+    {
+      "variant": "V2 no-tool",
+      "rep": 1,
+      "status": 200,
+      "seconds": 25.63,
+      "agent_tools_in_order": [
+        "rag-memory",
+        "sih-docgen-create_word_document"
+      ],
+      "searched_documents": true,
+      "word_file": true,
+      "note_correct": true,
+      "note": "Approval Note R-2247\nFindings and Thickness Readings Summary for Equipment R-2247\n**Findings (Severity):**\nF-01: Insulation cladding damaged and displaced over a 2 m section of the vapour line. *Minor* (OISD-STD-118 CI. 6.2)\nF-02: Localised external corrosion observed on shell plate adjacent to support saddle. *Minor* (OISD-STD-116 CI. 7.3)\nF-03: Support saddle anchor bolt at south-west location found loose. No structural distress observed. *(Observation, no severity label)*\nF-04: Corrosion and section loss exceeding 20% on ladder/platform grating adjacent to manway. *Minor* (OISD-STD-118 CI. 8.4)\nF-05: Minor external scaling and paint chalking on head section. No measurable metal loss. *(Observation, no severity label)*\n**Thickness Readings with Minimum Required Values:**\nCML-01 Shell course 2–180°: Current thickness 19.28 mm (Nominal 20.0 mm), Min Req 12.7 mm – *Acceptable*\nCML-02 Top head‑crown: Current thickness 18.05 mm, Min Req 12.7 mm – *Acceptable*\nCML-03 Shell course 2–270°: Current thickness 12.32 mm, Min Req 12.7 mm – **Below Minimum**\nCML-04 Bottom head‑knuckle: Current thickness 18.47 mm, Min Req 12.7 mm – *Acceptable*\n**Recommendations Summary:**\nReinstate cladding and seal joints (F-01).\nRemove loose scale, surface prepare to St-3 and re-apply approved coating system during next shutdown (F-02).\nRe-torque anchor bolt to specification (F-03).\nReplace affected grating sections before next internal inspection (F-04).\nInclude in routine painting schedule; no immediate action required for F-05.\n**Conclusion:** All findings are either minor or require straightforward corrective actions. The thickness reading CML-03 is below the minimum required value and warrants prompt attention to prevent further degradation.\nPrepared by: S. Prakash Nayak (API‑510‑61284)\nInspection Date: 03‑02‑2026",
+      "reply": "The inspection report for equipment R-2247 has been summarized, and an approval note titled **\"Approval Note R-2247\"** has been created. The note includes all findings with their severity and thickness readings with their minimum required values. The document is saved as `Approval_Note_R-2247_20260911-143549.docx` in the specified output directory."
+    },
+    {
+      "variant": "V2 no-tool",
+      "rep": 2,
+      "status": 200,
+      "seconds": 37.39,
+      "agent_tools_in_order": [
+        "rag-memory",
+        "sih-docgen-create_word_document"
+      ],
+      "searched_documents": true,
+      "word_file": true,
+      "note_correct": true,
+      "note": "Approval Note R-2247\nINSPECTION REPORT SUMMARY FOR EQUIPMENT TAG R-2247\nFINDINGS (Severity):\nF-01: Insulation cladding damaged/displaced (Minor) - OISD-STD-118 CI 6.2\nF-02: Localised external corrosion on shell plate (Minor) - OISD-STD-116 CI 7.3\nF-03: Support saddle anchor bolt loose (No structural distress observed) - OISD-STD-118 CL 6.5\nF-04: Corroded ladder/platform grating with >20% section loss (Minor) - OISD-STD-118 CI 8.4\nF-05: Minor external scaling/paint chalking on head section (No measurable metal loss) - OISD-STD-116 CI 7.3\nTHICKNESS READINGS (Minimum Required = 12.7 mm):\nCML-01 Shell course 2‑80°: Current 19.28 mm – Acceptable\nCML-02 Top head‑crown: Current 18.05 mm – Acceptable\nCML-03 Shell course 2‑270°: Current 12.32 mm – **Below Minimum**\nCML-04 Bottom head‑knuckle: Current 18.47 mm – Acceptable\nRECOMMENDATIONS:\n1. Reinstate cladding and seal joints to prevent water ingress (F-01).\n2. Remove loose scale, surface prepare to St-3 and re‑apply approved coating during next shutdown (F-02).\n3. Re‑torque anchor bolt to specification (F-03).\n4. Replace affected grating sections before next internal inspection (F-04).\n5. Include in routine painting schedule; no immediate action for F-05.\nCorrosion rate: 0.077 mm/yr, estimated remaining life: 0 years.\nApproved by:\nS. Prakash Nayak – Sr. Inspection Engineer, Head – Inspection Dept.\nAPI‑510‑61284",
+      "reply": "The inspection report for equipment R-2247 has been summarized, and a Word approval note titled **\"Approval Note R-2247\"** has been created. The document is saved at `C:\\SIH 2026\\stage0\\output\\Approval_Note_R-2247_20260911-143612.docx` with SHA-256 hash `e1ebbe7350eb97a6...`. \n\n**Key Summary Points:**\n- **Findings & Severity:**\n  - F-01: Insulation cladding damaged/displaced (Minor) – OISD‑STD‑118 CI 6.2\n  - F-02: Localised external corrosion on shell plate (Minor) – OISD‑STD‑116 CI 7.3\n  - F-03: Support saddle anchor bolt loose (No structural distress observed) – OISD‑STD‑118 CL 6.5\n  - F-04: Corroded ladder/platform grating with >20% section loss (Minor) – OISD‑STD‑118 CI 8.4\n  - F-05: Minor external scaling/paint chalking on head section (No measurable metal loss) – OISD‑STD‑116 CI 7.3\n\n- **Thickness Readings (Min Required = 12.7 mm):**\n  - CML-01 Shell course 2‑80°: Current 19.28 mm – Acceptable\n  - CML-02 Top head‑crown: Current 18.05 mm – Acceptable\n  - CML-03 Shell course 2‑270°: Current 12.32 mm – **Below Minimum**\n  - CML-04 Bottom head‑knuckle: Current 18.47 mm – Acceptable\n\n- **Recommendations:**\n  1. Reinstate cladding and seal joints to prevent water ingress (F-01).\n  2. Remove loose scale, surface prepare to St‑3 and re‑apply approved coating during next shutdown (F-02).\n  3. Re‑torque anchor bolt to specification (F-03).\n  4. Replace affected grating sections before next internal inspection (F-04).\n  5. Include in routine painting schedule; no immediate action for F-05.\n\nThe document also includes the inspector's summary and approval signature from S. Prakash Nayak, Sr. Inspection Engineer, Head – Inspection Dept., with certification API‑510‑61284."
+    },
+    {
+      "variant": "V2 no-tool",
+      "rep": 3,
+      "status": 200,
+      "seconds": 23.0,
+      "agent_tools_in_order": [
+        "rag-memory",
+        "sih-docgen-create_word_document"
+      ],
+      "searched_documents": true,
+      "word_file": true,
+      "note_correct": true,
+      "note": "Approval Note R-2247\nINSPECTION FINDINGS (Severity):\nF-01: Insulation cladding damaged and displaced – Minor\nF-02: Localised external corrosion observed – Minor\nF-03: Support saddle anchor bolt loose – No Observation\nF-04: Ladder/platform grating corroded with >20% section loss – Minor\nF-05: Minor external scaling and paint chalking – No Observation\nULTRASONIC THICKNESS READINGS (Min. Required):\nCML-01: 19.28 mm (≥12.7 mm) Acceptable\nCML-02: 18.05 mm (≥12.7 mm) Acceptable\nCML-03: 12.32 mm (<12.7 mm) BELOW MIN\nCML-04: 18.47 mm (≥12.7 mm) Acceptable",
+      "reply": "The inspection report for equipment R-2247 has been processed. The findings and thickness readings are summarized below:\n\n**Inspection Findings (Severity):**\n- **F-01:** Insulation cladding damaged and displaced – *Minor*\n- **F-02:** Localised external corrosion observed – *Minor*\n- **F-03:** Support saddle anchor bolt loose – No Observation\n- **F-04:** Ladder/platform grating corroded with >20% section loss – *Minor*\n- **F-05:** Minor external scaling and paint chalking – No Observation\n\n**Ultrasonic Thickness Readings (Minimum Required Value):**\n- **CML-01:** 19.28 mm (≥12.7 mm) – Acceptable\n- **CML-02:** 18.05 mm (≥12.7 mm) – Acceptable\n- **CML-03:** 12.32 mm (<12.7 mm) – **BELOW MINIMUM**\n- **CML-04:** 18.47 mm (≥12.7 mm) – Acceptable\n\nA Word approval note titled **\"Approval Note R-2247\"** has been created summarizing these findings and is saved at:\n`C:\\SIH 2026\\stage0\\output\\Approval_Note_R-2247_20260911-143643.docx`\n\nThe document includes the severity of each finding and indicates that CML-03 thickness reading is below the minimum required value."
+    },
+    {
+      "variant": "V3 explicit",
+      "rep": 1,
+      "status": 200,
+      "seconds": 14.66,
+      "agent_tools_in_order": [
+        "rag-memory",
+        "sih-docgen-create_word_document"
+      ],
+      "searched_documents": true,
+      "word_file": true,
+      "note_correct": true,
+      "note": "Approval Note R-2247\nSUMMARY OF INSPECTION FINDINGS AND THICKNESS READINGS FOR EQUIPMENT R-2247\nFINDINGS WITH SEVERITY:\nF-01: Insulation cladding damaged and displaced (Minor)\nF-02: Localised external corrosion observed on shell plate (Minor)\nF-03: Support saddle anchor bolt loose (No observation/Severity not specified, but noted)\nF-04: Corroded ladder and platform grating with >20% section loss (Minor)\nF-05: Minor external scaling and paint chalking on head section (No observation)\nTHICKNESS READINGS BELOW MINIMUM REQUIRED VALUE:\nCML-03 Shell course 2 – 270°: Current thickness 12.32 mm vs minimum required 12.7 mm (BELOW MIN)",
+      "reply": "The inspection report for equipment R-2247 has been processed. The findings with their severity and thickness readings below the minimum required value are summarized as follows:\n\n**Findings with Severity:**\n- F-01: Insulation cladding damaged and displaced (Minor)\n- F-02: Localised external corrosion observed on shell plate (Minor)\n- F-03: Support saddle anchor bolt at south-west location found loose (No structural distress observed)\n- F-04: Corroded ladder and platform grating with section loss exceeding 20% at two treads (Minor)\n- F-05: Minor external scaling and paint chalking on head section (No measurable metal loss)\n\n**Thickness Readings Below Minimum Required Value:**\n- CML-03 Shell course 2 — 270°: Current thickness 12.32 mm vs minimum required 12.7 mm (BELOW MIN)\n\nA Word document titled **Approval Note R-2247** has been created summarizing these findings and is saved at `C:\\SIH 2026\\stage0\\output\\Approval_Note_R-2247_20260911-143701.docx`. The SHA-256 hash of the document is `2f1c2f753d00a49e...` for verification."
+    },
+    {
+      "variant": "V3 explicit",
+      "rep": 2,
+      "status": 200,
+      "seconds": 19.43,
+      "agent_tools_in_order": [
+        "rag-memory",
+        "sih-docgen-create_word_document"
+      ],
+      "searched_documents": true,
+      "word_file": true,
+      "note_correct": true,
+      "note": "Approval Note R-2247\nSUMMARY OF INSPECTION FINDINGS AND THICKNESS READINGS FOR EQUIPMENT R-2247\nFINDINGS WITH SEVERITY:\nF-01: Insulation cladding damaged and displaced (Minor) – OISD-STD-118 CI. 6.2\nF-02: Localised external corrosion observed on shell plate (Minor) – OISD-STD-116 CI. 7.3\nF-03: Support saddle anchor bolt loose (Observation) – OISD-STD-118 CL. 6.5\nF-04: Ladder and platform grating corroded with >20% section loss (Minor) – OISD-STD-118 CI. 8.4\nF-05: Minor external scaling and paint chalking on head section (Observation) – OISD-STD-116 CI. 7.3\nTHICKNESS READINGS BELOW MINIMUM REQUIRED VALUE:\nCML-03 Shell course 2 – 270°: Current thickness 12.32 mm vs minimum required 12.70 mm (BELOW MIN)",
+      "reply": "The inspection report for equipment R-2247 has been processed. The findings with their severity and thickness readings below the minimum required value are summarized as follows:\n\n**Findings with Severity:**\n- F-01: Insulation cladding damaged and displaced (Minor) – OISD-STD-118 CI. 6.2\n- F-02: Localised external corrosion observed on shell plate (Minor) – OISD-STD-116 CI. 7.3\n- F-03: Support saddle anchor bolt loose (Observation) – OISD-STD-118 CL. 6.5\n- F-04: Ladder and platform grating corroded with >20% section loss (Minor) – OISD-STD-118 CI. 8.4\n- F-05: Minor external scaling and paint chalking on head section (Observation) – OISD-STD-116 CI. 7.3\n\n**Thickness Readings Below Minimum Required Value:**\n- CML-03 Shell course 2 — 270°: Current thickness 12.32 mm vs minimum required 12.70 mm (BELOW MIN)\n\nA Word document titled **Approval Note R-2247** has been created summarizing these findings and is saved at the path:\n`C:\\SIH 2026\\stage0\\output\\Approval_Note_R-2247_20260911-143717.docx` with SHA-256 hash `82fa9102d6c596f4...`."
+    },
+    {
+      "variant": "V3 explicit",
+      "rep": 3,
+      "status": 200,
+      "seconds": 19.12,
+      "agent_tools_in_order": [
+        "rag-memory",
+        "sih-docgen-create_word_document"
+      ],
+      "searched_documents": true,
+      "word_file": true,
+      "note_correct": true,
+      "note": "Approval Note R-2247\nSUMMARY OF INSPECTION FINDINGS AND THICKNESS READINGS FOR EQUIPMENT R-2247\n**Findings with Severity:**\nF-01: Insulation cladding damaged and displaced over a 2 m section of the vapour line. *Severity: Minor* (OISD-STD-118 CI. 6.2)\nF-02: Localised external corrosion observed on shell plate adjacent to support saddle. *Severity: Minor* (OISD-STD-116 CI. 7.3)\nF-03: Support saddle anchor bolt at south-west location found loose. No structural distress observed. *Severity: Observation* (OISD-STD-118 CL. 6.5)\nF-04: Ladder and platform grating adjacent to manway corroded with section loss >20% at two treads. *Severity: Minor* (OISD-STD-118 CI. 8.4)\nF-05: Minor external scaling and paint chalking on head section. No measurable metal loss. *Severity: Observation* (OISD-STD-116 CI. 7.3)\n**Thickness Readings Below Minimum Required Value:**\nCML-03 Shell course 2 – 270°: Current thickness 12.32 mm, Minimum required 12.70 mm → **Below minimum**\n**Recommendations for Readings Below Minimum:**\nFor CML-03 (below minimum), immediate attention is required to assess the integrity and schedule repair/replacement during the next available shutdown.",
+      "reply": "The inspection report for equipment R-2247 has been processed. The findings and thickness readings below the minimum required value are summarized in the Word document titled **\"Approval Note R-2247\"**, saved at `C:\\SIH 2026\\stage0\\output\\Approval_Note_R-2247_20260911-143742.docx`. This document includes:\n\n- Each finding with its severity.\n- Thickness reading CML-03 (12.32 mm, below the minimum of 12.70 mm).\n\nThe recommendation highlights that immediate action is needed for the thickness reading below minimum during the next available shutdown."
+    }
+  ]
+}

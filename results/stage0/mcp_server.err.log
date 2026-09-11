@@ -1,0 +1,16 @@
+INFO:     Started server process [10448]
+INFO:     Waiting for application startup.
+StreamableHTTP session manager started
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8765 (Press CTRL+C to quit)
+Created new transport with session ID: 5556aaebc9924ae3898cbd65aadc62df
+Terminating session: 5556aaebc9924ae3898cbd65aadc62df
+Created new transport with session ID: 4b18763ce58a4ebfafcfb0b937f622ae
+Invalid Host header: host.docker.internal:8765
+Terminating session: 4b18763ce58a4ebfafcfb0b937f622ae
+Created new transport with session ID: f4213f66a1364ca1ab5e969ca398facf
+Invalid Host header: host.docker.internal:8765
+Terminating session: f4213f66a1364ca1ab5e969ca398facf
+Created new transport with session ID: 821f912d70914468a9c48b1647f2618b
+Invalid Host header: host.docker.internal:8765
+Terminating session: 821f912d70914468a9c48b1647f2618b

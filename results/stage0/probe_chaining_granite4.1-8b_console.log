@@ -1,0 +1,16 @@
+model granite4.1:8b; workspace probe-143405; scan upload 200, 2710 chars
+V1 original  #1: tools=['rag-memory', 'sih-docgen-create_word_document'] searched=True word=True correct=True (34.14s)
+V1 original  #2: tools=['rag-memory', 'sih-docgen-create_word_document'] searched=True word=True correct=True (16.65s)
+V1 original  #3: tools=['rag-memory', 'sih-docgen-create_word_document'] searched=True word=True correct=True (23.42s)
+V2 no-tool   #1: tools=['rag-memory', 'sih-docgen-create_word_document'] searched=True word=True correct=True (25.63s)
+V2 no-tool   #2: tools=['rag-memory', 'sih-docgen-create_word_document'] searched=True word=True correct=True (37.39s)
+V2 no-tool   #3: tools=['rag-memory', 'sih-docgen-create_word_document'] searched=True word=True correct=True (23.0s)
+V3 explicit  #1: tools=['rag-memory', 'sih-docgen-create_word_document'] searched=True word=True correct=True (14.66s)
+V3 explicit  #2: tools=['rag-memory', 'sih-docgen-create_word_document'] searched=True word=True correct=True (19.43s)
+V3 explicit  #3: tools=['rag-memory', 'sih-docgen-create_word_document'] searched=True word=True correct=True (19.12s)
+
+summary (searched / word file / correct note, out of runs):
+  V1 original  3/3  3/3  3/3
+  V2 no-tool   3/3  3/3  3/3
+  V3 explicit  3/3  3/3  3/3
+-> C:\SIH 2026\results\stage0\probe_chaining_granite4.1-8b_20260911-143747.json

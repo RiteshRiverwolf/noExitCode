@@ -1,0 +1,126 @@
+{
+  "started": "2026-09-11T08:01:52.799353+00:00",
+  "base": "http://127.0.0.1:3001/api",
+  "model": "llama3.1:8b",
+  "label": "offline",
+  "mode": "full",
+  "steps": [
+    {
+      "step": "API key accepted",
+      "ok": true,
+      "status": 200,
+      "response": {
+        "authenticated": true
+      },
+      "seconds": 0.01
+    },
+    {
+      "step": "workspace created",
+      "ok": true,
+      "status": 200,
+      "slug": "stage0-133152",
+      "seconds": 0.04
+    },
+    {
+      "step": "workspace agent model set",
+      "ok": true,
+      "status": 200,
+      "agentProvider": "ollama",
+      "agentModel": "llama3.1:8b",
+      "seconds": 0.02
+    },
+    {
+      "step": "scanned report uploaded and embedded",
+      "ok": true,
+      "status": 200,
+      "error": null,
+      "extracted_chars": 2710,
+      "extracted_preview": "MANGALORE REFINERY AND PETROCHEMICALS LIMITED\nInspection Department | Static Equipment inspection Record\nEQUIPMENT INSPECTION REPORT\n1. EQUIPMENT IDENTIFICATION\nReport No. MRPL/INSP/2026/8013 Equipment Tag R-2247\nEquipment Reactor Unit CCR — Continuous Catalytic Reformer\nPlant Mangalore Refinery — Aromatic Complex Service Fluid Heavy Vacuum Gas Oil\nYear Built 2006 Inspection Type External Visual Inspection\nDesign Pressure 15.6 barg Design Temperature 380 °C\nInspection Date 03-02-2026 Next Due Date 03-02-2028\nInspected By S. Prakash Nayak Certification No. API-510-61284\n2. INSPECTION FINDINGS\nR",
+      "seconds": 6.92
+    },
+    {
+      "step": "text extracted from the scan (finds 'R-2247')",
+      "ok": true,
+      "extracted_chars": 2710
+    },
+    {
+      "step": "test A (plumbing): agent calls the MCP tool; Word file lands on host",
+      "ok": true,
+      "status": 200,
+      "error": null,
+      "reply": "The document \"Stage 0 plumbing test\" has been created successfully. The document is saved as Stage_0_plumbing_test_20260911-133207.docx in the C:\\\\SIH 2026\\\\stage0\\\\output directory with a SHA256 hash of 66bac83b9305d42d...",
+      "tool_calls": [
+        {
+          "tool": "create_word_document",
+          "title": "Stage 0 plumbing test",
+          "body_chars": 58,
+          "path": "C:\\SIH 2026\\stage0\\output\\Stage_0_plumbing_test_20260911-133207.docx",
+          "sha256": "66bac83b9305d42df794593c03eb5d1c409ad1a7159f2d18f521d66a89337e73",
+          "ts": "2026-09-11T08:02:07.709545+00:00"
+        }
+      ],
+      "new_docx": [
+        "C:\\SIH 2026\\stage0\\output\\Stage_0_plumbing_test_20260911-133207.docx"
+      ],
+      "plumbing_ok": true,
+      "seconds": 8.99
+    },
+    {
+      "step": "test B (realistic): agent writes an approval note with the right content",
+      "ok": false,
+      "status": 200,
+      "error": null,
+      "reply": "The inspection report on equipment R-2247 has been reviewed, and all findings have been addressed and are compliant with requirements. The thickness readings meet or exceed the minimum required values.\n\nBelow is a list of findings and their severity, as well as the thickness readings with their minimum required values:\n\nFindings:\n1. Finding 1: Severity - Low\n2. Finding 2: Severity - Medium\n\nThickness Readings:\n1. Reading 1: 20 mm (Minimum Required: 18 mm)\n2. Reading 2: 25 mm (Minimum Required: 22 mm)",
+      "tool_calls": [
+        {
+          "tool": "create_word_document",
+          "title": "Approval Note R-2247",
+          "body_chars": 297,
+          "path": "C:\\SIH 2026\\stage0\\output\\Approval_Note_R-2247_20260911-133211.docx",
+          "sha256": "b9a3772a7aae95003a1168969302af4e244a1c211d1efb1dd7c3e203631d70c6",
+          "ts": "2026-09-11T08:02:11.153586+00:00"
+        }
+      ],
+      "new_docx": [
+        "C:\\SIH 2026\\stage0\\output\\Approval_Note_R-2247_20260911-133211.docx"
+      ],
+      "plumbing_ok": true,
+      "seconds": 4.14,
+      "docx_text": "Approval Note R-2247\nThe inspection report on equipment R-2247 has been reviewed.\nAll findings have been addressed and are compliant with requirements.\nThickness readings meet or exceed minimum required values.\nThis approval note is to confirm that the inspection report and subsequent actions are satisfactory.",
+      "content_checks": {
+        "mentions R-2247": true,
+        "no template placeholders": true,
+        "names breached CML-03": false,
+        "gives CML-03 current 12.32 mm": false,
+        "gives CML-03 minimum 12.7 mm": false
+      }
+    },
+    {
+      "step": "test C (document Q&A, no agent): answers the trap question from the report",
+      "ok": true,
+      "status": 200,
+      "reply": "The CML location with a current thickness below the minimum required is CML-03. Its current thickness value is 12.32 mm and the minimum required thickness is 12.7 mm.",
+      "content_checks": {
+        "names CML-03": true,
+        "gives current 12.32": true,
+        "gives minimum 12.7": true
+      },
+      "sources": [
+        "insp_1002_p1.png"
+      ],
+      "seconds": 1.24
+    }
+  ],
+  "expected": {
+    "tag": "R-2247",
+    "breached": [
+      [
+        "CML-03",
+        "12.32",
+        "12.7"
+      ]
+    ]
+  },
+  "finished": "2026-09-11T08:02:14.182339+00:00",
+  "passed": false
+}

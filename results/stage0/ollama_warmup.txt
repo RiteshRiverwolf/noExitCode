@@ -1,0 +1,2 @@
+llama3.1:8b cold load via ollama serve | wall 40.8s | load_duration 22.6s | eval 1.4 tok/s | reply: OK
+VRAM after load: 7447 MiB, 12282 MiB

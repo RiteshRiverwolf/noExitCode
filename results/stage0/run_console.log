@@ -1,0 +1,9 @@
+[PASS] API key accepted  (0.01s)
+[PASS] workspace created  (0.03s)
+[PASS] workspace agent model set  (0.02s)
+[PASS] scanned report uploaded and embedded  (27.95s)
+[PASS] text extracted from the scan (finds 'R-2247')
+[PASS] test A (plumbing): agent calls the MCP tool; Word file lands on host  (3.61s)
+[PASS] test B (realistic): agent finds the report and writes an approval note  (4.5s)
+
+ALL STEPS PASSED -> C:\SIH 2026\results\stage0\run_20260911-002923.json

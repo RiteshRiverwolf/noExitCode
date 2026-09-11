@@ -1,0 +1,200 @@
+[36m[collector][0m [32minfo[39m: [35m[TikTokenTokenizer][0m Initialized new TikTokenTokenizer instance.
+[36m[collector][0m [32minfo[39m: Collector hot directory and tmp storage wiped!
+[36m[collector][0m [32minfo[39m: Document processor app listening on port 8888
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.3.1) to ./node_modules/@prisma/client in 300ms
+
+Start using Prisma Client in Node.js (See: https://pris.ly/d/client)
+```
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
+```
+or start using Prisma Client at the edge (See: https://pris.ly/d/accelerate)
+```
+import { PrismaClient } from '@prisma/client/edge'
+const prisma = new PrismaClient()
+```
+
+See other ways of importing Prisma Client: http://pris.ly/d/importing-client
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "anythingllm.db" at "file:../storage/anythingllm.db"
+
+SQLite database anythingllm.db created at file:../storage/anythingllm.db
+
+40 migrations found in prisma/migrations
+
+Applying migration `20230921191814_init`
+Applying migration `20231101001441_init`
+Applying migration `20231101195421_init`
+Applying migration `20231129012019_add`
+Applying migration `20240113013409_init`
+Applying migration `20240118201333_init`
+Applying migration `20240202002020_init`
+Applying migration `20240206181106_init`
+Applying migration `20240206211916_init`
+Applying migration `20240208224848_init`
+Applying migration `20240210004405_init`
+Applying migration `20240216214639_init`
+Applying migration `20240219211018_init`
+Applying migration `20240301002308_init`
+Applying migration `20240326231053_init`
+Applying migration `20240405015034_init`
+Applying migration `20240412183346_init`
+Applying migration `20240425004220_init`
+Applying migration `20240430230707_init`
+Applying migration `20240510032311_init`
+Applying migration `20240618224346_init`
+Applying migration `20240821215625_init`
+Applying migration `20240824005054_init`
+Applying migration `20241003192954_init`
+Applying migration `20241029203722_init`
+Applying migration `20241029233509_init`
+Applying migration `20250102204948_init`
+Applying migration `20250226005538_init`
+Applying migration `20250318154720_init`
+Applying migration `20250506214129_init`
+Applying migration `20250709230835_init`
+Applying migration `20250725194841_init`
+Applying migration `20250808171557_init`
+Applying migration `20260130040204_init`
+Applying migration `20260313192859_init`
+Applying migration `20260319202916_init`
+Applying migration `20260406120000_init`
+Applying migration `20260423191158_init`
+Applying migration `20260424013043_init`
+Applying migration `20260520160208_init`
+
+The following migrations have been applied:
+
+migrations/
+  └─ 20230921191814_init/
+    └─ migration.sql
+  └─ 20231101001441_init/
+    └─ migration.sql
+  └─ 20231101195421_init/
+    └─ migration.sql
+  └─ 20231129012019_add/
+    └─ migration.sql
+  └─ 20240113013409_init/
+    └─ migration.sql
+  └─ 20240118201333_init/
+    └─ migration.sql
+  └─ 20240202002020_init/
+    └─ migration.sql
+  └─ 20240206181106_init/
+    └─ migration.sql
+  └─ 20240206211916_init/
+    └─ migration.sql
+  └─ 20240208224848_init/
+    └─ migration.sql
+  └─ 20240210004405_init/
+    └─ migration.sql
+  └─ 20240216214639_init/
+    └─ migration.sql
+  └─ 20240219211018_init/
+    └─ migration.sql
+  └─ 20240301002308_init/
+    └─ migration.sql
+  └─ 20240326231053_init/
+    └─ migration.sql
+  └─ 20240405015034_init/
+    └─ migration.sql
+  └─ 20240412183346_init/
+    └─ migration.sql
+  └─ 20240425004220_init/
+    └─ migration.sql
+  └─ 20240430230707_init/
+    └─ migration.sql
+  └─ 20240510032311_init/
+    └─ migration.sql
+  └─ 20240618224346_init/
+    └─ migration.sql
+  └─ 20240821215625_init/
+    └─ migration.sql
+  └─ 20240824005054_init/
+    └─ migration.sql
+  └─ 20241003192954_init/
+    └─ migration.sql
+  └─ 20241029203722_init/
+    └─ migration.sql
+  └─ 20241029233509_init/
+    └─ migration.sql
+  └─ 20250102204948_init/
+    └─ migration.sql
+  └─ 20250226005538_init/
+    └─ migration.sql
+  └─ 20250318154720_init/
+    └─ migration.sql
+  └─ 20250506214129_init/
+    └─ migration.sql
+  └─ 20250709230835_init/
+    └─ migration.sql
+  └─ 20250725194841_init/
+    └─ migration.sql
+  └─ 20250808171557_init/
+    └─ migration.sql
+  └─ 20260130040204_init/
+    └─ migration.sql
+  └─ 20260313192859_init/
+    └─ migration.sql
+  └─ 20260319202916_init/
+    └─ migration.sql
+  └─ 20260406120000_init/
+    └─ migration.sql
+  └─ 20260423191158_init/
+    └─ migration.sql
+  └─ 20260424013043_init/
+    └─ migration.sql
+  └─ 20260520160208_init/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+[36m[backend][0m [32minfo[39m: [36m[SDK Timeout Patch][0m undici global dispatcher — headersTimeout & bodyTimeout 600s
+[36m[backend][0m [32minfo[39m: [36m[SDK Timeout Patch][0m OpenAI SDK — timeout 600s, maxRetries 0
+[36m[backend][0m [32minfo[39m: [36m[SDK Timeout Patch][0m Anthropic SDK — timeout 600s, maxRetries 0
+[36m[backend][0m [32minfo[39m: [36m[EncryptionManager][0m Self-assigning key & salt for encrypting arbitrary data.
+[36m[backend][0m [32minfo[39m: [35m[TokenManager][0m Initialized new TokenManager instance for model: gpt-3.5-turbo
+[36m[backend][0m [32minfo[39m: [33m[ContextWindowFinder][0m Pulling remote model map...
+[36m[backend][0m [32minfo[39m: [35m[TokenManager][0m Returning existing instance for model: gpt-3.5-turbo
+[36m[backend][0m [32minfo[39m: prisma:info Starting a sqlite pool with 13 connections.
+[36m[backend][0m [32minfo[39m: [33m[ONBOARDING PATCH][0m Legacy instance is already onboarded, marking onboarding as complete. You will not see this message again.
+[36m[backend][0m [32minfo[39m: [33m[ContextWindowFinder][0m zai:titan-embed-text-v2 - context window is not a positive number. Got 0.
+[36m[backend][0m [32minfo[39m: [33m[ContextWindowFinder][0m zai:embed-v4.0 - context window is not a positive number. Got 0.
+[36m[backend][0m [32minfo[39m: [33m[ContextWindowFinder][0m zai:gemini-embedding-001 - context window is not a positive number. Got 0.
+[36m[backend][0m [32minfo[39m: [33m[ContextWindowFinder][0m zai:text-embedding-005 - context window is not a positive number. Got 0.
+[36m[backend][0m [32minfo[39m: [33m[ContextWindowFinder][0m zai:text-multilingual-embedding-002 - context window is not a positive number. Got 0.
+[36m[backend][0m [32minfo[39m: [33m[ContextWindowFinder][0m zai:codestral-embed - context window is not a positive number. Got 0.
+[36m[backend][0m [32minfo[39m: [33m[ContextWindowFinder][0m zai:mistral-embed - context window is not a positive number. Got 0.
+[36m[backend][0m [32minfo[39m: [33m[ContextWindowFinder][0m zai:text-embedding-3-large - context window is not a positive number. Got 0.
+[36m[backend][0m [32minfo[39m: [33m[ContextWindowFinder][0m zai:text-embedding-3-small - context window is not a positive number. Got 0.
+[36m[backend][0m [32minfo[39m: [33m[ContextWindowFinder][0m zai:text-embedding-ada-002 - context window is not a positive number. Got 0.
+[36m[backend][0m [32minfo[39m: [31m[TELEMETRY DISABLED][0m Telemetry is marked as disabled - no events will send. Telemetry helps Mintplex Labs Inc improve AnythingLLM.
+[36m[backend][0m [32minfo[39m: [36m[CommunicationKey][0m RSA key pair generated for signed payloads within AnythingLLM services.
+[36m[backend][0m [32minfo[39m: [36m[EncryptionManager][0m Loaded existing key & salt for encrypting arbitrary data.
+[36m[backend][0m [32minfo[39m: [36m[BackgroundWorkerService][0m SINGLETON LOCK: Using existing BackgroundService.
+[36m[backend][0m [32minfo[39m: [33m[ContextWindowFinder][0m Remote model map synced and cached
+[36m[backend][0m [32minfo[39m: [36m[BackgroundWorkerService][0m Starting...
+[36m[backend][0m [32minfo[39m: [36m[BackgroundWorkerService][0m Service started with 3 jobs ["cleanup-orphan-documents","cleanup-generated-files","cleanup-generated-images"]
+[36m[backend][0m [32minfo[39m: [36m[ModelPricing][0m Remote pricing data synced and cached.
+[36m[backend][0m [32minfo[39m: [36m[ModelPricing][0m ⚡[32mPre-cached model pricing data[0m
+[36m[backend][0m [32minfo[39m: [32m[Ollama][0m Context windows cached for all models!
+[36m[backend][0m [32minfo[39m: ⚡[32mPre-cached context windows for Ollama[0m
+[36m[backend][0m [32minfo[39m: [36m[PushNotifications][0m Generating new VAPID keys...
+[36m[backend][0m [32minfo[39m: [36m[PushNotifications][0m New VAPID keys generated!
+[36m[backend][0m [32minfo[39m: [36m[PushNotifications][0m Loading single user mode subscriptions...
+[36m[backend][0m [32minfo[39m: Primary server in HTTP mode listening on port 3001
+[36m[EncryptionManager][0m Loaded existing key & salt for encrypting arbitrary data.
+prisma:info Starting a sqlite pool with 13 connections.
+[36m[backend][0m [32minfo[39m: [33m[131:164][0m: No direct uploads path found - exiting.
+[36m[bg-worker][0m[33m[cleanup-orphan-documents][0m [32minfo[39m: [33m[131:164][0m: No direct uploads path found - exiting.
+[36m[backend][0m [33mwarn[39m: Child process exited with code 0 and signal null
+[36m[backend][0m [32minfo[39m: Worker for job "cleanup-orphan-documents" exited with code 0
+[36m[backend][0m [33mwarn[39m: Child process exited with code 0 and signal null
+[36m[backend][0m [32minfo[39m: Worker for job "cleanup-generated-files" exited with code 0
+[36m[EncryptionManager][0m Loaded existing key & salt for encrypting arbitrary data.
+[36m[backend][0m [33mwarn[39m: Child process exited with code 0 and signal null
+[36m[backend][0m [32minfo[39m: Worker for job "cleanup-generated-images" exited with code 0

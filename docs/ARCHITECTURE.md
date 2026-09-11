@@ -69,7 +69,7 @@ the tests in §10, not a claim we can make today.
 │  + state machine                          │                          │
 │        │                                  │                          │
 │        └────────────┬─────────────────────┘                          │
-│             MCP TOOL SERVERS (Python, FastMCP, localhost)            │
+│             MCP TOOL SERVERS (Python, MCP SDK, localhost)            │
 │             ocr · docgen · sandbox · library lookup                  │
 │                     │                                                │
 │             DOCUMENT LIBRARY + INTAKE   (§6)                         │
@@ -226,10 +226,36 @@ requests. Our inspection, coding and intake workflows run in our agent team.
   search, calling LanceDB directly is simpler.
 
 **Integration test (stage 0, one day):** cold offline start with telemetry off;
-a local model; one FastMCP tool on localhost; upload a scanned report through
+a local model; one MCP tool on localhost; upload a scanned report through
 the API; trigger an agent through the API; get a Word file back; audit events
 recorded. Fallbacks if it fails: Onyx, then LibreChat. Our tools are MCP
 servers, so they move with us.
+
+**Stage 0 result (2026-09-11, [VERDICT](../results/stage0/VERDICT.md)): keep
+AnythingLLM.** With all outbound traffic blocked, it read a scanned report,
+answered the trap question correctly with its source, and ran an agent
+through the API that called our MCP tool and wrote a Word file. There were no
+internet connections. Its built-in agent with an 8B model wrote a false
+approval note in all three clean runs, skipping the document search: that
+confirms the inspection workflow belongs in our agent team.
+
+**Requirements from stage 0** (details in
+[F003](../results/findings/F003-anythingllm-outbound-dependencies.md)):
+
+1. Pre-seed `eng.traineddata` in `storage/models/tesseract/`. Without it, the
+   first scanned upload offline **crashes the container**.
+2. Pre-seed or patch out the startup fetches (model context windows from
+   GitHub, pricing from models.dev). No switch exists.
+3. Disable the agent's web-scraping and web-browsing skills (on by default).
+4. Set `AUTH_TOKEN` or use multi-user mode; the internal API is open without it.
+5. Our MCP servers allow the `host.docker.internal:*` Host header, with
+   DNS-rebinding protection kept on.
+6. Give the container a fixed host address (`--add-host` or a user-defined
+   network); `host.docker.internal` resolves only through DNS, which the
+   network lock blocks.
+
+Still open: a cold offline start, to see how the startup fetches behave on an
+offline boot.
 
 ---
 
