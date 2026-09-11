@@ -120,8 +120,18 @@
   }
 </style>
 </head>
-<body class="text-ink-100 font-sans antialiased h-screen flex flex-col overflow-hidden">
+<body class="text-ink-100 font-sans antialiased h-screen flex overflow-hidden">
 
+  <aside class="w-56 shrink-0 border-r border-base-800 hidden md:flex flex-col">
+    <button id="sidebarNewChat" class="btn-lift m-3 flex items-center gap-2 px-3 py-2 rounded-lg border border-base-700 bg-base-900 text-[12.5px] text-ink-300 hover:border-indigo-400/40 hover:text-indigo-200 transition-colors">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
+      New chat
+    </button>
+    <div class="px-3 pb-2 text-[11px] uppercase tracking-wide text-ink-700">Past chats</div>
+    <div id="historyList" class="flex-1 overflow-y-auto px-2 pb-3 space-y-1"></div>
+  </aside>
+
+  <div class="flex-1 flex flex-col overflow-hidden">
   <header class="flex items-center justify-between px-5 py-3 border-b border-base-800 shrink-0">
     <div class="flex items-center gap-3">
       <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, rgba(129,140,248,.18), rgba(167,139,250,.10)); border: 1px solid rgba(129,140,248,.35);">
@@ -144,37 +154,53 @@
     </div>
   </header>
 
-  <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
+  <main class="flex-1 grid grid-cols-1 lg:grid-cols-10 overflow-hidden">
+
+    <!-- AGENT ACTIVITY -->
+    <section class="reveal lg:col-span-3 flex flex-col border-b lg:border-b-0 lg:border-r border-base-800 min-h-[320px]">
+      <div class="h-[2px] w-full shrink-0" style="background: linear-gradient(90deg, #fbbf24, transparent);"></div>
+      <div class="px-4 py-3 border-b border-base-800 flex items-center justify-between shrink-0">
+        <span class="text-[13px] font-medium text-ink-200 flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+          Agent Activity
+        </span>
+        <span id="elapsed" class="text-[11px] text-ink-600 font-mono">idle</span>
+      </div>
+
+      <div id="stageList" class="flex-1 overflow-y-auto px-4 py-4">
+        <!-- stages injected by JS -->
+      </div>
+    </section>
 
     <!-- PROMPT / CONVERSATION -->
-    <section id="requestPanel" class="relative reveal lg:col-span-3 flex flex-col border-b lg:border-b-0 lg:border-r border-base-800 min-h-[260px]">
+    <section id="requestPanel" class="relative reveal lg:col-span-4 flex flex-col border-b lg:border-b-0 lg:border-r border-base-800 min-h-[260px]">
       <div class="h-[2px] w-full shrink-0" style="background: linear-gradient(90deg, #818cf8, transparent);"></div>
       <div class="px-4 py-3 border-b border-base-800 flex items-center justify-between shrink-0">
         <span class="text-[13px] font-medium text-ink-200 flex items-center gap-2">
           <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
           Request
         </span>
-        <span class="text-[11px] text-ink-600 font-mono">run #204-B</span>
+        <button id="newChatBtn" title="New chat" class="w-6 h-6 rounded-md flex items-center justify-center text-ink-500 hover:text-indigo-300 hover:bg-indigo-400/10 transition-colors">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
       </div>
 
-      <div id="chatThread" class="flex-1 overflow-y-auto px-4 py-4 space-y-4 text-[13px] leading-relaxed">
-        <div class="msg-in">
-          <div class="text-ink-500 text-[11px] mb-1">You</div>
-          <div class="bg-base-900 border border-base-800 rounded-lg rounded-tl-sm px-3 py-2 text-ink-100 card-shadow">
-            Read the attached inspection report for Line 204-B and draft an approval note.
-          </div>
-          <div class="mt-2 inline-flex items-center gap-1.5 text-[11px] text-indigo-200 border border-indigo-400/25 bg-indigo-400/[0.06] rounded-md px-2 py-1">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
-            inspection_204B.pdf
-          </div>
+      <div class="flex-1 overflow-y-auto relative">
+        <div id="emptyState" class="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+          <svg width="60" height="60" viewBox="0 0 100 100" fill="none">
+            <defs>
+              <linearGradient id="brandGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#c7d2fe"/>
+                <stop offset="100%" stop-color="#818cf8"/>
+              </linearGradient>
+            </defs>
+            <circle cx="50" cy="50" r="40" stroke="url(#brandGrad)" stroke-width="6" stroke-linecap="round" stroke-dasharray="205 46" stroke-dashoffset="15" transform="rotate(-90 50 50)"/>
+            <circle cx="50" cy="50" r="13" fill="url(#brandGrad)"/>
+          </svg>
+          <div id="greetingText" class="text-[16px] font-medium text-ink-100 mt-4"></div>
+          <div class="text-[12px] text-ink-600 mt-1">What should we look into today?</div>
         </div>
-
-        <div class="msg-in">
-          <div class="text-ink-500 text-[11px] mb-1">Workbench</div>
-          <div class="bg-base-850 border border-base-800 rounded-lg rounded-tl-sm px-3 py-2 text-ink-300 card-shadow">
-            Plan: read document → build evidence → check against OISD-STD-116 → find governing clause → draft note → verify.
-          </div>
-        </div>
+        <div id="chatThread" class="px-4 py-4 space-y-4 text-[13px] leading-relaxed"></div>
       </div>
 
       <div id="stagedRow" class="hidden px-3 pt-2 flex flex-wrap gap-1.5 shrink-0"></div>
@@ -200,24 +226,8 @@
       </div>
     </section>
 
-    <!-- AGENT ACTIVITY -->
-    <section class="reveal lg:col-span-5 flex flex-col border-b lg:border-b-0 lg:border-r border-base-800 min-h-[320px]">
-      <div class="h-[2px] w-full shrink-0" style="background: linear-gradient(90deg, #fbbf24, transparent);"></div>
-      <div class="px-4 py-3 border-b border-base-800 flex items-center justify-between shrink-0">
-        <span class="text-[13px] font-medium text-ink-200 flex items-center gap-2">
-          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-          Agent Activity
-        </span>
-        <span id="elapsed" class="text-[11px] text-ink-600 font-mono">idle</span>
-      </div>
-
-      <div id="stageList" class="flex-1 overflow-y-auto px-4 py-4">
-        <!-- stages injected by JS -->
-      </div>
-    </section>
-
     <!-- EVIDENCE VIEWER -->
-    <section class="reveal lg:col-span-4 flex flex-col min-h-[320px]">
+    <section class="reveal lg:col-span-3 flex flex-col min-h-[320px]">
       <div class="h-[2px] w-full shrink-0" style="background: linear-gradient(90deg, #fb7185, transparent);"></div>
       <div class="px-4 py-3 border-b border-base-800 flex items-center justify-between shrink-0">
         <span class="text-[13px] font-medium text-ink-200 flex items-center gap-2">
@@ -253,6 +263,7 @@
     </button>
     <div id="netLog" class="hidden border-t border-base-800 bg-base-900 max-h-32 overflow-y-auto px-5 py-2 font-mono text-[11px] space-y-1"></div>
   </footer>
+  </div>
 
 <script>
   document.querySelectorAll('.reveal').forEach((el, i) => {
@@ -449,10 +460,60 @@
   const promptInput = document.getElementById('promptInput');
   const elapsedEl = document.getElementById('elapsed');
   const chatThread = document.getElementById('chatThread');
+  const emptyState = document.getElementById('emptyState');
+  const greetingText = document.getElementById('greetingText');
   let running = false;
   let timer = null;
 
-  function appendUserMessage(text, files) {
+  function setGreeting() {
+    const h = new Date().getHours();
+    greetingText.textContent = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  }
+
+  function updateEmptyState() {
+    emptyState.classList.toggle('hidden', chatThread.children.length > 0);
+  }
+
+  setGreeting();
+  updateEmptyState();
+
+  // ---------- Chat history (persisted) ----------
+  const CHATS_KEY = 'workbench_chats';
+  let chats = JSON.parse(localStorage.getItem(CHATS_KEY) || '[]');
+  let currentChatId = null;
+  const historyList = document.getElementById('historyList');
+
+  function saveChats() { localStorage.setItem(CHATS_KEY, JSON.stringify(chats)); }
+
+  function renderHistory() {
+    historyList.innerHTML = chats.slice().reverse().map(c => `
+      <button data-id="${c.id}" class="history-item block w-full text-left px-2.5 py-2 rounded-md text-[12.5px] truncate transition-colors ${c.id === currentChatId ? 'bg-indigo-400/10 text-indigo-200' : 'text-ink-500 hover:bg-base-900 hover:text-ink-300'}">${c.title}</button>
+    `).join('') || `<div class="text-[11px] text-ink-700 px-2.5 py-2">No past chats yet</div>`;
+    historyList.querySelectorAll('.history-item').forEach(btn => {
+      btn.addEventListener('click', () => openChat(btn.dataset.id));
+    });
+  }
+
+  function openChat(id) {
+    const chat = chats.find(c => c.id === id);
+    if (!chat) return;
+    clearInterval(timer);
+    running = false;
+    currentChatId = id;
+    chatThread.innerHTML = '';
+    chat.messages.forEach(m => {
+      if (m.role === 'user') appendUserMessage(m.text, (m.files || []).map(name => ({ name })), false);
+      else appendReply(m.text, false);
+    });
+    resetEvidence();
+    renderStages(-1, 0);
+    updateEmptyState();
+    renderHistory();
+  }
+
+  renderHistory();
+
+  function appendUserMessage(text, files, persist = true) {
     const div = document.createElement('div');
     div.className = 'msg-in';
     const fileChips = files.map(f => `
@@ -460,15 +521,27 @@
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">${fileIconPath(f.name)}</svg>
         ${f.name}
       </div>`).join('');
+    const shown = text || 'Analyse the attached file.';
     div.innerHTML = `
       <div class="text-ink-500 text-[11px] mb-1">You</div>
-      <div class="bg-base-900 border border-base-800 rounded-lg rounded-tl-sm px-3 py-2 text-ink-100 card-shadow">${text || 'Analyse the attached file.'}</div>
+      <div class="bg-base-900 border border-base-800 rounded-lg rounded-tl-sm px-3 py-2 text-ink-100 card-shadow">${shown}</div>
       ${fileChips}`;
     chatThread.appendChild(div);
     chatThread.scrollTop = chatThread.scrollHeight;
+    updateEmptyState();
+
+    if (persist) {
+      if (!currentChatId) {
+        currentChatId = String(Date.now());
+        chats.push({ id: currentChatId, title: shown.slice(0, 34), messages: [] });
+      }
+      chats.find(c => c.id === currentChatId).messages.push({ role: 'user', text: shown, files: files.map(f => f.name) });
+      saveChats();
+      renderHistory();
+    }
   }
 
-  function appendReply(text) {
+  function appendReply(text, persist = true) {
     const div = document.createElement('div');
     div.className = 'msg-in';
     div.innerHTML = `
@@ -476,6 +549,11 @@
       <div class="bg-base-850 border border-base-800 rounded-lg rounded-tl-sm px-3 py-2 text-ink-300 card-shadow">${text}</div>`;
     chatThread.appendChild(div);
     chatThread.scrollTop = chatThread.scrollHeight;
+
+    if (persist && currentChatId) {
+      chats.find(c => c.id === currentChatId).messages.push({ role: 'assistant', text });
+      saveChats();
+    }
   }
 
   runBtn.addEventListener('click', () => {
@@ -522,6 +600,29 @@
 
     script.forEach((fn, i) => setTimeout(fn, 500 + i * 850));
   });
+
+  function startNewChat() {
+    clearInterval(timer);
+    running = false;
+    currentChatId = null;
+    chatThread.innerHTML = '';
+    stagedFiles = [];
+    renderStaged();
+    resetEvidence();
+    renderStages(-1, 0);
+    netLog.innerHTML = '';
+    localCount = 0; blockedCount = 0;
+    localCountEl.textContent = '0'; blockedCountEl.textContent = '0';
+    elapsedEl.classList.remove('text-signal-warn', 'text-signal-ok');
+    elapsedEl.classList.add('text-ink-600');
+    elapsedEl.textContent = 'idle';
+    setGreeting();
+    updateEmptyState();
+    renderHistory();
+  }
+
+  document.getElementById('newChatBtn').addEventListener('click', startNewChat);
+  document.getElementById('sidebarNewChat').addEventListener('click', startNewChat);
 
   promptInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
