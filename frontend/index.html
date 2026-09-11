@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Workbench — Offline Inspection Assistant</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          base: {
+            950: '#0a0a0d',
+            900: '#121216',
+            850: '#17171d',
+            800: '#1e1e25',
+            700: '#2b2b34',
+            600: '#3f3f4a',
+          },
+          ink: {
+            100: '#f4f4f6',
+            300: '#c9c9d2',
+            500: '#8d8d9a',
+            600: '#6c6c78',
+          },
+          signal: {
+            ok: '#34d399',
+            warn: '#fbbf24',
+            danger: '#fb7185',
+          }
+        },
+        fontFamily: {
+          sans: ['-apple-system','BlinkMacSystemFont','Segoe UI','Inter','sans-serif'],
+          mono: ['ui-monospace','SFMono-Regular','Menlo','Consolas','monospace'],
+        }
+      }
+    }
+  }
+</script>
+<style>
+  * { scrollbar-width: thin; scrollbar-color: #2b2b34 transparent; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-thumb { background: #2b2b34; border-radius: 3px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+
+  html, body { height: 100%; }
+
+  body {
+    background-color: #0a0a0d;
+    background-image:
+      radial-gradient(760px circle at 8% -8%, rgba(129,140,248,0.16), transparent 60%),
+      radial-gradient(680px circle at 96% 8%, rgba(251,113,133,0.10), transparent 55%),
+      radial-gradient(900px circle at 50% 115%, rgba(52,211,153,0.10), transparent 55%);
+    background-attachment: fixed;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .5s cubic-bezier(.16,1,.3,1), transform .5s cubic-bezier(.16,1,.3,1);
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  .pulse-dot { animation: pulseDot 2s ease-in-out infinite; }
+  @keyframes pulseDot {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(52,211,153,.4); }
+    50% { box-shadow: 0 0 0 5px rgba(52,211,153,0); }
+  }
+
+  .stage-active .stage-dot { animation: pulseWarn 1.4s ease-in-out infinite; }
+  @keyframes pulseWarn {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(251,191,36,.45); }
+    50% { box-shadow: 0 0 0 6px rgba(251,191,36,0); }
+  }
+
+  .fade-swap { animation: fadeSwap .35s cubic-bezier(.16,1,.3,1); }
+  @keyframes fadeSwap {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .log-line { animation: logIn .3s ease-out; }
+  @keyframes logIn {
+    from { opacity: 0; transform: translateX(-4px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .msg-in { animation: msgIn .35s cubic-bezier(.16,1,.3,1); }
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .chip-in { animation: chipIn .25s cubic-bezier(.34,1.4,.64,1); }
+  @keyframes chipIn {
+    from { opacity: 0; transform: scale(.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .btn-lift { transition: transform .15s ease, background-color .15s ease, border-color .15s ease, box-shadow .15s ease; }
+  .btn-lift:hover { transform: translateY(-1px); }
+  .btn-lift:active { transform: translateY(0); }
+
+  .send-btn {
+    background: linear-gradient(135deg, #818cf8, #a78bfa);
+    box-shadow: 0 2px 14px -2px rgba(129,140,248,.55);
+  }
+  .send-btn:hover { box-shadow: 0 4px 18px -2px rgba(129,140,248,.7); }
+
+  .card-shadow { box-shadow: 0 1px 0 rgba(255,255,255,.02) inset, 0 8px 24px -12px rgba(0,0,0,.5); }
+
+  .drop-active {
+    border-color: #818cf8 !important;
+    background-color: rgba(129,140,248,0.06);
+  }
+
+  .drop-overlay {
+    animation: fadeSwap .18s ease-out;
+  }
+</style>
+</head>
+<body class="text-ink-100 font-sans antialiased h-screen flex flex-col overflow-hidden">
+
+  <header class="flex items-center justify-between px-5 py-3 border-b border-base-800 shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, rgba(129,140,248,.18), rgba(167,139,250,.10)); border: 1px solid rgba(129,140,248,.35);">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c7d2fe" stroke-width="1.6">
+          <rect x="3" y="3" width="7" height="7" rx="1.4"/><rect x="14" y="3" width="7" height="7" rx="1.4"/>
+          <rect x="3" y="14" width="7" height="7" rx="1.4"/><rect x="14" y="14" width="7" height="7" rx="1.4"/>
+        </svg>
+      </div>
+      <div>
+        <div class="text-sm font-semibold tracking-tight text-ink-100">Workbench</div>
+        <div class="text-[11px] text-ink-600 leading-none">Offline Inspection Assistant</div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2 text-[12px] px-3 py-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/[0.06]">
+      <span class="w-1.5 h-1.5 rounded-full bg-signal-ok pulse-dot"></span>
+      <span class="text-emerald-300">Air-gapped</span>
+      <span class="text-ink-600">·</span>
+      <span class="text-ink-500">0 external calls</span>
+    </div>
+  </header>
+
+  <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
+
+    <!-- PROMPT / CONVERSATION -->
+    <section id="requestPanel" class="relative reveal lg:col-span-3 flex flex-col border-b lg:border-b-0 lg:border-r border-base-800 min-h-[260px]">
+      <div class="h-[2px] w-full shrink-0" style="background: linear-gradient(90deg, #818cf8, transparent);"></div>
+      <div class="px-4 py-3 border-b border-base-800 flex items-center justify-between shrink-0">
+        <span class="text-[13px] font-medium text-ink-200 flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+          Request
+        </span>
+        <span class="text-[11px] text-ink-600 font-mono">run #204-B</span>
+      </div>
+
+      <div id="chatThread" class="flex-1 overflow-y-auto px-4 py-4 space-y-4 text-[13px] leading-relaxed">
+        <div class="msg-in">
+          <div class="text-ink-500 text-[11px] mb-1">You</div>
+          <div class="bg-base-900 border border-base-800 rounded-lg rounded-tl-sm px-3 py-2 text-ink-100 card-shadow">
+            Read the attached inspection report for Line 204-B and draft an approval note.
+          </div>
+          <div class="mt-2 inline-flex items-center gap-1.5 text-[11px] text-indigo-200 border border-indigo-400/25 bg-indigo-400/[0.06] rounded-md px-2 py-1">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+            inspection_204B.pdf
+          </div>
+        </div>
+
+        <div class="msg-in">
+          <div class="text-ink-500 text-[11px] mb-1">Workbench</div>
+          <div class="bg-base-850 border border-base-800 rounded-lg rounded-tl-sm px-3 py-2 text-ink-300 card-shadow">
+            Plan: read document → build evidence → check against OISD-STD-116 → find governing clause → draft note → verify.
+          </div>
+        </div>
+      </div>
+
+      <div id="stagedRow" class="hidden px-3 pt-2 flex flex-wrap gap-1.5 shrink-0"></div>
+
+      <div class="p-3 border-t border-base-800 shrink-0">
+        <div class="flex items-end gap-2 bg-base-900 border border-base-700 rounded-lg px-2 py-2 focus-within:border-indigo-400/50 transition-colors">
+          <input id="fileInput" type="file" multiple class="hidden" />
+          <button id="attachBtn" class="shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-ink-500 hover:text-indigo-300 hover:bg-indigo-400/10 transition-colors">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          </button>
+          <textarea id="promptInput" rows="1" placeholder="Describe the task, or drop a file…" class="flex-1 bg-transparent resize-none outline-none text-[13px] text-ink-100 placeholder:text-ink-600 py-1"></textarea>
+          <button id="runBtn" class="btn-lift send-btn shrink-0 w-7 h-7 rounded-md text-white flex items-center justify-center">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="dropOverlay" class="hidden absolute inset-0 z-10 items-center justify-center border-2 border-dashed border-indigo-400 rounded-none bg-base-950/85 backdrop-blur-sm drop-overlay">
+        <div class="text-center">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="1.5" class="mx-auto mb-2"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+          <div class="text-[13px] text-indigo-200">Drop to attach</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AGENT ACTIVITY -->
+    <section class="reveal lg:col-span-5 flex flex-col border-b lg:border-b-0 lg:border-r border-base-800 min-h-[320px]">
+      <div class="h-[2px] w-full shrink-0" style="background: linear-gradient(90deg, #fbbf24, transparent);"></div>
+      <div class="px-4 py-3 border-b border-base-800 flex items-center justify-between shrink-0">
+        <span class="text-[13px] font-medium text-ink-200 flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+          Agent Activity
+        </span>
+        <span id="elapsed" class="text-[11px] text-ink-600 font-mono">idle</span>
+      </div>
+
+      <div id="stageList" class="flex-1 overflow-y-auto px-4 py-4">
+        <!-- stages injected by JS -->
+      </div>
+    </section>
+
+    <!-- EVIDENCE VIEWER -->
+    <section class="reveal lg:col-span-4 flex flex-col min-h-[320px]">
+      <div class="h-[2px] w-full shrink-0" style="background: linear-gradient(90deg, #fb7185, transparent);"></div>
+      <div class="px-4 py-3 border-b border-base-800 flex items-center justify-between shrink-0">
+        <span class="text-[13px] font-medium text-ink-200 flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+          Evidence
+        </span>
+        <span id="evidenceStatus" class="text-[11px] text-ink-600 font-mono">—</span>
+      </div>
+
+      <div id="evidenceBody" class="flex-1 overflow-y-auto px-4 py-4 text-[13px]">
+        <div class="text-ink-600 text-[12px] leading-relaxed">
+          Evidence will appear here once a reading is extracted — every value shown is linked back to its exact source cell.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- NETWORK MONITOR -->
+  <footer class="border-t border-base-800 shrink-0">
+    <button id="netToggle" class="w-full flex items-center justify-between px-5 py-2 text-[12px] hover:bg-base-900 transition-colors">
+      <div class="flex items-center gap-4 font-mono">
+        <span class="flex items-center gap-1.5 text-ink-300">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          Network
+        </span>
+        <span class="text-ink-600">external calls <span class="text-signal-ok">0</span></span>
+        <span class="text-ink-600">local calls <span id="localCount" class="text-ink-300">0</span></span>
+        <span class="text-ink-600">blocked <span id="blockedCount" class="text-ink-300">0</span></span>
+      </div>
+      <svg id="netChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="text-ink-500 transition-transform">
+        <path d="M18 15l-6-6-6 6"/>
+      </svg>
+    </button>
+    <div id="netLog" class="hidden border-t border-base-800 bg-base-900 max-h-32 overflow-y-auto px-5 py-2 font-mono text-[11px] space-y-1"></div>
+  </footer>
+
+<script>
+  document.querySelectorAll('.reveal').forEach((el, i) => {
+    setTimeout(() => el.classList.add('in'), 80 + i * 90);
+  });
+
+  // ---------- File upload ----------
+  const fileInput = document.getElementById('fileInput');
+  const attachBtn = document.getElementById('attachBtn');
+  const stagedRow = document.getElementById('stagedRow');
+  const requestPanel = document.getElementById('requestPanel');
+  const dropOverlay = document.getElementById('dropOverlay');
+  let stagedFiles = [];
+
+  function formatBytes(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  function fileIconPath(name) {
+    const ext = name.split('.').pop().toLowerCase();
+    if (['png','jpg','jpeg','gif','webp'].includes(ext)) {
+      return '<circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/><rect x="3" y="3" width="18" height="18" rx="2"/>';
+    }
+    return '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>';
+  }
+
+  function renderStaged() {
+    if (stagedFiles.length === 0) {
+      stagedRow.classList.add('hidden');
+      stagedRow.innerHTML = '';
+      return;
+    }
+    stagedRow.classList.remove('hidden');
+    stagedRow.innerHTML = stagedFiles.map((f, i) => `
+      <div class="chip-in inline-flex items-center gap-1.5 text-[11px] text-indigo-200 border border-indigo-400/25 bg-indigo-400/[0.08] rounded-md pl-2 pr-1 py-1">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">${fileIconPath(f.name)}</svg>
+        <span class="max-w-[110px] truncate">${f.name}</span>
+        <span class="text-indigo-400/60">${formatBytes(f.size)}</span>
+        <button data-i="${i}" class="removeChip w-4 h-4 rounded flex items-center justify-center text-indigo-300/70 hover:text-white hover:bg-indigo-400/30">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>`).join('');
+    stagedRow.querySelectorAll('.removeChip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        stagedFiles.splice(Number(btn.dataset.i), 1);
+        renderStaged();
+      });
+    });
+  }
+
+  function addFiles(fileListLike) {
+    Array.from(fileListLike).forEach(f => stagedFiles.push(f));
+    renderStaged();
+  }
+
+  attachBtn.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', (e) => { addFiles(e.target.files); fileInput.value = ''; });
+
+  let dragDepth = 0;
+  requestPanel.addEventListener('dragenter', (e) => {
+    e.preventDefault();
+    dragDepth++;
+    dropOverlay.classList.remove('hidden');
+    dropOverlay.classList.add('flex');
+  });
+  requestPanel.addEventListener('dragover', (e) => e.preventDefault());
+  requestPanel.addEventListener('dragleave', () => {
+    dragDepth = Math.max(0, dragDepth - 1);
+    if (dragDepth === 0) { dropOverlay.classList.add('hidden'); dropOverlay.classList.remove('flex'); }
+  });
+  requestPanel.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dragDepth = 0;
+    dropOverlay.classList.add('hidden');
+    dropOverlay.classList.remove('flex');
+    if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
+  });
+
+  // ---------- Agent stages ----------
+  const stages = [
+    { name: 'Document Reader',     detail: 'OCR scan → text and tables (PaddleOCR-VL)' },
+    { name: 'Evidence Builder',    detail: 'Table rows → checked evidence records' },
+    { name: 'Rules Engine',        detail: 'Deterministic check — code, no model' },
+    { name: 'Standards Researcher',detail: 'Governing clause lookup' },
+    { name: 'Report Writer',       detail: 'Drafting approval note (.docx)' },
+    { name: 'QA Checker',          detail: 'Structure, semantics, presentation checks' },
+  ];
+
+  const stageList = document.getElementById('stageList');
+
+  function renderStages(activeIndex, doneUpTo) {
+    stageList.innerHTML = stages.map((s, i) => {
+      const isDone = i < doneUpTo;
+      const isActive = i === activeIndex;
+      const isLast = i === stages.length - 1;
+      let dotClass = 'bg-base-700 border border-base-600';
+      let textClass = 'text-ink-600';
+      if (isDone) { dotClass = 'bg-signal-ok'; textClass = 'text-ink-300'; }
+      if (isActive) { dotClass = 'bg-signal-warn stage-dot'; textClass = 'text-ink-100'; }
+
+      return `
+        <div class="flex gap-3 ${isActive ? 'stage-active' : ''}">
+          <div class="flex flex-col items-center">
+            <div class="w-2.5 h-2.5 rounded-full ${dotClass} mt-1 shrink-0"></div>
+            ${!isLast ? `<div class="w-px flex-1 ${isDone ? 'bg-signal-ok/40' : 'bg-base-800'} my-1"></div>` : ''}
+          </div>
+          <div class="pb-6">
+            <div class="text-[13px] font-medium ${textClass}">${s.name}</div>
+            <div class="text-[12px] text-ink-600 mt-0.5">${s.detail}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  renderStages(-1, 0);
+
+  // ---------- Network log ----------
+  const netLog = document.getElementById('netLog');
+  const localCountEl = document.getElementById('localCount');
+  const blockedCountEl = document.getElementById('blockedCount');
+  let localCount = 0, blockedCount = 0;
+
+  function logNet(text, kind) {
+    const t = new Date().toLocaleTimeString('en-GB', { hour12: false });
+    const color = kind === 'blocked' ? 'text-signal-danger' : 'text-signal-ok';
+    const tag = kind === 'blocked' ? 'BLOCKED' : 'LOCAL';
+    const line = document.createElement('div');
+    line.className = 'log-line flex gap-2';
+    line.innerHTML = `<span class="text-ink-700">${t}</span><span class="${color}">${tag}</span><span class="text-ink-500">${text}</span>`;
+    netLog.appendChild(line);
+    netLog.scrollTop = netLog.scrollHeight;
+    if (kind === 'blocked') { blockedCount++; blockedCountEl.textContent = blockedCount; }
+    else { localCount++; localCountEl.textContent = localCount; }
+  }
+
+  document.getElementById('netToggle').addEventListener('click', () => {
+    netLog.classList.toggle('hidden');
+    document.getElementById('netChevron').style.transform =
+      netLog.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+  });
+
+  // ---------- Evidence ----------
+  const evidenceBody = document.getElementById('evidenceBody');
+  const evidenceStatus = document.getElementById('evidenceStatus');
+
+  function showEvidence() {
+    evidenceStatus.textContent = 'CML-014';
+    evidenceStatus.className = 'text-[11px] font-mono text-signal-danger';
+    evidenceBody.innerHTML = `
+      <div class="fade-swap space-y-4">
+        <div class="border border-base-800 rounded-lg bg-base-900 p-3 card-shadow">
+          <div class="text-[11px] text-ink-600 mb-2 font-mono">Table 3 · Row 7 · Column "Reading (mm)"</div>
+          <div class="grid grid-cols-4 gap-px bg-base-800 rounded overflow-hidden text-[11px] font-mono">
+            <div class="bg-base-850 px-2 py-1.5 text-ink-500">CML</div>
+            <div class="bg-base-850 px-2 py-1.5 text-ink-500">Prev.</div>
+            <div class="bg-base-850 px-2 py-1.5 text-ink-500">Reading</div>
+            <div class="bg-base-850 px-2 py-1.5 text-ink-500">Min.</div>
+            <div class="bg-base-900 px-2 py-1.5 text-ink-300">012</div>
+            <div class="bg-base-900 px-2 py-1.5 text-ink-300">5.1</div>
+            <div class="bg-base-900 px-2 py-1.5 text-ink-300">5.0</div>
+            <div class="bg-base-900 px-2 py-1.5 text-ink-300">4.5</div>
+            <div class="bg-base-900 px-2 py-1.5 text-ink-300">014</div>
+            <div class="bg-base-900 px-2 py-1.5 text-ink-300">4.9</div>
+            <div class="bg-rose-400/15 px-2 py-1.5 text-rose-300 font-semibold ring-1 ring-inset ring-rose-400/40">4.2</div>
+            <div class="bg-base-900 px-2 py-1.5 text-ink-300">4.5</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 text-[12px]">
+          <div class="flex justify-between"><span class="text-ink-600">Document</span><span class="text-ink-300 font-mono">inspection_204B.pdf, p. 4</span></div>
+          <div class="flex justify-between"><span class="text-ink-600">Equipment</span><span class="text-ink-300 font-mono">CML-014 · Line 204-B</span></div>
+          <div class="flex justify-between"><span class="text-ink-600">Parsed value</span><span class="text-ink-100 font-mono">4.2 mm</span></div>
+          <div class="flex justify-between"><span class="text-ink-600">Applicable minimum</span><span class="text-ink-100 font-mono">4.5 mm</span></div>
+          <div class="flex justify-between"><span class="text-ink-600">Source of minimum</span><span class="text-ink-300 font-mono">OISD-STD-116 §7.3</span></div>
+        </div>
+
+        <div class="border border-rose-400/30 bg-rose-400/10 rounded-lg px-3 py-2.5 flex items-start gap-2 card-shadow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="text-rose-300 mt-0.5 shrink-0"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+          <div class="text-[12px] text-ink-200"><span class="font-medium text-rose-300">Escalate</span> — reading below minimum thickness. Sent for engineer review.</div>
+        </div>
+      </div>`;
+  }
+
+  function resetEvidence() {
+    evidenceStatus.textContent = '—';
+    evidenceStatus.className = 'text-[11px] text-ink-600 font-mono';
+    evidenceBody.innerHTML = `<div class="text-ink-600 text-[12px] leading-relaxed">Evidence will appear here once a reading is extracted — every value shown is linked back to its exact source cell.</div>`;
+  }
+
+  // ---------- Run ----------
+  const runBtn = document.getElementById('runBtn');
+  const promptInput = document.getElementById('promptInput');
+  const elapsedEl = document.getElementById('elapsed');
+  const chatThread = document.getElementById('chatThread');
+  let running = false;
+  let timer = null;
+
+  function appendUserMessage(text, files) {
+    const div = document.createElement('div');
+    div.className = 'msg-in';
+    const fileChips = files.map(f => `
+      <div class="mt-2 inline-flex items-center gap-1.5 text-[11px] text-indigo-200 border border-indigo-400/25 bg-indigo-400/[0.06] rounded-md px-2 py-1 mr-1.5">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">${fileIconPath(f.name)}</svg>
+        ${f.name}
+      </div>`).join('');
+    div.innerHTML = `
+      <div class="text-ink-500 text-[11px] mb-1">You</div>
+      <div class="bg-base-900 border border-base-800 rounded-lg rounded-tl-sm px-3 py-2 text-ink-100 card-shadow">${text || 'Analyse the attached file.'}</div>
+      ${fileChips}`;
+    chatThread.appendChild(div);
+    chatThread.scrollTop = chatThread.scrollHeight;
+  }
+
+  function appendReply(text) {
+    const div = document.createElement('div');
+    div.className = 'msg-in';
+    div.innerHTML = `
+      <div class="text-ink-500 text-[11px] mb-1">Workbench</div>
+      <div class="bg-base-850 border border-base-800 rounded-lg rounded-tl-sm px-3 py-2 text-ink-300 card-shadow">${text}</div>`;
+    chatThread.appendChild(div);
+    chatThread.scrollTop = chatThread.scrollHeight;
+  }
+
+  runBtn.addEventListener('click', () => {
+    if (running) return;
+    running = true;
+
+    const text = promptInput.value.trim();
+    appendUserMessage(text, stagedFiles);
+    promptInput.value = '';
+    stagedFiles = [];
+    renderStaged();
+
+    resetEvidence();
+    renderStages(-1, 0);
+    netLog.innerHTML = '';
+    localCount = 0; blockedCount = 0;
+    localCountEl.textContent = '0'; blockedCountEl.textContent = '0';
+
+    let start = Date.now();
+    elapsedEl.classList.remove('text-ink-600', 'text-signal-ok');
+    elapsedEl.classList.add('text-signal-warn');
+    timer = setInterval(() => {
+      elapsedEl.textContent = ((Date.now() - start) / 1000).toFixed(1) + 's';
+    }, 100);
+
+    const script = [
+      () => { renderStages(0, 0); logNet('llama.cpp :8080 — vision model warm start', 'local'); },
+      () => { logNet('PaddleOCR-VL :8090 — page 4 extracted', 'local'); },
+      () => { renderStages(1, 1); logNet('evidence-builder — 12 rows checked', 'local'); },
+      () => { renderStages(2, 2); logNet('rules-engine — deterministic check, no model', 'local'); },
+      () => { logNet('canary — outbound DNS attempt', 'blocked'); },
+      () => { renderStages(3, 3); logNet('library-lookup :9002 — OISD-STD-116 §7.3', 'local'); },
+      () => { renderStages(4, 4); logNet('docgen :9003 — approval_note_204B.docx', 'local'); },
+      () => { renderStages(5, 5); showEvidence(); },
+      () => {
+        renderStages(6, 6);
+        clearInterval(timer);
+        elapsedEl.classList.remove('text-signal-warn');
+        elapsedEl.classList.add('text-signal-ok');
+        appendReply('Draft ready — one reading (CML-014) is below minimum and has been sent for review. Every value in the draft links to its source.');
+        running = false;
+      },
+    ];
+
+    script.forEach((fn, i) => setTimeout(fn, 500 + i * 850));
+  });
+
+  promptInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      runBtn.click();
+    }
+  });
+</script>
+</body>
+</html>
