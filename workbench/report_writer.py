@@ -282,13 +282,19 @@ def render(ev: EvidenceSet, decision: Decision, summary: Summary, run: dict, out
 
     # Appendix B -- verification record
     _heading(doc, "Appendix B — Verification record")
-    kv = _kv(doc, [
+    rows = [
         ("Run ID", run["run_id"]), ("Evidence set SHA-256", ev.sha256()[:16] + "…"),
         ("Extraction", ev.extraction), ("Rule set", decision.ruleset_version),
         ("Summary", summary.written_by), ("Procedural graph", run["graph"]),
-    ])
-    if ev.extraction == STAND_IN:
-        _shade(kv.rows[1].cells[1], "FDEBC8")
+    ]
+    if ev.problems:
+        rows.insert(3, ("Reading problems", "; ".join(ev.problems)))
+    kv = _kv(doc, rows)
+    # Amber until a second reader cross-checks the values: the stand-in, and a single model's reading.
+    if ev.extraction == STAND_IN or "single reader" in ev.extraction:
+        _shade(kv.rows[2].cells[1], "FDEBC8")
+    if ev.problems:
+        _shade(kv.rows[3].cells[1], "FDEBC8")
     _para(doc, "Path taken through the procedural graph", size=8.5, bold=True, colour=NAVY, after=2)
     t = _table(doc, [38, 44, 16, 18, 62], ["Stage", "Agent", "Attempt", "Result", "Note"])
     for s in run["trace"]:

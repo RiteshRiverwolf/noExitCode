@@ -77,6 +77,7 @@ class EvidenceSet:
     readings: list[Reading]
     extraction: str
     source_files: dict[str, str] = field(default_factory=dict)  # file -> sha256
+    problems: list[str] = field(default_factory=list)            # validation problems from reading the scan
 
     def to_json(self) -> str:
         return json.dumps(asdict(self), indent=2, ensure_ascii=False,

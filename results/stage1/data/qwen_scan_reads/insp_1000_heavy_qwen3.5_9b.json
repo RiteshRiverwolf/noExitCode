@@ -1,0 +1,121 @@
+{
+  "result": {
+    "fields": 56,
+    "errors": 7,
+    "critical_fields": 28,
+    "critical_errors": 4,
+    "error_list": [
+      "F-01.ref_clause: got 'OISD-STD-118 Cl. 6,5' want 'OISD-STD-118 Cl. 6.5'",
+      "F-02.ref_clause: got 'API 510 Cl. 5,4,2' want 'API 510 Cl. 5.4.2'",
+      "F-03.ref_clause: got 'OISD-STD-132 Cl. 5,6' want 'OISD-STD-132 Cl. 5.6'",
+      "CML-02.previous_mm: got '12,66' want 12.66",
+      "CML-03.previous_mm: got '13,48' want 13.48",
+      "CML-04.previous_mm: got '12,94' want 12.94",
+      "CML-05.previous_mm: got '12,57' want 12.57"
+    ],
+    "critical_list": [
+      "CML-02.previous_mm: got '12,66' want 12.66",
+      "CML-03.previous_mm: got '13,48' want 13.48",
+      "CML-04.previous_mm: got '12,94' want 12.94",
+      "CML-05.previous_mm: got '12,57' want 12.57"
+    ],
+    "doc": "insp_1000",
+    "model": "qwen3.5:9b",
+    "quality": "heavy",
+    "pages": 1,
+    "seconds": 22.2,
+    "eval_tokens": 1107,
+    "prompt_tokens": 4156
+  },
+  "extracted": {
+    "report_no": "MRPL/INSP/2026/2783",
+    "equipment_tag": "E-4461",
+    "equipment_name": "Feed/Effluent Exchanger",
+    "unit": "VDU-II — Vacuum Distillation Unit",
+    "plant": "Mangalore Refinery — Phase II",
+    "inspection_type": "Internal Visual Inspection",
+    "inspection_date": "17-01-2026",
+    "next_due_date": "17-01-2028",
+    "inspector_name": "K. Subramanian",
+    "inspector_cert": "API-510-22171",
+    "design_pressure_barg": "3.5",
+    "design_temp_c": "120",
+    "service_fluid": "Hydrogen Rich Gas",
+    "year_built": "1996",
+    "corrosion_rate_mm_yr": "0.251 mm/yr",
+    "remaining_life_yr": "16.5 years",
+    "findings": [
+      {
+        "finding_id": "F-01",
+        "location": "Bottom head — knuckle",
+        "description": "Support saddle anchor bolt at south-west location found loose. No structural distress observed.",
+        "severity": "Observation",
+        "ref_clause": "OISD-STD-118 Cl. 6,5",
+        "recommendation": "Re-torque anchor bolt to specification and record in maintenance log."
+      },
+      {
+        "finding_id": "F-02",
+        "location": "Nozzle N-3 neck",
+        "description": "Pitting observed on internal shell surface at liquid/vapour interface. Maximum pit depth measured 1.8 mm against nominal 12 mm wall.",
+        "severity": "Major",
+        "ref_clause": "API 510 Cl. 5,4,2",
+        "recommendation": "Perform pit depth mapping. Evaluate fitness-for-service per API 579 Level 1 before returning to service."
+      },
+      {
+        "finding_id": "F-03",
+        "location": "Shell course 2 — 270°",
+        "description": "Pressure relief valve PSV-tag due for overhaul; last test certificate exceeds the 36 month interval permitted for this service category.",
+        "severity": "Major",
+        "ref_clause": "OISD-STD-132 Cl. 5,6",
+        "recommendation": "Withdraw PSV for bench testing and overhaul prior to unit restart. Fit tested spare."
+      }
+    ],
+    "readings": [
+      {
+        "cml_id": "CML-01",
+        "location": "Shell course 2 — 180°",
+        "nominal_mm": "14.0",
+        "previous_mm": "13.57",
+        "current_mm": "13.12",
+        "min_required_mm": "8.2",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-02",
+        "location": "Shell course 1 — 0°",
+        "nominal_mm": "14.0",
+        "previous_mm": "12,66",
+        "current_mm": "12.33",
+        "min_required_mm": "8.2",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-03",
+        "location": "Bottom head — knuckle",
+        "nominal_mm": "14.0",
+        "previous_mm": "13,48",
+        "current_mm": "13.12",
+        "min_required_mm": "8.2",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-04",
+        "location": "Nozzle N-1 neck",
+        "nominal_mm": "14.0",
+        "previous_mm": "12,94",
+        "current_mm": "12.60",
+        "min_required_mm": "8.2",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-05",
+        "location": "Shell course 2 — 270°",
+        "nominal_mm": "14.0",
+        "previous_mm": "12,57",
+        "current_mm": "12.43",
+        "min_required_mm": "8.2",
+        "status": "Acceptable"
+      }
+    ]
+  }
+}

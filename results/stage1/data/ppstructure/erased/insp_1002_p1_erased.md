@@ -1,0 +1,38 @@
+# MANGALORE REFINERY AND PETROCHEMICALS LIMITED  Inspection Department | Static Equipment Inspection Record 
+
+## EQUIPMENT INSPECTION REPORT 
+
+<div style="text-align: center;">1. EQUIPMENT IDENTIFICATION </div>
+
+
+
+<div style="text-align: center;"><html><body><table border="1"><tbody><tr><td>Report No.</td><td>MRPL/INSP/2026/8013</td><td>Eguipment Tag</td><td>R-2247</td></tr><tr><td>Equipment</td><td>Reactor</td><td>Unit</td><td>CCR— Continuous Catalytic Reformer</td></tr><tr><td>Plant</td><td>Mangalore Refinery —Aromatic Complex</td><td>Service Fluid</td><td>Heavy Vacuum Gas Oil</td></tr><tr><td>Year Built</td><td>2006</td><td>Inspection Type</td><td>External Visual Inspection</td></tr><tr><td>Design Pressure</td><td>15.6 barg</td><td>Design Temperature</td><td>380℃</td></tr><tr><td>Inspection Date</td><td>03-02-2026</td><td>Next Due Date</td><td>03-02-2028</td></tr><tr><td>Inspected By</td><td>S. Prakash Nayak</td><td>Certification No.</td><td>API-510-61284</td></tr></tbody></table></body></html></div>
+
+
+<div style="text-align: center;">2. INSPECTIONFINDINGS </div>
+
+
+
+<div style="text-align: center;"><html><body><table border="1"><tbody><tr><td>Ref</td><td>Location</td><td>Obseryation</td><td>Severity</td><td>Ref, Clause</td></tr><tr><td>F-01</td><td>Shellcourse2—270°</td><td>Insulation cladding damaged and displaced over a 2 m section of the yapour line, No metal loss detected at this stage.</td><td>Minor</td><td>OISD-STD-118CL62</td></tr><tr><td>F-02</td><td>Shell course 2— 270</td><td>Localised external corrosion obseryed on shell plate adiacent to support saddle. Coating breakdown over approximately 0.4 m2 with visible rust scaling.</td><td>Minor</td><td>OISD-STD-116CL73</td></tr><tr><td>F-03</td><td>Shell course 1 — 0°</td><td>Support saddleanchor bolt at south-west location found loose,No structural distress obseryed.</td><td>Observation</td><td>OISD-STD-118 CL6.5</td></tr><tr><td>F-04</td><td>Nozzle N-1 neck</td><td>Ladder and platform grating adjacent to manway found corroded with section loss exceeding 20% at two treads.</td><td>Minor</td><td>OISD-STD-118 CL8.4</td></tr><tr><td>F-05</td><td>Shell course 1 — 0°</td><td>Minor external scaling and paint chalking on head section, No measurable metal loss.</td><td>Observation</td><td>OISD-STD-116CL7.3</td></tr></tbody></table></body></html></div>
+
+
+<div style="text-align: center;">3. ULTRASONIC THICKNESS SURVEY (mm)</div>
+
+
+
+<div style="text-align: center;"><html><body><table border="1"><tbody><tr><td>CML CML-01</td><td>Location</td><td>Nominal</td><td>Previous</td><td>Current</td><td>Min. Req. 12.7</td><td>Status Acceptable</td></tr><tr><td>Shell course 2— 180°</td><td>20.0</td><td>19.67</td><td>19.28</td><td></td><td></td><td></td></tr><tr><td>CML-02</td><td>Top head — crown</td><td>20.0</td><td>18.48</td><td>18.05</td><td>12.7</td><td>Acceptable</td></tr><tr><td>CML-03</td><td>Shell course 2— 270°</td><td>20.0</td><td>18.75</td><td>12.3</td><td>12.7</td><td>BELOWMIN</td></tr><tr><td>CML-04</td><td>Bottom head — knuckle</td><td>20.0</td><td>18.80</td><td>18.47</td><td>12.7</td><td>Acceptable</td></tr><tr><td colspan="6">Corrosion Rate</td></tr></tbody></table></body></html></div>
+
+
+<div style="text-align: center;">4. RECOMMENDATIONS </div>
+
+
+
+<div style="text-align: center;"><html><body><table border="1"><tbody><tr><td>Ref</td><td>Recommended Action</td></tr><tr><td>F-01</td><td>Reinstate cladding and seal joints to prevent water ingress.</td></tr><tr><td>F-02</td><td>Remove loose scale, surface prepare to St-3 and re-apply approved coating system during next available shutdown.</td></tr><tr><td>F-03</td><td>Re-torque anchor bolt to specification and record in maintenance log.</td></tr><tr><td>F-04</td><td>Replace affected grating sections before next internal inspection.</td></tr><tr><td>F-05</td><td>Include in routine painting schedule. No immediate action required.</td></tr></tbody></table></body></html></div>
+
+
+### 5. INSPECTOR'S SUMMARY 
+
+External Visual Inspection of R-2247 (Reactor) completed on 03-02-2026. 5 finding(s) recorded. Findings and UT survey results are tabulated above. Refer Sections 2 and 3 for details. Calculated corrosion rate 0.077 mm/yr, estimated remaining life 0.0 years.
+
+
+<div style="text-align: center;"><html><body><table border="1"><tr><td>Inspected By</td><td>Reviewed By</td><td>Approved By</td></tr><tr><td>S. Prakash Nayak API-510-61284</td><td>Sr. Inspection Engineer</td><td>Head— Inspection Dept.</td></tr><tr><td></td><td></td><td></td></tr></table></body></html></div>

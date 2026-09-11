@@ -1,0 +1,127 @@
+{
+  "result": {
+    "fields": 66,
+    "errors": 2,
+    "critical_fields": 30,
+    "critical_errors": 0,
+    "error_list": [
+      "F-03.ref_clause: got 'OISD-ST-D-118 Cl. 6.5' want 'OISD-STD-118 Cl. 6.5'",
+      "F-04.ref_clause: got 'OISD-ST-D-118 Cl. 6.2' want 'OISD-STD-118 Cl. 6.2'"
+    ],
+    "critical_list": [],
+    "doc": "insp_1011",
+    "model": "qwen3.5:9b",
+    "quality": "medium",
+    "pages": 1,
+    "seconds": 25.6,
+    "eval_tokens": 1325,
+    "prompt_tokens": 4156
+  },
+  "extracted": {
+    "report_no": "MRPL/INSP/2026/2491",
+    "equipment_tag": "E-1524",
+    "equipment_name": "Shell & Tube Heat Exchanger",
+    "unit": "SRU-III - Sulphur Recovery Unit",
+    "plant": "Mangalore Refinery — Phase III",
+    "inspection_type": "On-Stream Inspection",
+    "inspection_date": "15-02-2026",
+    "next_due_date": "14-02-2029",
+    "inspector_name": "M. Fernandes",
+    "inspector_cert": "API-510-43298",
+    "design_pressure_barg": "15.5 barg",
+    "design_temp_c": "120 °C",
+    "service_fluid": "Sour Gas (H2S bearing)",
+    "year_built": "2011",
+    "corrosion_rate_mm_yr": "0.098 mm/yr",
+    "remaining_life_yr": "39.6 years",
+    "findings": [
+      {
+        "finding_id": "F-01",
+        "location": "Shell course 1 — 90°",
+        "description": "Minor external scaling and paint chalking on head section. No measurable metal loss.",
+        "severity": "Observation",
+        "ref_clause": "OISD-STD-116 Cl. 7.3",
+        "recommendation": "Include in routine painting schedule. No immediate action required."
+      },
+      {
+        "finding_id": "F-02",
+        "location": "Nozzle N-3 neck",
+        "description": "Ladder and platform grating adjacent to manway found corroded with section loss exceeding 20% at two treads.",
+        "severity": "Minor",
+        "ref_clause": "OISD-STD-118 Cl. 8.4",
+        "recommendation": "Replace affected grating sections before next internal inspection."
+      },
+      {
+        "finding_id": "F-03",
+        "location": "Top head — crown",
+        "description": "Support saddle anchor bolt at south-west location found loose. No structural distress observed.",
+        "severity": "Observation",
+        "ref_clause": "OISD-ST-D-118 Cl. 6.5",
+        "recommendation": "Re-torque anchor bolt to specification and record in maintenance log."
+      },
+      {
+        "finding_id": "F-04",
+        "location": "Nozzle N-1 neck",
+        "description": "Insulation cladding damaged and displaced over a 2 m section of the vapour line. No metal loss detected at this stage.",
+        "severity": "Minor",
+        "ref_clause": "OISD-ST-D-118 Cl. 6.2",
+        "recommendation": "Reinstate cladding and seal joints to prevent water ingress."
+      },
+      {
+        "finding_id": "F-05",
+        "location": "Shell course 1 — 90°",
+        "description": "Localised external corrosion observed on shell plate adjacent to support saddle. Coating breakdown over approximately 0.4 m² with visible rust scaling.",
+        "severity": "Minor",
+        "ref_clause": "OISD-STD-116 Cl. 7.3",
+        "recommendation": "Remove loose scale, surface prepare to St-3 and re-apply approved coating system during next available shutdown."
+      }
+    ],
+    "readings": [
+      {
+        "cml_id": "CML-01",
+        "location": "Bottom head — knuckle",
+        "nominal_mm": "14.0",
+        "previous_mm": "12.94",
+        "current_mm": "12.62",
+        "min_required_mm": "8.1",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-02",
+        "location": "Nozzle N-3 neck",
+        "nominal_mm": "14.0",
+        "previous_mm": "12.95",
+        "current_mm": "12.83",
+        "min_required_mm": "8.1",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-03",
+        "location": "Shell course 1 — 0°",
+        "nominal_mm": "14.0",
+        "previous_mm": "12.65",
+        "current_mm": "12.56",
+        "min_required_mm": "8.1",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-04",
+        "location": "Shell course 2 — 270°",
+        "nominal_mm": "14.0",
+        "previous_mm": "12.30",
+        "current_mm": "12.16",
+        "min_required_mm": "8.1",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-05",
+        "location": "Shell course 1 — 90°",
+        "nominal_mm": "14.0",
+        "previous_mm": "12.41",
+        "current_mm": "11.98",
+        "min_required_mm": "8.1",
+        "status": "Acceptable"
+      }
+    ]
+  }
+}

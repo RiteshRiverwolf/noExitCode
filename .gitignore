@@ -1,5 +1,6 @@
-# Python
+# Python (.venv-ocr holds PaddleOCR, kept apart from the workbench's dependencies)
 .venv/
+.venv-ocr/
 __pycache__/
 *.pyc
 
@@ -30,6 +31,18 @@ logs/
 
 # Per-job run folders written by the workbench (evidence, decisions, notes).
 runs/
+
+# Model weights served by llama-server outside Ollama (GGUF files, tens of GB).
+models/
+
+# Working output of the stage 1 test scripts (kept results live in results/stage1/data/).
+bench/stage1/extract_results/
+bench/stage1/writer_results/
+bench/stage1/occlusion/
+bench/stage1/partial/
+bench/stage1/ppstructure/
+bench/stage1/paddle_results/
+bench/stage1/*.log
 
 # OS / editor
 .DS_Store

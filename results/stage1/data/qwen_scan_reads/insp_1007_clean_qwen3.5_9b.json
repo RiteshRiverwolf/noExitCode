@@ -1,0 +1,117 @@
+{
+  "result": {
+    "fields": 61,
+    "errors": 0,
+    "critical_fields": 33,
+    "critical_errors": 0,
+    "error_list": [],
+    "critical_list": [],
+    "doc": "insp_1007",
+    "model": "qwen3.5:9b",
+    "quality": "clean",
+    "pages": 1,
+    "seconds": 40.0,
+    "eval_tokens": 1200,
+    "prompt_tokens": 4104
+  },
+  "extracted": {
+    "report_no": "MRPL/INSP/2026/8266",
+    "equipment_tag": "V-3859",
+    "equipment_name": "Separator Vessel",
+    "unit": "FCCU — Fluidised Catalytic Cracking Unit",
+    "plant": "Mangalore Refinery — Phase III",
+    "inspection_type": "On-Stream Inspection",
+    "inspection_date": "03-07-2026",
+    "next_due_date": "03-07-2027",
+    "inspector_name": "N. Kulkarni",
+    "inspector_cert": "API-510-47194",
+    "design_pressure_barg": "32.8 barg",
+    "design_temp_c": "250 °C",
+    "service_fluid": "Sour Water",
+    "year_built": "1999",
+    "corrosion_rate_mm_yr": "0.068 mm/yr",
+    "remaining_life_yr": "55.6 years",
+    "findings": [
+      {
+        "finding_id": "F-01",
+        "location": "Shell course 2 — 270°",
+        "description": "Ladder and platform grating adjacent to manway found corroded with section loss exceeding 20% at two treads.",
+        "severity": "Minor",
+        "ref_clause": "OISD-STD-118 Cl. 8.4",
+        "recommendation": "Replace affected grating sections before next internal inspection."
+      },
+      {
+        "finding_id": "F-02",
+        "location": "Shell/head weld seam",
+        "description": "Localised external corrosion observed on shell plate adjacent to support saddle. Coating breakdown over approximately 0.4 m² with visible rust scaling.",
+        "severity": "Minor",
+        "ref_clause": "OISD-STD-116 Cl. 7.3",
+        "recommendation": "Remove loose scale, surface prepare to St-3 and re-apply approved coating system during next available shutdown."
+      },
+      {
+        "finding_id": "F-03",
+        "location": "Shell course 1 — 0°",
+        "description": "Support saddle anchor bolt at south-west location found loose. No structural distress observed.",
+        "severity": "Observation",
+        "ref_clause": "OISD-STD-118 Cl. 6.5",
+        "recommendation": "Re-torque anchor bolt to specification and record in maintenance log."
+      }
+    ],
+    "readings": [
+      {
+        "cml_id": "CML-01",
+        "location": "Shell course 1 — 0°",
+        "nominal_mm": "16.0",
+        "previous_mm": "15.61",
+        "current_mm": "15.19",
+        "min_required_mm": "10.2",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-02",
+        "location": "Shell/head weld seam",
+        "nominal_mm": "16.0",
+        "previous_mm": "14.79",
+        "current_mm": "14.38",
+        "min_required_mm": "10.2",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-03",
+        "location": "Shell course 2 — 270°",
+        "nominal_mm": "16.0",
+        "previous_mm": "14.29",
+        "current_mm": "13.98",
+        "min_required_mm": "10.2",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-04",
+        "location": "Shell course 1 — 90°",
+        "nominal_mm": "16.0",
+        "previous_mm": "15.33",
+        "current_mm": "15.19",
+        "min_required_mm": "10.2",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-05",
+        "location": "Bottom head — knuckle",
+        "nominal_mm": "16.0",
+        "previous_mm": "15.76",
+        "current_mm": "15.48",
+        "min_required_mm": "10.2",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-06",
+        "location": "Nozzle N-3 neck",
+        "nominal_mm": "16.0",
+        "previous_mm": "15.65",
+        "current_mm": "15.21",
+        "min_required_mm": "10.2",
+        "status": "Acceptable"
+      }
+    ]
+  }
+}

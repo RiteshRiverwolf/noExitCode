@@ -1,0 +1,105 @@
+{
+  "cells": {
+    "CML-03.current_mm": "",
+    "CML-01.min_required_mm": "",
+    "F-02.severity": ""
+  },
+  "extracted": {
+    "report_no": "MRPL/INSP/2026/8013",
+    "equipment_tag": "R-2247",
+    "equipment_name": "Reactor",
+    "unit": "CCR - Continuous Catalytic Reformer",
+    "plant": "Mangalore Refinery — Aromatic Complex",
+    "inspection_type": "External Visual Inspection",
+    "inspection_date": "03-02-2026",
+    "next_due_date": "03-02-2028",
+    "inspector_name": "S. Prakash Nayak",
+    "inspector_cert": "API-510-61284",
+    "design_pressure_barg": "15.6",
+    "design_temp_c": "380",
+    "service_fluid": "Heavy Vacuum Gas Oil",
+    "year_built": "2006",
+    "corrosion_rate_mm_yr": "0.077 mm/yr",
+    "remaining_life_yr": "0.0 years",
+    "findings": [
+      {
+        "finding_id": "F-01",
+        "location": "Shell course 2 — 270°",
+        "description": "Insulation cladding damaged and displaced over a 2 m section of the vapour line. No metal loss detected at this stage.",
+        "severity": "Minor",
+        "ref_clause": "OISD-STD-118 Cl. 6.2",
+        "recommendation": "Reinstate cladding and seal joints to prevent water ingress."
+      },
+      {
+        "finding_id": "F-02",
+        "location": "Shell course 2 — 270°",
+        "description": "Localised external corrosion observed on shell plate adjacent to support saddle. Coating breakdown over approximately 0.4 m² with visible rust scaling.",
+        "severity": "",
+        "ref_clause": "OISD-STD-116 Cl. 7.3",
+        "recommendation": "Remove loose scale, surface prepare to St-3 and re-apply approved coating system during next available shutdown."
+      },
+      {
+        "finding_id": "F-03",
+        "location": "Shell course 1 — 0°",
+        "description": "Support saddle anchor bolt at south-west location found loose. No structural distress observed.",
+        "severity": "Observation",
+        "ref_clause": "OISD-STD-118 Cl. 6.5",
+        "recommendation": "Re-torque anchor bolt to specification and record in maintenance log."
+      },
+      {
+        "finding_id": "F-04",
+        "location": "Nozzle N-1 neck",
+        "description": "Ladder and platform grating adjacent to manway found corroded with section loss exceeding 20% at two treads.",
+        "severity": "Minor",
+        "ref_clause": "OISD-STD-118 Cl. 8.4",
+        "recommendation": "Replace affected grating sections before next internal inspection."
+      },
+      {
+        "finding_id": "F-05",
+        "location": "Shell course 1 — 0°",
+        "description": "Minor external scaling and paint chalking on head section. No measurable metal loss.",
+        "severity": "Observation",
+        "ref_clause": "OISD-STD-116 Cl. 7.3",
+        "recommendation": "Include in routine painting schedule. No immediate action required."
+      }
+    ],
+    "readings": [
+      {
+        "cml_id": "CML-01",
+        "location": "Shell course 2 — 180°",
+        "nominal_mm": "20.0",
+        "previous_mm": "19.67",
+        "current_mm": "19.28",
+        "min_required_mm": "",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-02",
+        "location": "Top head — crown",
+        "nominal_mm": "20.0",
+        "previous_mm": "18.48",
+        "current_mm": "18.05",
+        "min_required_mm": "12.7",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-03",
+        "location": "Shell course 2 — 270°",
+        "nominal_mm": "20.0",
+        "previous_mm": "18.75",
+        "current_mm": "",
+        "min_required_mm": "12.7",
+        "status": "BELOW MIN"
+      },
+      {
+        "cml_id": "CML-04",
+        "location": "Bottom head — knuckle",
+        "nominal_mm": "20.0",
+        "previous_mm": "18.80",
+        "current_mm": "18.47",
+        "min_required_mm": "12.7",
+        "status": "Acceptable"
+      }
+    ]
+  }
+}
