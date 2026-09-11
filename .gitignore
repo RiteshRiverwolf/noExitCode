@@ -24,6 +24,10 @@ stage0/output/
 results/stage0/pcap*/*.pcap
 !results/stage0/pcap*/*_dropped.pcap
 
+# Runtime logs of our MCP servers (tool-call audit logs, the approval-page
+# URL with its secret token).
+logs/
+
 # OS / editor
 .DS_Store
 Thumbs.db
