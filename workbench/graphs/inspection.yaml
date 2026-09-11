@@ -1,0 +1,99 @@
+# Procedural graph for the inspection workflow.
+#
+# Adapted from "Procedural Graphs: Self-Evolving Execution Structures for LLM
+# Agents" (Lu, Chen, Wu, Arik; arXiv 2609.09153, Sep 2026). Nodes are stages;
+# edges use the paper's relations and carry condition / guidance / pitfalls.
+#
+# The same file does two jobs (ARCHITECTURE section 3.3):
+#   - the runner ENFORCES it: only these transitions are allowed, each stage
+#     has a retry budget, and failures follow their `when: fail` edge;
+#   - the guidance and pitfalls on a stage's edges are INSERTED into the
+#     model's instructions when that stage uses a model.
+#
+# `when:` is our execution key (ok / fail / exhausted); the relation keeps the
+# paper's vocabulary. (Not `on:` -- YAML 1.1 reads a bare `on` key as True.) Self-evolution (a refiner proposing edits from failed
+# vs successful runs) is designed but off: an edit is committed only if it
+# passes the validation set AND an engineer approves it (Management of Change).
+
+graph: inspection
+version: 1
+description: Scanned inspection report -> checked evidence -> rules -> draft approval note
+start: read_document
+step_budget: 20
+
+nodes:
+  read_document:  {kind: stage, agent: Document Reader,           max_attempts: 2}
+  build_evidence: {kind: stage, agent: Evidence Builder,          max_attempts: 2}
+  apply_rules:    {kind: stage, agent: Rules Engine (code),       max_attempts: 1}
+  write_summary:  {kind: stage, agent: Report Writer (model),     max_attempts: 1}
+  render_note:    {kind: stage, agent: Report Writer (template),  max_attempts: 3}
+  qa_check:       {kind: check, agent: QA Checker,                max_attempts: 1}
+  needs_review:   {kind: end,   agent: Person}
+  done:           {kind: end,   agent: Person}
+
+edges:
+  - from: read_document
+    relation: PROVIDES_INPUT_FOR
+    to: build_evidence
+    when: ok
+    condition: text and tables read from every page
+    guidance: keep the original page images; every value must be traceable to one
+    pitfalls: a clean-looking summary paragraph is not the data -- the tables are
+
+  - from: build_evidence
+    relation: PROVIDES_INPUT_FOR
+    to: apply_rules
+    when: ok
+    condition: every CML row has a current thickness and a minimum required value
+    guidance: one evidence record per table row, including the thickness survey
+    pitfalls: a routine-sounding summary does not mean no escalation; check every reading against its minimum
+
+  - from: build_evidence
+    relation: CONVERGES_TO
+    to: needs_review
+    when: exhausted
+    condition: a critical value is still missing after re-reading
+    guidance: show the reviewer the cell crop; never guess a digit
+
+  - from: apply_rules
+    relation: LEADS_TO
+    to: write_summary
+    when: ok
+    condition: every rule evaluated, outcome recorded
+    guidance: state the rules' outcome and its reason exactly as the rules engine gave it
+    pitfalls: do not add a conclusion of your own; "no trigger" is not "fit for service"
+
+  - from: write_summary
+    relation: PROVIDES_INPUT_FOR
+    to: render_note
+    when: ok
+    condition: the summary passed the number, wording and outcome checks
+    guidance: numbers come only from the evidence; name every CML below its minimum
+    pitfalls: never write "approved" or "fit for service"; never round a reading
+
+  - from: render_note
+    relation: LEADS_TO
+    to: qa_check
+    when: ok
+    condition: the note file was written
+
+  - from: qa_check
+    relation: LEADS_TO
+    to: done
+    when: ok
+    condition: every value read back from the file matches its evidence record
+
+  - from: qa_check
+    relation: TRIGGERS
+    to: render_note
+    when: fail
+    condition: a value read back from the file differs from the evidence
+    guidance: re-render from the same evidence records
+    pitfalls: never edit a value in the file to make it match -- fix the rendering
+
+  - from: render_note
+    relation: CONVERGES_TO
+    to: needs_review
+    when: exhausted
+    condition: the note still fails its checks after the retry budget
+    guidance: hand the draft and the failed checks to a person

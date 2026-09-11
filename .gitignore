@@ -28,6 +28,9 @@ results/stage0/pcap*/*.pcap
 # URL with its secret token).
 logs/
 
+# Per-job run folders written by the workbench (evidence, decisions, notes).
+runs/
+
 # OS / editor
 .DS_Store
 Thumbs.db
