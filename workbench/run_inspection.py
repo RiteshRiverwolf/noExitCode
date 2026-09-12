@@ -24,7 +24,7 @@ from pathlib import Path
 
 from mcp_servers.audit import LOG_DIR, AuditLog
 from workbench import evidence as evidence_mod
-from workbench import prose, report_writer, rules
+from workbench import pagesource, prose, report_writer, rules, scan_reader
 from workbench.procedural_graph import Graph, StageResult, run
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -43,6 +43,13 @@ def main() -> int:
     ap.add_argument("--model", default=prose.DEFAULT_MODEL)
     ap.add_argument("--no-model", action="store_true", help="write the summary with code only")
     ap.add_argument("--scan-quality", default="medium", choices=["clean", "light", "medium", "heavy"])
+    ap.add_argument("--image", nargs="+", type=Path, default=None,
+                    help="read these files instead of the corpus: one PDF, or the page "
+                         "images of one report in order")
+    ap.add_argument("--source", default="scan", choices=["scan", "pdf", "stand-in"],
+                    help="scan: read the scan images by OCR (default); pdf: read the "
+                         "born-digital PDF's own text; stand-in: the old ground-truth "
+                         "shortcut, kept only for comparison")
     ap.add_argument("--inject-fault", choices=["render"], default=None)
     args = ap.parse_args()
 
@@ -57,20 +64,54 @@ def main() -> int:
     note_path = folder / "05_render_note" / f"approval_note_{args.doc_id}.docx"
 
     def read_document(c):
-        idx = {e["doc_id"]: e for e in json.loads((evidence_mod.CORPUS / "index.json").read_text())}
-        pages = idx[c["doc_id"]]["scans"][args.scan_quality]
-        _save(folder / "01_read_document", "pages.json", pages)
-        return StageResult("ok", f"{len(pages)} page image(s); OCR not built yet -- stand-in below")
+        """The document itself: its own text where it has one, OCR where it does not."""
+        if args.source == "stand-in":
+            idx = {e["doc_id"]: e for e in json.loads((evidence_mod.CORPUS / "index.json").read_text())}
+            pages = idx[c["doc_id"]]["scans"][args.scan_quality]
+            _save(folder / "01_read_document", "pages.json", pages)
+            return StageResult("ok", f"{len(pages)} page image(s); evidence comes from the "
+                                     f"ground-truth stand-in, not from these")
+        work = folder / "01_read_document" / "pages"
+        if args.image:
+            pages = (pagesource.open_document(args.image[0], work)
+                     if args.image[0].suffix.lower() == ".pdf"
+                     else pagesource.open_pages(args.image, work))
+        else:
+            quality = None if args.source == "pdf" else args.scan_quality
+            pages = scan_reader.corpus_pages(c["doc_id"], quality, work)
+        c["pages"] = pages
+        _save(folder / "01_read_document", "pages.json",
+              [{"page": p.number, "file": p.source_file, "read_by": p.read_by,
+                "texts": len(p.items), "size": [p.width, p.height]} for p in pages])
+        empty = [p.number for p in pages if not p.items]
+        if empty:
+            return StageResult("fail", f"no text read from page(s) {empty}")
+        how = ", ".join(sorted({p.read_by.split(" (")[0] for p in pages}))
+        return StageResult("ok", f"{len(pages)} page(s), {sum(len(p.items) for p in pages)} "
+                                 f"pieces of text, read by {how}")
 
     def build_evidence(c):
-        ev = evidence_mod.from_ground_truth(c["doc_id"], args.scan_quality)
-        gaps = [r.cml_id for r in ev.readings if r.current_mm is None or r.min_required_mm is None]
+        """Evidence records, and the decision to stop when a critical value is doubtful."""
+        if args.source == "stand-in":
+            ev = evidence_mod.from_ground_truth(c["doc_id"], args.scan_quality)
+        else:
+            ev = scan_reader.build_evidence(c["doc_id"], c["pages"],
+                                            crop_dir=folder / "02_build_evidence" / "crops")
         c["evidence"] = ev
         _save(folder / "02_build_evidence", "evidence.json", ev.to_json())
-        if gaps:
-            return StageResult("fail", f"missing values for {', '.join(gaps)}")
-        return StageResult("ok", f"{len(ev.findings)} findings, {len(ev.readings)} readings "
-                                 f"(ground-truth stand-in)")
+        if ev.problems:
+            _save(folder / "02_build_evidence", "problems.json",
+                  {"problems": ev.problems, "notes": ev.notes})
+        # Only a doubt about a value a decision is made from stops the run. A
+        # low-confidence location is recorded on the note; a thickness that may
+        # be missing a digit is not something to carry forward.
+        doubtful = [r.cml_id for r in ev.readings if r.review_status == "needs review"]
+        if doubtful:
+            return StageResult("fail", f"thickness values need a person: {', '.join(doubtful)}")
+        if not ev.readings or not ev.findings:
+            return StageResult("fail", "the findings or thickness table was not read")
+        extra = f" ({len(ev.problems)} problem(s) recorded)" if ev.problems else ""
+        return StageResult("ok", f"{len(ev.findings)} findings, {len(ev.readings)} readings{extra}")
 
     def apply_rules(c):
         d = rules.evaluate(c["evidence"])
