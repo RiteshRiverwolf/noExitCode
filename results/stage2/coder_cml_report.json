@@ -1,0 +1,20 @@
+{
+  "task_id": "cml_report",
+  "accepted": true,
+  "model": "granite4.1:8b",
+  "attempts": [
+    {
+      "n": 1,
+      "code": "def below_minimum(readings):\n    result = []\n    for reading in readings:\n        current_mm = reading.get('current_mm')\n        min_required_mm = reading.get('min_required_mm')\n        if current_mm is None or min_required_mm is None:\n            continue\n        if current_mm < min_required_mm:\n            shortfall = round(min_required_mm - current_mm, 2)\n            result.append({\n                \"report\": reading[\"report\"],\n                \"cml_id\": reading[\"cml_id\"],\n                \"shortfall_mm\": shortfall\n            })\n    result.sort(key=lambda x: (-x[\"shortfall_mm\"], x[\"cml_id\"]))\n    return result",
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "all 7 acceptance tests passed\n",
+      "stderr": "",
+      "seconds": 0.29,
+      "isolation": "docker (no network, read-only root, capped memory and time)"
+    }
+  ],
+  "code": "def below_minimum(readings):\n    result = []\n    for reading in readings:\n        current_mm = reading.get('current_mm')\n        min_required_mm = reading.get('min_required_mm')\n        if current_mm is None or min_required_mm is None:\n            continue\n        if current_mm < min_required_mm:\n            shortfall = round(min_required_mm - current_mm, 2)\n            result.append({\n                \"report\": reading[\"report\"],\n                \"cml_id\": reading[\"cml_id\"],\n                \"shortfall_mm\": shortfall\n            })\n    result.sort(key=lambda x: (-x[\"shortfall_mm\"], x[\"cml_id\"]))\n    return result",
+  "isolation": "docker (no network, read-only root, capped memory and time)",
+  "seconds": 7.2
+}

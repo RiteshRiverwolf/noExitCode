@@ -115,7 +115,61 @@ every near match is recorded in the evidence set's `notes` ("read
 way.** `l2.32` stays unreadable and goes to review. Accepting a damaged
 template word cannot change a number; accepting a damaged value can.
 
-## 7. Left to do
+## 7. The sandbox and the Coder agent (R4)
+
+`workbench/sandbox.py` runs untrusted code in Docker with `--network none`, a
+read-only root filesystem, one writable working directory, a memory cap, a
+process cap and a wall-clock limit. `--self-test` demonstrates the isolation
+rather than asserting it:
+
+| Probe | Result |
+|---|---|
+| TCP to 8.8.8.8:53 | refused (OSError) |
+| DNS lookup | failed (gaierror) |
+| HTTP to example.com | failed (URLError) |
+| write to `/etc` | refused (OSError); the working directory is writable |
+| `while True: pass` | killed at the time limit |
+
+Each probe takes under a second. `--network none` gives the container no
+interface at all — not a blocked one, an absent one — which is a stronger and
+much simpler claim than a firewall rule. Without Docker the runner falls back
+to a plain subprocess and labels the result
+`subprocess (NO ISOLATION -- development fallback, not evidence)`; the label
+travels with every result so a run can never be mistaken for evidence.
+
+**The rule that makes "verified" mean something:** the model's own tests do not
+count. A task is accepted only when the acceptance tests *we* wrote pass, and
+the model never sees their source — only the failure messages, the way a
+developer sees CI output. Same shape as the summary writer: the model
+produces, code decides.
+
+Results with granite4.1:8b (`workbench/coding_tasks.py`, full records in
+`results/stage2/coder_*.json`):
+
+| Task | Attempts | Time |
+|---|---|---|
+| `cml_report` — every CML below its minimum across many reports, ordered by shortfall | passed 1st | 7.2 s |
+| `remaining_life` — corrosion rate and remaining life, with the grew-since-last-reading case | passed 1st | 3.9 s |
+| `next_due_date` — API 510 half-life interval, rounded down, with 29 February | **failed, then passed on the 2nd** | 49.6 s |
+
+The third task is the demo. The first attempt **hung and was killed by the
+sandbox's time limit**; the model was told only "your program did not finish
+within the time limit — it is probably waiting or looping forever", and its
+next attempt passed all the tests. That is the self-healing loop and the
+isolation working together, on camera, in under a minute.
+
+The acceptance tests were themselves checked before any model saw them: a
+reference solution passes each, and a deliberately wrong one (`<=` instead of
+`<`, missing values treated as zero, rounding to nearest instead of down,
+`date.replace` on 29 February) fails each, for the stated reason. Tests that
+have not been shown to fail are not tests.
+
+`cml_report` is also the answer to the "code as a tool" question: no single
+inspection report says which readings across a whole set are worst, and that is
+miserable for a language model to work out in its head. Ten lines of Python,
+run in the sandbox, produce the answer and can be shown, re-run and checked.
+
+## 8. Left to do
 
 - The corpus has one two-page report. The reader is built for any length and
   joins rows across pages by CML id, but nothing has tested a table split over

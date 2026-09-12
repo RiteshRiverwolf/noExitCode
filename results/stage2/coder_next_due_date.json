@@ -1,0 +1,30 @@
+{
+  "task_id": "next_due_date",
+  "accepted": true,
+  "model": "granite4.1:8b",
+  "attempts": [
+    {
+      "n": 1,
+      "code": "from datetime import datetime\nimport calendar\n\ndef next_due_date(last_inspection: str, remaining_life_yr: float, max_interval_yr: int) -> str:\n    if max_interval_yr < 1:\n        raise ValueError(\"max_interval_yr must be at least 1 year.\")\n    \n    try:\n        last_inspection_dt = datetime.strptime(last_inspection, \"%d-%m-%Y\")\n    except ValueError:\n        raise ValueError(\"last_inspection must be a valid date in 'DD-MM-YYYY' format.\")\n    \n    if remaining_life_yr <= 0:\n        return last_inspection\n    \n    half_life = remaining_life_yr / 2\n    interval = min(half_life, max_interval_yr)\n    interval = max(1, int(interval))  # Ensure at least 1 year\n    \n    try:\n        next_due_dt = last_inspection_dt.replace(year=last_inspection_dt.year + interval)\n    except ValueError:  # Handle February 29 edge case\n        # Find the last valid day of the month for the target date\n        while True:\n            try:\n                next_due_dt = last_inspection_dt.replace(year=last_inspection_dt.year + interval, \n                                                         day=last_inspection_dt.day, \n                                                         month=last_inspection_dt.month)\n                break\n            except ValueError:\n                # Move to the previous month and set day to the last day of that month\n                if last_inspection_dt.month == 2 and last_inspection_dt.day == 29:\n                    next_due_dt = datetime(last_inspection_dt.year + interval, 2, 28)\n                else:\n                    last_inspection_dt = last_inspection_dt.replace(day=calendar.monthrange(last_inspection_dt.year + interval, \n                                                                                          last_inspection_dt.month)[1])\n    \n    return next_due_dt.strftime(\"%d-%m-%Y\")",
+      "passed": false,
+      "exit_code": -1,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 35.02,
+      "isolation": "docker (no network, read-only root, capped memory and time)"
+    },
+    {
+      "n": 2,
+      "code": "from datetime import datetime, timedelta\nimport calendar\n\ndef next_due_date(last_inspection: str, remaining_life_yr: float, max_interval_yr: int) -> str:\n    if max_interval_yr < 1:\n        raise ValueError(\"max_interval_yr must be at least 1 year.\")\n    \n    try:\n        last_inspection_dt = datetime.strptime(last_inspection, \"%d-%m-%Y\")\n    except ValueError:\n        raise ValueError(\"last_inspection must be a valid date in 'DD-MM-YYYY' format.\")\n    \n    if remaining_life_yr <= 0:\n        return last_inspection\n    \n    half_life = remaining_life_yr / 2\n    interval_years = min(half_life, max_interval_yr)\n    interval_years = max(1, int(interval_years))  # Ensure at least 1 year\n    \n    try:\n        next_due_dt = last_inspection_dt.replace(year=last_inspection_dt.year + interval_years)\n    except ValueError:  # Handle February 29 edge case\n        # Calculate the last valid day of the month for the target date\n        if calendar.isleap(last_inspection_dt.year + interval_years) and \\\n           last_inspection_dt.month == 2 and last_inspection_dt.day == 29:\n            next_due_dt = datetime(last_inspection_dt.year + interval_years, 2, 28)\n        else:\n            # Find the last day of the month for the target date\n            _, num_days = calendar.monthrange(last_inspection_dt.year + interval_years, \n                                              last_inspection_dt.month)\n            next_due_dt = datetime(last_inspection_dt.year + interval_years, \n                                   last_inspection_dt.month, num_days)\n    \n    return next_due_dt.strftime(\"%d-%m-%Y\")",
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "all acceptance tests passed\n",
+      "stderr": "",
+      "seconds": 0.34,
+      "isolation": "docker (no network, read-only root, capped memory and time)"
+    }
+  ],
+  "code": "from datetime import datetime, timedelta\nimport calendar\n\ndef next_due_date(last_inspection: str, remaining_life_yr: float, max_interval_yr: int) -> str:\n    if max_interval_yr < 1:\n        raise ValueError(\"max_interval_yr must be at least 1 year.\")\n    \n    try:\n        last_inspection_dt = datetime.strptime(last_inspection, \"%d-%m-%Y\")\n    except ValueError:\n        raise ValueError(\"last_inspection must be a valid date in 'DD-MM-YYYY' format.\")\n    \n    if remaining_life_yr <= 0:\n        return last_inspection\n    \n    half_life = remaining_life_yr / 2\n    interval_years = min(half_life, max_interval_yr)\n    interval_years = max(1, int(interval_years))  # Ensure at least 1 year\n    \n    try:\n        next_due_dt = last_inspection_dt.replace(year=last_inspection_dt.year + interval_years)\n    except ValueError:  # Handle February 29 edge case\n        # Calculate the last valid day of the month for the target date\n        if calendar.isleap(last_inspection_dt.year + interval_years) and \\\n           last_inspection_dt.month == 2 and last_inspection_dt.day == 29:\n            next_due_dt = datetime(last_inspection_dt.year + interval_years, 2, 28)\n        else:\n            # Find the last day of the month for the target date\n            _, num_days = calendar.monthrange(last_inspection_dt.year + interval_years, \n                                              last_inspection_dt.month)\n            next_due_dt = datetime(last_inspection_dt.year + interval_years, \n                                   last_inspection_dt.month, num_days)\n    \n    return next_due_dt.strftime(\"%d-%m-%Y\")",
+  "isolation": "docker (no network, read-only root, capped memory and time)",
+  "seconds": 49.6
+}

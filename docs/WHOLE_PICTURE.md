@@ -94,7 +94,7 @@ human-in-the-loop gates, and the Sentinel proving nothing left the machine.
 | **Reader** | Scans, PDFs, drawings, photos → evidence records with page, box and crop (R5) | OCR, vision, file read | **Proven** (§4) |
 | **Librarian** | Searches manuals, SOPs, past correspondence; answers with citations or says it doesn't know | knowledge base, file read | Proposed (§7) |
 | **Analyst** | Engineering calculations with steps shown — **and writes throwaway code to compute an answer when that is the right tool** | sandbox, spreadsheet, evidence store | Proposed (§6) |
-| **Coder** | Writes code, runs it in the sandbox, reads the test output, fixes, repeats (R4) | sandbox only — no network, no host filesystem | Proposed |
+| **Coder** | Writes code, runs it in the sandbox, reads the test output, fixes, repeats (R4) | sandbox only — no network, no host filesystem | **Proven** (§5a) |
 | **Author** | Real deliverables: Word notes, Excel workbooks, PowerPoint decks | docgen MCP, file write | **Built** for Word |
 | **Verifier** | Independently checks each deliverable against the evidence, reads the finished file back, returns failed work | file read, evidence store | **Built** |
 | **Sentinel** | Watches every tool call and outbound packet, produces the R6 proof, holds the approval gates | audit log, network monitor | Partly proven |
@@ -175,13 +175,30 @@ One workbench, several missions, one visible agent timeline.
 | 6 | **Author** writes the Word note; **Verifier** reads the finished file back and checks every number | **Built** |
 | 7 | **We break it on purpose.** A wrong number is injected; the Verifier catches it; the work is sent back and repaired | **Built** — our best 30 seconds |
 | 8 | **"Which clause covers external corrosion?"** The Librarian answers with the clause cited and its page — and refuses when it isn't in the library | Not built (§7) |
-| 9 | **"Which units are closest to their limit across all these reports?"** No such report exists, so the **Analyst writes code on the spot**, runs it in the sandbox, and answers from the result | Not built (§6) |
-| 10 | **"Write a tool that flags every CML below minimum."** The Coder writes it, runs the tests, reads failures, fixes it (R4) | Not built |
+| 9 | **"Which readings are worst across all these reports?"** No single report says, so the **Coder writes the code on the spot**, runs it sealed, and answers from the result | **Built** — passes first try, 7 s |
+| 10 | **"When is the next inspection due?"** The first program hangs; the sandbox kills it at the time limit; the model reads that and fixes it (R4) | **Built** — fails then passes, 50 s |
 | 11 | **"Why this model?"** The Router shows the model per step and the reason, logged (R2) | Not built |
 | 12 | **"Tell the approvals channel it's ready."** A Teams/Slack notification goes out with *no confidential content* — the Sentinel shows exactly what left (§8) | Not built |
 
-Rows 1–7 are real today: document in, checked deliverable out, with the machine
-catching its own mistake.
+Rows 1–7 and 9–10 are real today: document in, checked deliverable out, with the
+machine catching its own mistake — and code written, sealed, run and verified.
+
+### 5a. The sandbox is demonstrable, not asserted
+
+`python -m workbench.sandbox --self-test` shows code inside the sandbox trying
+to reach the network and failing three ways (TCP refused, DNS failed, HTTP
+failed), failing to write outside its working directory, and being killed when
+it loops forever. Each probe takes under a second. `--network none` gives the
+container **no interface at all** — not a blocked one, an absent one — which is
+both stronger and easier to explain than a firewall rule.
+
+**And the model does not mark its own homework.** A coding task is accepted
+only when the acceptance tests *we* wrote pass; the model sees the failure
+messages, never the test source. That is the same division as the summary
+writer — the model produces, code decides — and it is what makes "verified in a
+sandbox" a claim rather than a phrase. The tests themselves were checked by
+running a reference solution and a deliberately wrong one against each, so we
+know they bite.
 
 ---
 
@@ -347,7 +364,7 @@ is never blocked on the migration.
 | Req | Where it stands | What we say |
 |---|---|---|
 | R2 model routing | Designed, not built | The Router applies measured qualification results; the test is what admits a model. See the correction below. |
-| R4 sandbox | Not started | The verify-and-repair loop already proven on the note is the same shape — and §6 makes it a daily tool, not a demo trick. |
+| R4 sandbox | **Done** — sealed sandbox, three tasks, one of them repairing itself after the time limit killed it | The model does not mark its own homework: our held-out tests decide. §6 makes it a daily tool rather than a demo trick. |
 | R5 multimodal | Reader built and measured | Done for printed scans and tables. Engineering drawings stay a stretch goal, never described as finished. |
 | R6 network proof | Container-level proof done; panel hard-coded | The capture is real evidence; the panel must read from it. Connectors (§8) are the strongest test of it. |
 | Parser upgrade | PP-StructureV3 scores 64.45 on OmniDocBench v1.6; **PaddleOCR-VL-1.6 scores 96.33** at 0.9B, Apache 2.0, already downloaded | Architecture is parser-agnostic — one module changes. Admitted only if it returns per-value boxes and confidence and scores zero accepted-wrong on the damaged-cell test. Benchmark rank earns a trial, not the job. |
@@ -394,7 +411,7 @@ critical path and the F002 caution applies only if a judge raises it.
 | **B. Librarian** | Reference library (§7b) and the retrieval test set (§7c) | nothing |
 | **C. Evidence store** | The SQL store (§7a), the "thickness grew" check, and the query surface the Analyst's code runs over | nothing |
 | **D. Orchestration** | LangGraph behind the same handlers; `interrupt()`; agent definitions with tool allow-lists; OpenTelemetry spans (§9) | nothing |
-| **E. Sandbox** | The sandbox, the Coder agent, and code-as-a-tool for the Analyst (§6) | nothing |
+| **E. Sandbox** | *Done.* Next: let the Analyst call it mid-conversation (§6), and stage the image for the air-gapped build (`docker save`/`docker load`) | nothing |
 | **F. Corpus v2** | Multi-page reports, tables split across pages, image-only PDFs | nothing |
 | **G. Parser trial** | PaddleOCR-VL-1.6 through the qualification test | nothing — GGUF downloaded |
 | **H. Connectors** | Teams/Slack notice-not-content connector behind the Sentinel gate (§8) | needs D's approval callback to land first |
