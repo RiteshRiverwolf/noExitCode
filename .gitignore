@@ -8,6 +8,10 @@ __pycache__/
 #   python bench/make_corpus.py --count 12 --out data/corpus
 data/corpus/
 
+# Cached OCR results, keyed by image hash. Derived data: re-read the page and
+# you get the same file back (workbench/pagesource.py).
+data/cache/
+
 # External source documents stay out of version control.
 # The MRPL tender contains real employees' names, phone numbers and emails,
 # and several other sources restrict redistribution. See docs/DATASETS.md

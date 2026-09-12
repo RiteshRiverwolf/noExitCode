@@ -1,0 +1,253 @@
+{
+  "source": "born-digital PDF (text layer)",
+  "totals": {
+    "critical_right": 395,
+    "critical_caught": 0,
+    "critical_wrong": 0,
+    "other_right": 433,
+    "other_caught": 0,
+    "other_wrong": 0
+  },
+  "reports": [
+    {
+      "doc_id": "insp_1000",
+      "seconds": 0.0,
+      "problems": 0,
+      "critical": {
+        "right": 31,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 33,
+        "caught": 0,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1001",
+      "seconds": 0.0,
+      "problems": 0,
+      "critical": {
+        "right": 36,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 34,
+        "caught": 0,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1002",
+      "seconds": 0.0,
+      "problems": 0,
+      "critical": {
+        "right": 30,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 40,
+        "caught": 0,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1003",
+      "seconds": 0.0,
+      "problems": 0,
+      "critical": {
+        "right": 40,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 42,
+        "caught": 0,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1004",
+      "seconds": 0.0,
+      "problems": 0,
+      "critical": {
+        "right": 26,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 32,
+        "caught": 0,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1005",
+      "seconds": 0.0,
+      "problems": 0,
+      "critical": {
+        "right": 33,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 37,
+        "caught": 0,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1006",
+      "seconds": 0.0,
+      "problems": 0,
+      "critical": {
+        "right": 33,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 37,
+        "caught": 0,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1007",
+      "seconds": 0.0,
+      "problems": 0,
+      "critical": {
+        "right": 36,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 34,
+        "caught": 0,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1008",
+      "seconds": 0.0,
+      "problems": 0,
+      "critical": {
+        "right": 29,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 29,
+        "caught": 0,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1009",
+      "seconds": 0.0,
+      "problems": 0,
+      "critical": {
+        "right": 30,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 40,
+        "caught": 0,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1010",
+      "seconds": 0.0,
+      "problems": 0,
+      "critical": {
+        "right": 36,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 34,
+        "caught": 0,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1011",
+      "seconds": 0.0,
+      "problems": 0,
+      "critical": {
+        "right": 35,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 41,
+        "caught": 0,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    }
+  ]
+}

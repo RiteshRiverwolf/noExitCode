@@ -39,6 +39,9 @@ class Source:
     page: int | None = None        # set by extraction; unknown for the stand-in
     bbox: list[float] | None = None
     raw_text: str | None = None
+    score: float | None = None     # 1.0 from a PDF's own text, OCR confidence from a scan
+    read_by: str | None = None     # text layer or OCR engine -- named on every value
+    crop: str | None = None        # picture of the cell, for the engineer who signs
 
 
 @dataclass
@@ -54,6 +57,7 @@ class Reading:
     source: Source
     method: str
     review_status: str = "unreviewed"
+    printed_status: str | None = None   # the report's own Status cell: evidence, never the decision
 
 
 @dataclass
@@ -78,6 +82,8 @@ class EvidenceSet:
     extraction: str
     source_files: dict[str, str] = field(default_factory=dict)  # file -> sha256
     problems: list[str] = field(default_factory=list)            # validation problems from reading the scan
+    pages: list[dict] = field(default_factory=list)              # per page: how it was read, its image
+    notes: list[str] = field(default_factory=list)               # template words matched through OCR damage
 
     def to_json(self) -> str:
         return json.dumps(asdict(self), indent=2, ensure_ascii=False,
