@@ -1,0 +1,133 @@
+{
+  "result": {
+    "fields": 71,
+    "errors": 0,
+    "critical_fields": 35,
+    "critical_errors": 0,
+    "error_list": [],
+    "critical_list": [],
+    "doc": "insp_1003",
+    "model": "qwen3.5:9b",
+    "quality": "light",
+    "pages": 2,
+    "seconds": 55.0,
+    "eval_tokens": 1399,
+    "prompt_tokens": 7902
+  },
+  "extracted": {
+    "report_no": "MRPL/INSP/2026/4230",
+    "equipment_tag": "T-2839",
+    "equipment_name": "Storage Tank",
+    "unit": "NHT — Naphtha Hydrotreating Unit",
+    "plant": "Mangalore Refinery — Phase III",
+    "inspection_type": "Ultrasonic Thickness Survey",
+    "inspection_date": "29-04-2026",
+    "next_due_date": "28-04-2028",
+    "inspector_name": "T. Rajagopal",
+    "inspector_cert": "API-510-36019",
+    "design_pressure_barg": "32.5 barg",
+    "design_temp_c": "180 °C",
+    "service_fluid": "Heavy Vacuum Gas Oil",
+    "year_built": "2005",
+    "corrosion_rate_mm_yr": "0.19 mm/yr",
+    "remaining_life_yr": "14.8 years",
+    "findings": [
+      {
+        "finding_id": "F-01",
+        "location": "Nozzle N-3 neck",
+        "description": "Minor external scaling and paint chalking on head section. No measurable metal loss.",
+        "severity": "Observation",
+        "ref_clause": "OISD-STD-116 Cl. 7.3",
+        "recommendation": "Include in routine painting schedule. No immediate action required."
+      },
+      {
+        "finding_id": "F-02",
+        "location": "Shell/head weld seam",
+        "description": "Localised external corrosion observed on shell plate adjacent to support saddle. Coating breakdown over approximately 0.4 m² with visible rust scaling.",
+        "severity": "Minor",
+        "ref_clause": "OISD-STD-116 Cl. 7.3",
+        "recommendation": "Remove loose scale, surface prepare to St-3 and re-apply approved coating system during next available shutdown."
+      },
+      {
+        "finding_id": "F-03",
+        "location": "Nozzle N-3 neck",
+        "description": "Support saddle anchor bolt at south-west location found loose. No structural distress observed.",
+        "severity": "Observation",
+        "ref_clause": "OISD-STD-118 Cl. 6.5",
+        "recommendation": "Re-torque anchor bolt to specification and record in maintenance log."
+      },
+      {
+        "finding_id": "F-04",
+        "location": "Shell/head weld seam",
+        "description": "Insulation cladding damaged and displaced over a 2 m section of the vapour line. No metal loss detected at this stage.",
+        "severity": "Minor",
+        "ref_clause": "OISD-STD-118 Cl. 6.2",
+        "recommendation": "Reinstate cladding and seal joints to prevent water ingress."
+      },
+      {
+        "finding_id": "F-05",
+        "location": "Shell course 1 — 90°",
+        "description": "Ladder and platform grating adjacent to manway found corroded with section loss exceeding 20% at two treads.",
+        "severity": "Minor",
+        "ref_clause": "OISD-STD-118 Cl. 8.4",
+        "recommendation": "Replace affected grating sections before next internal inspection."
+      }
+    ],
+    "readings": [
+      {
+        "cml_id": "CML-01",
+        "location": "Shell/head weld seam",
+        "nominal_mm": "14.0",
+        "previous_mm": "13.29",
+        "current_mm": "12.97",
+        "min_required_mm": "9.5",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-02",
+        "location": "Shell course 1 — 0°",
+        "nominal_mm": "14.0",
+        "previous_mm": "12.92",
+        "current_mm": "12.81",
+        "min_required_mm": "9.5",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-03",
+        "location": "Bottom head — knuckle",
+        "nominal_mm": "14.0",
+        "previous_mm": "13.25",
+        "current_mm": "12.98",
+        "min_required_mm": "9.5",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-04",
+        "location": "Shell course 1 — 90°",
+        "nominal_mm": "14.0",
+        "previous_mm": "12.68",
+        "current_mm": "12.32",
+        "min_required_mm": "9.5",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-05",
+        "location": "Top head — crown",
+        "nominal_mm": "14.0",
+        "previous_mm": "13.70",
+        "current_mm": "13.49",
+        "min_required_mm": "9.5",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-06",
+        "location": "Nozzle N-3 neck",
+        "nominal_mm": "14.0",
+        "previous_mm": "13.59",
+        "current_mm": "13.16",
+        "min_required_mm": "9.5",
+        "status": "Acceptable"
+      }
+    ]
+  }
+}

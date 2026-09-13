@@ -1,0 +1,423 @@
+{
+  "source": "medium scan (OCR)",
+  "totals": {
+    "critical_right": 393,
+    "critical_caught": 2,
+    "critical_wrong": 0,
+    "other_right": 200,
+    "other_caught": 83,
+    "other_wrong": 150
+  },
+  "reports": [
+    {
+      "doc_id": "insp_1000",
+      "seconds": 0.1,
+      "problems": 0,
+      "critical": {
+        "right": 31,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 12,
+        "caught": 0,
+        "wrong": [
+          "CML-01.location: read 'Shell course 2-180°', printed 'Shell course 2 — 180°'",
+          "CML-02.location: read 'Shell course 1-0°', printed 'Shell course 1 — 0°'",
+          "CML-03.location: read 'Bottom head-knuckle', printed 'Bottom head — knuckle'",
+          "CML-04.location: read 'NozzleN-1neck', printed 'Nozzle N-1 neck'",
+          "CML-05.location: read 'Shell course 2-270°', printed 'Shell course 2 — 270°'",
+          "F-01.location: read 'Bottom head-knuckle', printed 'Bottom head — knuckle'",
+          "F-01.description: read 'Support saddle anchorboltat south-west location foundloose.No structural distress observed.', printed 'Support saddle anchor bolt at south-west location found loose. No structural distress observed.'",
+          "F-01.ref_clause: read 'OISD-STD-118CI.6.5', printed 'OISD-STD-118 Cl. 6.5'",
+          "F-01.recommendation: read 'Re-torque anchor bolt to specificationand record inmaintenance log.', printed 'Re-torque anchor bolt to specification and record in maintenance log.'",
+          "F-02.location: read 'NozzleN-3neck', printed 'Nozzle N-3 neck'",
+          "F-02.description: read 'Pitting observed oninternal shell surface at liquid/vapourinterface. Maximum pit depthmeasured 1.8 mm against nominal12mm wall.', printed 'Pitting observed on internal shell surface at liquid/vapour interface. Maximum pit depth measured 1.8 mm against nominal 12 mm wall.'",
+          "F-02.ref_clause: read 'API510 CI. 5.4.2', printed 'API 510 Cl. 5.4.2'",
+          "F-02.recommendation: read 'Performpit depthmapping.Evaluatefitness-for-service per API579 Level1before returning to service.', printed 'Perform pit depth mapping. Evaluate fitness-for-service per API 579 Level 1 before returning to service.'",
+          "F-03.location: read 'Shell course 2-270°', printed 'Shell course 2 — 270°'",
+          "F-03.description: read 'Pressure relief valvePSV-tag due foroverhaul;last test certificate exceeds the 36month interval permitted for this service category.', printed 'Pressure relief valve PSV-tag due for overhaul; last test certificate exceeds the 36 month interval permitted for this service category.'",
+          "F-03.ref_clause: read 'OISD-STD-132 C1. 5.6', printed 'OISD-STD-132 Cl. 5.6'",
+          "F-03.recommendation: read 'WithdrawPSVforbenchtestingandoverhaul priortounitrestart.Fittested spare.', printed 'Withdraw PSV for bench testing and overhaul prior to unit restart. Fit tested spare.'",
+          "header.unit: read 'VDU-II-VacuumDistillationUnit', printed 'VDU-II — Vacuum Distillation Unit'",
+          "header.plant: read 'Mangalore Refinery-Phase', printed 'Mangalore Refinery — Phase II'",
+          "header.inspection_type: read 'InternalVisual Inspection', printed 'Internal Visual Inspection'",
+          "header.inspector_name: read 'K.Subramanian', printed 'K. Subramanian'"
+        ]
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1001",
+      "seconds": 0.1,
+      "problems": 0,
+      "critical": {
+        "right": 36,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 15,
+        "caught": 0,
+        "wrong": [
+          "CML-02.location: read 'Shell course 2-270°', printed 'Shell course 2 — 270°'",
+          "CML-03.location: read 'Top head-crown', printed 'Top head — crown'",
+          "CML-04.location: read 'Bottom head-knuckle', printed 'Bottom head — knuckle'",
+          "CML-06.location: read 'Shell course 1-90°', printed 'Shell course 1 — 90°'",
+          "F-01.location: read 'NozzleN-1neck', printed 'Nozzle N-1 neck'",
+          "F-01.description: read 'Minor external scaling and paintchalking on head section.No measurable metal loss.', printed 'Minor external scaling and paint chalking on head section. No measurable metal loss.'",
+          "F-01.ref_clause: read 'OISD-STD-116C1.7.3', printed 'OISD-STD-116 Cl. 7.3'",
+          "F-01.recommendation: read 'Include in routinepainting schedule.No immediateaction required.', printed 'Include in routine painting schedule. No immediate action required.'",
+          "F-02.location: read 'Shell course 2-270°', printed 'Shell course 2 — 270°'",
+          "F-02.description: read 'Support saddleanchor bolt at south-west locationfound loose.No structural distress observed.', printed 'Support saddle anchor bolt at south-west location found loose. No structural distress observed.'",
+          "F-02.ref_clause: read 'OISD-STD-118 CI. 6.5', printed 'OISD-STD-118 Cl. 6.5'",
+          "F-02.recommendation: read 'Re-torqueanchor bolt to specification and record inmaintenance log.', printed 'Re-torque anchor bolt to specification and record in maintenance log.'",
+          "F-03.location: read 'Shellcourse1-0°', printed 'Shell course 1 — 0°'",
+          "F-03.description: read 'Ladderandplatformgrating adjacent tomanway foundcorroded with section loss exceeding 20% at two treads.', printed 'Ladder and platform grating adjacent to manway found corroded with section loss exceeding 20% at two treads.'",
+          "F-03.ref_clause: read 'OISD-STD-118CI.8.4', printed 'OISD-STD-118 Cl. 8.4'",
+          "F-03.recommendation: read 'Replaceaffected gratingsections beforenext internal inspection.', printed 'Replace affected grating sections before next internal inspection.'",
+          "header.unit: read 'DHDT-Diesel Hydrotreating Unit', printed 'DHDT — Diesel Hydrotreating Unit'",
+          "header.plant: read 'Mangalore Refinery-PhaseI', printed 'Mangalore Refinery — Phase III'",
+          "header.inspector_name: read 'M.Fernandes', printed 'M. Fernandes'"
+        ]
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1002",
+      "seconds": 0.1,
+      "problems": 0,
+      "critical": {
+        "right": 30,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 17,
+        "caught": 0,
+        "wrong": [
+          "CML-01.location: read 'Shell course 2-180°', printed 'Shell course 2 — 180°'",
+          "CML-02.location: read 'Top head— crown', printed 'Top head — crown'",
+          "CML-03.location: read 'Shell course 2-270°', printed 'Shell course 2 — 270°'",
+          "CML-04.location: read 'Bottom head-knuckle', printed 'Bottom head — knuckle'",
+          "F-01.location: read 'Shell course 2-270°', printed 'Shell course 2 — 270°'",
+          "F-01.description: read 'Insulationcladding damaged and displaced over a 2 m section of the vapour line. No metal loss detected at this stage.', printed 'Insulation cladding damaged and displaced over a 2 m section of the vapour line. No metal loss detected at this stage.'",
+          "F-01.ref_clause: read 'OISD-STD-118CI.6.2', printed 'OISD-STD-118 Cl. 6.2'",
+          "F-01.recommendation: read 'Reinstatecladding and seal joints to prevent water ingress.', printed 'Reinstate cladding and seal joints to prevent water ingress.'",
+          "F-02.location: read 'Shell course 2-270°', printed 'Shell course 2 — 270°'",
+          "F-02.description: read 'Localised external corrosionobserved on shell plate adjacent to support saddle.Coating breakdown over approximately 0.m2 with visible rust scaling.', printed 'Localised external corrosion observed on shell plate adjacent to support saddle. Coating breakdown over approximately 0.4 m² with visible rust scaling.'",
+          "F-02.ref_clause: read 'OISD-STD-116CI.7.3', printed 'OISD-STD-116 Cl. 7.3'",
+          "F-02.recommendation: read 'Remove loose scale,surface prepare to St-3 and re-apply approved coating system during next available shutdown.', printed 'Remove loose scale, surface prepare to St-3 and re-apply approved coating system during next available shutdown.'",
+          "F-03.location: read 'Shell course 1-0°', printed 'Shell course 1 — 0°'",
+          "F-03.description: read 'Support saddle anchor bolt at south-west location found loose.No structural distress observed.', printed 'Support saddle anchor bolt at south-west location found loose. No structural distress observed.'",
+          "F-03.ref_clause: read 'OISD-STD-118CI.6.5', printed 'OISD-STD-118 Cl. 6.5'",
+          "F-04.location: read 'Nozzle N-1neck', printed 'Nozzle N-1 neck'",
+          "F-04.ref_clause: read 'OISD-STD-118CI.8.4', printed 'OISD-STD-118 Cl. 8.4'",
+          "F-05.location: read 'Shell course 1-0°', printed 'Shell course 1 — 0°'",
+          "F-05.description: read 'Minor external scalingand paintchalkingon head section.No measurable metal loss.', printed 'Minor external scaling and paint chalking on head section. No measurable metal loss.'",
+          "F-05.ref_clause: read 'OISD-STD-116CI.7.3', printed 'OISD-STD-116 Cl. 7.3'",
+          "F-05.recommendation: read 'Include in routine painting schedule.No immediate action required.', printed 'Include in routine painting schedule. No immediate action required.'",
+          "header.unit: read 'CCR-Continuous Catalytic Reformer', printed 'CCR — Continuous Catalytic Reformer'",
+          "header.plant: read 'Mangalore Refinery-AromaticComplex', printed 'Mangalore Refinery — Aromatic Complex'"
+        ]
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1003",
+      "seconds": 0.1,
+      "problems": 2,
+      "critical": {
+        "right": 40,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 23,
+        "caught": 19,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "CML-05.current_mm: low confidence 0.894",
+        "CML-05.location: low confidence 0.895"
+      ]
+    },
+    {
+      "doc_id": "insp_1004",
+      "seconds": 0.1,
+      "problems": 0,
+      "critical": {
+        "right": 26,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 16,
+        "caught": 0,
+        "wrong": [
+          "CML-01.location: read 'Shell course 1-0°', printed 'Shell course 1 — 0°'",
+          "CML-02.location: read 'Shell course 2-180°', printed 'Shell course 2 — 180°'",
+          "CML-03.location: read 'Shell course 1-90°', printed 'Shell course 1 — 90°'",
+          "F-01.location: read 'Bottom head-knuckle', printed 'Bottom head — knuckle'",
+          "F-01.description: read 'Support saddle anchor bolt at south-west location found loose.No structural distress observed.', printed 'Support saddle anchor bolt at south-west location found loose. No structural distress observed.'",
+          "F-01.ref_clause: read 'OISD-STD-118 CI.6.5', printed 'OISD-STD-118 Cl. 6.5'",
+          "F-02.location: read 'Shell course1-90°', printed 'Shell course 1 — 90°'",
+          "F-02.description: read 'Pitting observedon internalshell surfaceat liquid/vapourinterface. Maximumpitdepthmeasured1.8mmagainstnominal12mm wall.', printed 'Pitting observed on internal shell surface at liquid/vapour interface. Maximum pit depth measured 1.8 mm against nominal 12 mm wall.'",
+          "F-02.ref_clause: read 'API 510 CI. 5.4.2', printed 'API 510 Cl. 5.4.2'",
+          "F-02.recommendation: read 'Perform pit depthmapping.Evaluate fitness-for-service per API579 Level1 before returning to service.', printed 'Perform pit depth mapping. Evaluate fitness-for-service per API 579 Level 1 before returning to service.'",
+          "F-03.description: read 'Localisedexternalcorrosionobservedonshellplateadjacentto support saddle.Coating breakdown over approximately 0.4 m² with visible rust scaling.', printed 'Localised external corrosion observed on shell plate adjacent to support saddle. Coating breakdown over approximately 0.4 m² with visible rust scaling.'",
+          "F-03.ref_clause: read 'OISD-STD-116CI. 7.3', printed 'OISD-STD-116 Cl. 7.3'",
+          "F-03.recommendation: read 'Remove loose scale,surface prepare to St-3 and re-apply approved coating system during next available shutdown.', printed 'Remove loose scale, surface prepare to St-3 and re-apply approved coating system during next available shutdown.'",
+          "header.unit: read 'VDU-II-Vacuum DistillationUnit', printed 'VDU-II — Vacuum Distillation Unit'",
+          "header.plant: read 'Mangalore Refinery-PhaseIl', printed 'Mangalore Refinery — Phase II'",
+          "header.inspector_name: read 'R.Venkataraman', printed 'R. Venkataraman'"
+        ]
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1005",
+      "seconds": 0.1,
+      "problems": 0,
+      "critical": {
+        "right": 33,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 17,
+        "caught": 0,
+        "wrong": [
+          "CML-01.location: read 'Shell course 1-0°', printed 'Shell course 1 — 0°'",
+          "CML-02.location: read 'Bottom head-knuckle', printed 'Bottom head — knuckle'",
+          "CML-03.location: read 'Shell course 2-270°', printed 'Shell course 2 — 270°'",
+          "CML-05.location: read 'Shell course 2-180°', printed 'Shell course 2 — 180°'",
+          "F-01.location: read 'Bottomhead-knuckle', printed 'Bottom head — knuckle'",
+          "F-01.description: read 'Supportsaddle anchor bolt at south-west location found loose.No structural distress observed.', printed 'Support saddle anchor bolt at south-west location found loose. No structural distress observed.'",
+          "F-01.ref_clause: read 'OISD-STD-118 CI.6.5', printed 'OISD-STD-118 Cl. 6.5'",
+          "F-02.location: read 'Bottom head-knuckle', printed 'Bottom head — knuckle'",
+          "F-02.description: read 'Insulation cladding damaged and displaced over a2m section of the vapour line.No metal loss detected at this stage.', printed 'Insulation cladding damaged and displaced over a 2 m section of the vapour line. No metal loss detected at this stage.'",
+          "F-02.ref_clause: read 'OISD-STD-118 CI.6.2', printed 'OISD-STD-118 Cl. 6.2'",
+          "F-03.location: read 'Shell course 2-270°', printed 'Shell course 2 — 270°'",
+          "F-03.description: read 'Minor external scaling and paint chalking on head section.No measurable metal loss.', printed 'Minor external scaling and paint chalking on head section. No measurable metal loss.'",
+          "F-03.ref_clause: read 'OISD-STD-116CI.7.3', printed 'OISD-STD-116 Cl. 7.3'",
+          "F-03.recommendation: read 'Include in routine painting schedule.No immediate actionrequired.', printed 'Include in routine painting schedule. No immediate action required.'",
+          "F-04.location: read 'Shell course 1-0°', printed 'Shell course 1 — 0°'",
+          "F-04.description: read 'Localised external corrosion observed onshell plate adjacent to support saddle.Coating breakdown over approximately 0.4m2 with visible rust scaling.', printed 'Localised external corrosion observed on shell plate adjacent to support saddle. Coating breakdown over approximately 0.4 m² with visible rust scaling.'",
+          "F-04.ref_clause: read 'OISD-STD-116CI.7.3', printed 'OISD-STD-116 Cl. 7.3'",
+          "F-04.recommendation: read 'Remove loose scale,surface prepare to St-3 and re-apply approved coating system during next available shutdown.', printed 'Remove loose scale, surface prepare to St-3 and re-apply approved coating system during next available shutdown.'",
+          "header.unit: read 'CCR-ContinuousCatalytic Reformer', printed 'CCR — Continuous Catalytic Reformer'",
+          "header.plant: read 'Mangalore Refinery-—AromaticComplex', printed 'Mangalore Refinery — Aromatic Complex'"
+        ]
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1006",
+      "seconds": 0.1,
+      "problems": 1,
+      "critical": {
+        "right": 33,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 16,
+        "caught": 21,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-02.location: low confidence 0.894"
+      ]
+    },
+    {
+      "doc_id": "insp_1007",
+      "seconds": 0.1,
+      "problems": 0,
+      "critical": {
+        "right": 36,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 18,
+        "caught": 0,
+        "wrong": [
+          "CML-01.location: read 'Shell course 1-0°', printed 'Shell course 1 — 0°'",
+          "CML-03.location: read 'Shell course 2-270°', printed 'Shell course 2 — 270°'",
+          "CML-04.location: read 'Shell course 1-90°', printed 'Shell course 1 — 90°'",
+          "CML-05.location: read 'Bottom head-knuckle', printed 'Bottom head — knuckle'",
+          "F-01.location: read 'Shell course 2-270°', printed 'Shell course 2 — 270°'",
+          "F-01.description: read 'Ladderandplatformgrating adjacent tomanwayfound corroded with section loss exceeding.20% at two treads.', printed 'Ladder and platform grating adjacent to manway found corroded with section loss exceeding 20% at two treads.'",
+          "F-01.ref_clause: read 'OISD-STD-118CI.8.4', printed 'OISD-STD-118 Cl. 8.4'",
+          "F-02.description: read 'Localised externalcorrosionobserved onshell plateadjacentto supportsaddle.Coating breakdownover approximately 0.4m2 with visible rust scaling.', printed 'Localised external corrosion observed on shell plate adjacent to support saddle. Coating breakdown over approximately 0.4 m² with visible rust scaling.'",
+          "F-02.ref_clause: read 'OISD-STD-116CI.7.3', printed 'OISD-STD-116 Cl. 7.3'",
+          "F-02.recommendation: read 'Removeloose scale,surfaceprepare to St-3 and re-applyapproved coating system during next availableshutdown.', printed 'Remove loose scale, surface prepare to St-3 and re-apply approved coating system during next available shutdown.'",
+          "F-03.location: read 'Shell course 1-0°', printed 'Shell course 1 — 0°'",
+          "F-03.description: read 'Support saddle anchor bolt at south-west location found loose.No structural distress observed.', printed 'Support saddle anchor bolt at south-west location found loose. No structural distress observed.'",
+          "F-03.ref_clause: read 'OISD-STD-118CI.6.5', printed 'OISD-STD-118 Cl. 6.5'",
+          "header.unit: read 'FCCU-FluidisedCatalyticCracking Unit', printed 'FCCU — Fluidised Catalytic Cracking Unit'",
+          "header.plant: read 'Mangalore Refinery-PhaseII', printed 'Mangalore Refinery — Phase III'",
+          "header.inspector_name: read 'N.Kulkarni', printed 'N. Kulkarni'"
+        ]
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1008",
+      "seconds": 0.1,
+      "problems": 0,
+      "critical": {
+        "right": 29,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 17,
+        "caught": 0,
+        "wrong": [
+          "CML-01.location: read 'Top head-crown', printed 'Top head — crown'",
+          "CML-02.location: read 'Shell course 2-270°', printed 'Shell course 2 — 270°'",
+          "CML-04.location: read 'Shell course 1-90°', printed 'Shell course 1 — 90°'",
+          "F-01.location: read 'Bottom head-knuckle', printed 'Bottom head — knuckle'",
+          "F-01.description: read 'Insulationcladding damaged and displaced over a2m section of the vapour line. No metal loss detected at this stage.', printed 'Insulation cladding damaged and displaced over a 2 m section of the vapour line. No metal loss detected at this stage.'",
+          "F-01.ref_clause: read 'OISD-STD-118CI.6.2', printed 'OISD-STD-118 Cl. 6.2'",
+          "F-02.location: read 'Shell course 1-0°', printed 'Shell course 1 — 0°'",
+          "F-02.description: read 'Localisedexternalcorrosionobservedonshellplateadjacentto support saddle.Coating breakdown over approximately 0.4m2 with visible rust scaling.', printed 'Localised external corrosion observed on shell plate adjacent to support saddle. Coating breakdown over approximately 0.4 m² with visible rust scaling.'",
+          "F-02.ref_clause: read 'OiSD-STD-116CI.7.3', printed 'OISD-STD-116 Cl. 7.3'",
+          "F-02.recommendation: read 'Remove loose scale,surface prepare to St-3 and re-apply approved coating system during next available shutdown.', printed 'Remove loose scale, surface prepare to St-3 and re-apply approved coating system during next available shutdown.'",
+          "header.unit: read 'HGU-Hydrogen Generation Unit', printed 'HGU — Hydrogen Generation Unit'",
+          "header.plant: read 'Mangalore Refinery-PhaseIl', printed 'Mangalore Refinery — Phase II'"
+        ]
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1009",
+      "seconds": 0.1,
+      "problems": 0,
+      "critical": {
+        "right": 30,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 17,
+        "caught": 0,
+        "wrong": [
+          "CML-01.location: read 'Bottom head-knuckle', printed 'Bottom head — knuckle'",
+          "CML-03.location: read 'Shell course 1-0°', printed 'Shell course 1 — 0°'",
+          "CML-04.location: read 'Top head-crown', printed 'Top head — crown'",
+          "F-01.location: read 'Shell course 1-0°', printed 'Shell course 1 — 0°'",
+          "F-01.description: read 'Insulationcladding damaged and displaced over a2m section of the vapour line.No metal loss detected at this stage.', printed 'Insulation cladding damaged and displaced over a 2 m section of the vapour line. No metal loss detected at this stage.'",
+          "F-01.ref_clause: read 'OISD-STD-118C1.6.2', printed 'OISD-STD-118 Cl. 6.2'",
+          "F-02.location: read 'Shell course 2-270°', printed 'Shell course 2 — 270°'",
+          "F-02.description: read 'Ladder andplatform grating adjacent to manway found corroded with section loss exceeding 20% at two treads.', printed 'Ladder and platform grating adjacent to manway found corroded with section loss exceeding 20% at two treads.'",
+          "F-02.ref_clause: read 'OISD-STD-118CI.8.4', printed 'OISD-STD-118 Cl. 8.4'",
+          "F-02.recommendation: read 'Replaceaffected grating sections before next internal inspection.', printed 'Replace affected grating sections before next internal inspection.'",
+          "F-03.location: read 'Shell course 2-270°', printed 'Shell course 2 — 270°'",
+          "F-03.description: read 'Localisedexternalcorrosionobservedonshell plateadjacentto support saddle.Coating breakdown over approximately 0.4m² with visible rust scaling.', printed 'Localised external corrosion observed on shell plate adjacent to support saddle. Coating breakdown over approximately 0.4 m² with visible rust scaling.'",
+          "F-03.ref_clause: read 'OISD-STD-116CI.7.3', printed 'OISD-STD-116 Cl. 7.3'",
+          "F-03.recommendation: read 'Remove loose scale,surface prepare to St-3 and re-apply approved coating system during next available shutdown.', printed 'Remove loose scale, surface prepare to St-3 and re-apply approved coating system during next available shutdown.'",
+          "F-04.location: read 'Shell course 1-90°', printed 'Shell course 1 — 90°'",
+          "F-04.description: read 'Minor external scaling and paint chalking on head section.No measurable metal loss.', printed 'Minor external scaling and paint chalking on head section. No measurable metal loss.'",
+          "F-04.ref_clause: read 'OISD-STD-116CI.7.3', printed 'OISD-STD-116 Cl. 7.3'",
+          "F-04.recommendation: read 'Include in routine painting schedule.No immediate action required.', printed 'Include in routine painting schedule. No immediate action required.'",
+          "F-05.description: read 'Supportsaddleanchor boltatsouth-west location found loose.No structural distress observed.', printed 'Support saddle anchor bolt at south-west location found loose. No structural distress observed.'",
+          "F-05.ref_clause: read 'OISD-STD-118CI.6.5', printed 'OISD-STD-118 Cl. 6.5'",
+          "header.unit: read 'CDU-I-Crude DistillationUnit', printed 'CDU-I — Crude Distillation Unit'",
+          "header.plant: read 'Mangalore Refinery-PhaseIl', printed 'Mangalore Refinery — Phase II'",
+          "header.inspector_name: read 'K.Subramanian', printed 'K. Subramanian'"
+        ]
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1010",
+      "seconds": 0.1,
+      "problems": 2,
+      "critical": {
+        "right": 35,
+        "caught": 1,
+        "wrong": []
+      },
+      "other": {
+        "right": 14,
+        "caught": 20,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-03: severity '' is not one of the report's grades",
+        "F-03.severity: empty"
+      ]
+    },
+    {
+      "doc_id": "insp_1011",
+      "seconds": 0.1,
+      "problems": 3,
+      "critical": {
+        "right": 34,
+        "caught": 1,
+        "wrong": []
+      },
+      "other": {
+        "right": 18,
+        "caught": 23,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "CML-01.current_mm: 2 pieces of text in one cell (12.62 | .)",
+        "CML-01.current_mm: not a number as printed ('12.62 .')",
+        "CML-01.current_mm: low confidence 0.196"
+      ]
+    }
+  ]
+}

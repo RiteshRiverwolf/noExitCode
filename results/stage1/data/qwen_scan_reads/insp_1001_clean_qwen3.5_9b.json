@@ -1,0 +1,117 @@
+{
+  "result": {
+    "fields": 61,
+    "errors": 0,
+    "critical_fields": 33,
+    "critical_errors": 0,
+    "error_list": [],
+    "critical_list": [],
+    "doc": "insp_1001",
+    "model": "qwen3.5:9b",
+    "quality": "clean",
+    "pages": 1,
+    "seconds": 40.4,
+    "eval_tokens": 1153,
+    "prompt_tokens": 4104
+  },
+  "extracted": {
+    "report_no": "MRPL/INSP/2026/1581",
+    "equipment_tag": "V-1668",
+    "equipment_name": "Separator Vessel",
+    "unit": "DHDT — Diesel Hydrotreating Unit",
+    "plant": "Mangalore Refinery — Phase III",
+    "inspection_type": "External Visual Inspection",
+    "inspection_date": "20-08-2026",
+    "next_due_date": "19-08-2028",
+    "inspector_name": "M. Fernandes",
+    "inspector_cert": "API-510-10742",
+    "design_pressure_barg": "20.2 barg",
+    "design_temp_c": "250 °C",
+    "service_fluid": "Light Naphtha",
+    "year_built": "2014",
+    "corrosion_rate_mm_yr": "0.111 mm/yr",
+    "remaining_life_yr": "17.7 years",
+    "findings": [
+      {
+        "finding_id": "F-01",
+        "location": "Nozzle N-1 neck",
+        "description": "Minor external scaling and paint chalking on head section. No measurable metal loss.",
+        "severity": "Observation",
+        "ref_clause": "OISD-STD-116 Cl. 7.3",
+        "recommendation": "Include in routine painting schedule. No immediate action required."
+      },
+      {
+        "finding_id": "F-02",
+        "location": "Shell course 2 — 270°",
+        "description": "Support saddle anchor bolt at south-west location found loose. No structural distress observed.",
+        "severity": "Observation",
+        "ref_clause": "OISD-STD-118 Cl. 6.5",
+        "recommendation": "Re-torque anchor bolt to specification and record in maintenance log."
+      },
+      {
+        "finding_id": "F-03",
+        "location": "Shell course 1 — 0°",
+        "description": "Ladder and platform grating adjacent to manway found corroded with section loss exceeding 20% at two treads.",
+        "severity": "Minor",
+        "ref_clause": "OISD-STD-118 Cl. 8.4",
+        "recommendation": "Replace affected grating sections before next internal inspection."
+      }
+    ],
+    "readings": [
+      {
+        "cml_id": "CML-01",
+        "location": "Nozzle N-3 neck",
+        "nominal_mm": "10.0",
+        "previous_mm": "9.77",
+        "current_mm": "9.37",
+        "min_required_mm": "6.6",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-02",
+        "location": "Shell course 2 — 270°",
+        "nominal_mm": "10.0",
+        "previous_mm": "8.78",
+        "current_mm": "8.57",
+        "min_required_mm": "6.6",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-03",
+        "location": "Top head — crown",
+        "nominal_mm": "10.0",
+        "previous_mm": "9.59",
+        "current_mm": "9.19",
+        "min_required_mm": "6.6",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-04",
+        "location": "Bottom head — knuckle",
+        "nominal_mm": "10.0",
+        "previous_mm": "9.39",
+        "current_mm": "9.10",
+        "min_required_mm": "6.6",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-05",
+        "location": "Nozzle N-1 neck",
+        "nominal_mm": "10.0",
+        "previous_mm": "9.68",
+        "current_mm": "9.41",
+        "min_required_mm": "6.6",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-06",
+        "location": "Shell course 1 — 90°",
+        "nominal_mm": "10.0",
+        "previous_mm": "9.17",
+        "current_mm": "9.00",
+        "min_required_mm": "6.6",
+        "status": "Acceptable"
+      }
+    ]
+  }
+}

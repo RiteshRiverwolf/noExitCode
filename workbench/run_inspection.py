@@ -1,0 +1,316 @@
+"""Run the inspection workflow for one report, through its procedural graph.
+
+    .venv\\Scripts\\python -m workbench.run_inspection insp_1002
+    .venv\\Scripts\\python -m workbench.run_inspection insp_1002 --inject-fault render
+    .venv\\Scripts\\python -m workbench.run_inspection insp_1003 --no-model
+
+Or from code -- what the local service behind the interface calls:
+
+    from workbench.run_inspection import JobConfig, run_job
+    run_job(JobConfig("insp_1002", source="pdf"), emit=print)
+
+Every stage writes its output into runs/<job-id>/<stage>/, the path taken is
+saved as trace.json, and each step is appended to the hash-chained log
+logs/workbench_runs.jsonl.
+
+`emit` receives one plain dict per event, in order -- run_start, stage_enter,
+stage, route, evidence, decision, summary, run_end -- so a live view shows what
+the agents are doing as they do it. The events carry the same facts the run
+folder does; nothing is shown on screen that is not also on disk.
+
+--inject-fault render makes the first rendering write a wrong thickness for
+the breached CML. The QA check must catch it and send the work back to
+render_note: a deliberate demonstration of the self-healing loop, labelled as
+such in the trace.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import threading
+from dataclasses import asdict, dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Callable
+
+from mcp_servers.audit import LOG_DIR, AuditLog
+from workbench import evidence as evidence_mod
+from workbench import pagesource, prose, report_writer, router, rules, scan_reader
+from workbench.procedural_graph import Graph, StageResult, run
+
+ROOT = Path(__file__).resolve().parent.parent
+GRAPH = Path(__file__).resolve().parent / "graphs" / "inspection.yaml"
+
+_AUDIT: AuditLog | None = None
+_AUDIT_LOCK = threading.Lock()
+
+
+def _audit() -> AuditLog:
+    """One log writer per process. Two AuditLog objects appending to the same file
+    would each keep their own idea of the last hash and fork the chain."""
+    global _AUDIT
+    with _AUDIT_LOCK:
+        if _AUDIT is None:
+            _AUDIT = AuditLog("workbench", LOG_DIR / "workbench_runs.jsonl")
+        return _AUDIT
+
+
+@dataclass
+class JobConfig:
+    doc_id: str
+    source: str = "scan"                 # scan | pdf | stand-in
+    scan_quality: str = "medium"
+    image: list[Path] | None = None      # any PDF, or the page images of one report
+    model: str | None = None             # overrides the Router, and is logged as an override
+    no_model: bool = False
+    inject_fault: str | None = None
+
+
+def _save(folder: Path, name: str, data) -> None:
+    folder.mkdir(parents=True, exist_ok=True)
+    text = data if isinstance(data, str) else json.dumps(data, indent=2, ensure_ascii=False, default=str)
+    (folder / name).write_text(text, encoding="utf-8")
+
+
+def _exact(v) -> str | None:
+    """Decimals travel as the exact printed string -- never as a float."""
+    return None if v is None else str(v)
+
+
+def _evidence_event(ev: evidence_mod.EvidenceSet) -> dict:
+    return {
+        "type": "evidence",
+        "extraction": ev.extraction,
+        "readings": [{
+            "cml_id": r.cml_id, "location": r.location,
+            "nominal_mm": _exact(r.nominal_mm), "previous_mm": _exact(r.previous_mm),
+            "current_mm": _exact(r.current_mm), "min_required_mm": _exact(r.min_required_mm),
+            "review_status": r.review_status, "printed_status": r.printed_status,
+            "page": r.source.page, "bbox": r.source.bbox, "score": r.source.score,
+            "read_by": r.source.read_by, "crop": r.source.crop,
+        } for r in ev.readings],
+        "findings": [{
+            "finding_id": f.finding_id, "severity": f.severity, "location": f.location,
+            "description": f.description, "ref_clause": f.ref_clause,
+            "recommendation": f.recommendation, "page": f.source.page, "crop": f.source.crop,
+        } for f in ev.findings],
+        "problems": ev.problems, "notes": ev.notes, "pages": ev.pages,
+    }
+
+
+def run_job(cfg: JobConfig, emit: Callable[[dict], None] | None = None) -> dict:
+    """Run one report through the graph. Returns where it ended and what it produced."""
+
+    def send(event: dict) -> None:
+        if emit is None:
+            return
+        try:
+            emit(event)
+        except Exception:  # a broken viewer must never break the run it is watching
+            pass
+
+    graph = Graph.load(GRAPH)
+    stamp = f"{cfg.doc_id}-{datetime.now():%Y%m%d-%H%M%S}"
+    job, n = stamp, 1
+    while (ROOT / "runs" / job).exists():      # two runs of one report in the same second
+        n += 1
+        job = f"{stamp}-{n}"
+    folder = ROOT / "runs" / job
+    folder.mkdir(parents=True, exist_ok=True)
+    audit = _audit()
+    ctx: dict = {"doc_id": cfg.doc_id, "trace": []}
+    run_info = {"run_id": job, "generated_at": datetime.now().strftime("%d %b %Y %H:%M"),
+                "graph": f"{graph.name} v{graph.version} ({GRAPH.relative_to(ROOT).as_posix()})",
+                "trace": ctx["trace"]}
+    note_path = folder / "05_render_note" / f"approval_note_{cfg.doc_id}.docx"
+
+    def read_document(c):
+        """The document itself: its own text where it has one, OCR where it does not."""
+        if cfg.source == "stand-in":
+            idx = {e["doc_id"]: e for e in json.loads((evidence_mod.CORPUS / "index.json").read_text())}
+            pages = idx[c["doc_id"]]["scans"][cfg.scan_quality]
+            _save(folder / "01_read_document", "pages.json", pages)
+            return StageResult("ok", f"{len(pages)} page image(s); evidence comes from the "
+                                     f"ground-truth stand-in, not from these")
+        work = folder / "01_read_document" / "pages"
+        if cfg.image:
+            images = [Path(p) for p in cfg.image]
+            pages = (pagesource.open_document(images[0], work)
+                     if images[0].suffix.lower() == ".pdf"
+                     else pagesource.open_pages(images, work))
+        else:
+            quality = None if cfg.source == "pdf" else cfg.scan_quality
+            pages = scan_reader.corpus_pages(c["doc_id"], quality, work)
+        c["pages"] = pages
+        _save(folder / "01_read_document", "pages.json",
+              [{"page": p.number, "file": p.source_file, "read_by": p.read_by,
+                "texts": len(p.items), "size": [p.width, p.height]} for p in pages])
+        empty = [p.number for p in pages if not p.items]
+        if empty:
+            return StageResult("fail", f"no text read from page(s) {empty}")
+        how = ", ".join(sorted({p.read_by.split(" (")[0] for p in pages}))
+        return StageResult("ok", f"{len(pages)} page(s), {sum(len(p.items) for p in pages)} "
+                                 f"pieces of text, read by {how}")
+
+    def build_evidence(c):
+        """Evidence records, and the decision to stop when a critical value is doubtful."""
+        if cfg.source == "stand-in":
+            ev = evidence_mod.from_ground_truth(c["doc_id"], cfg.scan_quality)
+        else:
+            ev = scan_reader.build_evidence(c["doc_id"], c["pages"],
+                                            crop_dir=folder / "02_build_evidence" / "crops")
+        c["evidence"] = ev
+        _save(folder / "02_build_evidence", "evidence.json", ev.to_json())
+        if ev.problems:
+            _save(folder / "02_build_evidence", "problems.json",
+                  {"problems": ev.problems, "notes": ev.notes})
+        send(_evidence_event(ev))
+        # Only a doubt about a value a decision is made from stops the run. A
+        # low-confidence location is recorded on the note; a thickness that may
+        # be missing a digit is not something to carry forward.
+        doubtful = [r.cml_id for r in ev.readings if r.review_status == "needs review"]
+        if doubtful:
+            return StageResult("fail", f"thickness values need a person: {', '.join(doubtful)}")
+        # An unread grade is not a Minor one: a "Major" that OCR left empty would
+        # silently drop an escalation (insp_1010's medium scan, 2026-09-13).
+        ungraded = [f.finding_id for f in ev.findings if f.severity not in rules.GRADES]
+        if ungraded:
+            return StageResult("fail", f"severity not readable, which could hide an escalation: "
+                                       f"{', '.join(ungraded)}")
+        if not ev.readings or not ev.findings:
+            return StageResult("fail", "the findings or thickness table was not read")
+        extra = f" ({len(ev.problems)} problem(s) recorded)" if ev.problems else ""
+        return StageResult("ok", f"{len(ev.findings)} findings, {len(ev.readings)} readings{extra}")
+
+    def apply_rules(c):
+        d = rules.evaluate(c["evidence"])
+        c["decision"] = d
+        _save(folder / "03_apply_rules", "decision.json", asdict(d))
+        send({"type": "decision", "outcome": d.outcome, "ruleset": d.ruleset_version,
+              "triggers": [{"rule_id": t.rule_id, "subject": t.subject, "detail": t.detail,
+                            "title": t.title, "action": t.action} for t in d.triggers],
+              "review_items": [{"rule_id": t.rule_id, "subject": t.subject, "detail": t.detail}
+                               for t in d.review_items]})
+        fired = ", ".join(f"{t.rule_id}:{t.subject}" for t in d.triggers) or "none"
+        return StageResult("ok", f"{d.outcome}; triggered: {fired}")
+
+    def write_summary(c):
+        # The Router picks the model from measured results and logs why; --model
+        # overrides it, and the override is recorded as one.
+        model, routed = None, "no model: --no-model"
+        if not cfg.no_model:
+            if cfg.model:
+                model, routed = cfg.model, f"{cfg.model}, set by hand (Router overridden)"
+            else:
+                d = router.route("write_summary", {"run_id": job, "stage": "write_summary"})
+                model = d.chosen
+                routed = (f"Router chose {d.chosen}" if d.chosen
+                          else f"Router found no qualified model ({d.reason}); code writes it")
+            c["routing"] = {"task": "write_summary", "model": model, "decision": routed}
+            _save(folder / "04_write_summary", "routing.json", c["routing"])
+            send({"type": "route", "task": "write_summary", "chosen": model, "decision": routed})
+        s = prose.write_summary(c["evidence"], c["decision"], model, guidance=c["guidance"])
+        c["summary"] = s
+        _save(folder / "04_write_summary", "summary.json", asdict(s))
+        send({"type": "summary", "text": s.text, "written_by": s.written_by, "attempts": len(s.attempts)})
+        tries = len(s.attempts)
+        if s.written_by.startswith("code (fallback"):
+            return StageResult("ok", f"{routed}; model failed checks {tries}x; code summary used")
+        if s.attempts and s.attempts[-1].get("accepted_with_style_issue"):
+            return StageResult("ok", f"{routed}; accurate, accepted on attempt {tries} "
+                                     f"despite style: {s.attempts[-1]['accepted_with_style_issue'][0]}")
+        return StageResult("ok", f"{routed}; {s.written_by} passed checks on attempt {max(tries, 1)}")
+
+    def render_note(c):
+        corrupt = cfg.inject_fault == "render" and c["attempt"] == 1
+        report_writer.render(c["evidence"], c["decision"], c["summary"], run_info, note_path, corrupt=corrupt)
+        return StageResult("ok", "written" + (" (INJECTED FAULT: wrong value on purpose)" if corrupt else ""))
+
+    def qa_check(c):
+        results = report_writer.verify(note_path, c["evidence"], c["decision"])
+        failed = [n for n, ok, _ in results if not ok]
+        _save(folder / "06_qa_check", "verification.json", results)
+        if failed:
+            return StageResult("fail", f"{len(failed)} check(s) failed: {failed[0]}")
+        # Stamp the passed checks into the note itself, then read it back once more.
+        report_writer.render(c["evidence"], c["decision"], c["summary"], run_info, note_path, qa_results=results)
+        again = report_writer.verify(note_path, c["evidence"], c["decision"])
+        if not all(ok for _, ok, _ in again):
+            return StageResult("fail", "final file failed its read-back")
+        return StageResult("ok", f"all {len(results)} read-back checks passed")
+
+    def on_enter(node: str, agent: str, attempt: int) -> None:
+        send({"type": "stage_enter", "run_id": job, "node": node, "agent": agent, "attempt": attempt})
+
+    def on_step(step):
+        ctx["trace"].append(step)
+        audit.write({"event": "stage", "run_id": job, **asdict(step)})
+        send({"type": "stage", "run_id": job, **asdict(step)})
+
+    model_label = "none (--no-model)" if cfg.no_model else (cfg.model or "chosen by the Router")
+    send({"type": "run_start", "run_id": job, "doc_id": cfg.doc_id,
+          "graph": f"{graph.name} v{graph.version}", "source": cfg.source,
+          "scan_quality": cfg.scan_quality, "image": [str(p) for p in cfg.image or []],
+          "model": model_label, "inject_fault": cfg.inject_fault,
+          "folder": folder.relative_to(ROOT).as_posix()})
+    audit.write({"event": "run_start", "run_id": job, "doc_id": cfg.doc_id,
+                 "model": model_label, "inject_fault": cfg.inject_fault})
+    handlers = {"read_document": read_document, "build_evidence": build_evidence, "apply_rules": apply_rules,
+                "write_summary": write_summary, "render_note": render_note, "qa_check": qa_check}
+    result = run(graph, handlers, ctx, on_step, on_enter)
+
+    _save(folder, "trace.json", [asdict(s) for s in result.trace])
+    note = note_path.relative_to(ROOT).as_posix() if note_path.exists() else None
+    audit.write({"event": "run_end", "run_id": job, "end": result.end, "note": note})
+    summary = ctx.get("summary")
+    outcome = {"run_id": job, "end": result.end, "note": note,
+               "folder": folder.relative_to(ROOT).as_posix(),
+               "summary_text": summary.text if summary else None,
+               "written_by": summary.written_by if summary else None}
+    send({"type": "run_end", **outcome})
+    return outcome
+
+
+def _console(event: dict) -> None:
+    """The command line's view of a run: the same lines it has always printed,
+    which bench/stage2/pipeline_stops.py and the severity test read."""
+    if event["type"] == "run_start":
+        print(f"run {event['run_id']}  (graph {event['graph']})")
+    elif event["type"] == "stage":
+        mark = "ok  " if event["status"] == "ok" else "FAIL"
+        print(f"  [{mark}] {event['node']:15} attempt {event['attempt']}  {event['seconds']:>6}s  "
+              f"-> {event['next']:13} {event['note']}")
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("doc_id")
+    ap.add_argument("--model", default=None,
+                    help="override the Router's choice for the summary (recorded as an override)")
+    ap.add_argument("--no-model", action="store_true", help="write the summary with code only")
+    ap.add_argument("--scan-quality", default="medium", choices=["clean", "light", "medium", "heavy"])
+    ap.add_argument("--image", nargs="+", type=Path, default=None,
+                    help="read these files instead of the corpus: one PDF, or the page "
+                         "images of one report in order")
+    ap.add_argument("--source", default="scan", choices=["scan", "pdf", "stand-in"],
+                    help="scan: read the scan images by OCR (default); pdf: read the "
+                         "born-digital PDF's own text; stand-in: the old ground-truth "
+                         "shortcut, kept only for comparison")
+    ap.add_argument("--inject-fault", choices=["render"], default=None)
+    args = ap.parse_args()
+
+    cfg = JobConfig(doc_id=args.doc_id, source=args.source, scan_quality=args.scan_quality,
+                    image=args.image, model=args.model, no_model=args.no_model,
+                    inject_fault=args.inject_fault)
+    outcome = run_job(cfg, emit=_console)
+    print(f"\nended at: {outcome['end']}")
+    if outcome["note"]:
+        print(f"note: {ROOT / outcome['note']}")
+    if outcome["summary_text"] is not None:
+        print(f"\nsummary ({outcome['written_by']}):\n{outcome['summary_text']}")
+    return 0 if outcome["end"] == "done" else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

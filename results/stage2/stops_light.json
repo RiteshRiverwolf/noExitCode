@@ -1,0 +1,112 @@
+{
+  "quality": "light",
+  "counts": {
+    "note_right": 10,
+    "note_WRONG": 0,
+    "right_stop": 2,
+    "false_alarm": 0
+  },
+  "reports": [
+    {
+      "doc_id": "insp_1000",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.42s  -> needs_review  thickness values need a person: CML-05",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "CML-05.previous_mm: read None, printed 12.57",
+        "F-01.severity: read 'Obseryation', printed 'Observation'"
+      ],
+      "right_but_flagged": []
+    },
+    {
+      "doc_id": "insp_1001",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "NO TRIGGER",
+      "expected": "NO TRIGGER",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1002",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "ESCALATE",
+      "expected": "ESCALATE",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1003",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "NO TRIGGER",
+      "expected": "NO TRIGGER",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1004",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "ESCALATE",
+      "expected": "ESCALATE",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1005",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "NO TRIGGER",
+      "expected": "NO TRIGGER",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1006",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "ESCALATE",
+      "expected": "ESCALATE",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1007",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "NO TRIGGER",
+      "expected": "NO TRIGGER",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1008",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "ESCALATE",
+      "expected": "ESCALATE",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1009",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.45s  -> needs_review  severity not readable, which could hide an escalation: F-05",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "F-05.severity: read 'Obseryation', printed 'Observation'"
+      ],
+      "right_but_flagged": []
+    },
+    {
+      "doc_id": "insp_1010",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "ESCALATE",
+      "expected": "ESCALATE",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1011",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "NO TRIGGER",
+      "expected": "NO TRIGGER",
+      "correct": true
+    }
+  ]
+}

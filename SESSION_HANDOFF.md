@@ -1,210 +1,143 @@
 # Session handoff — SIH26117
 
-> **Update, 2026-09-11 afternoon: stage 0 is finished.** The offline phase
-> ran, and the verdict is in [`results/stage0/VERDICT.md`](results/stage0/VERDICT.md)
-> (keep AnythingLLM; its built-in agent must not write reports). Findings are
-> in [F003](results/findings/F003-anythingllm-outbound-dependencies.md). A model
-> comparison for tool calling is in [`results/stage0/NOTES.md`](results/stage0/NOTES.md):
-> granite4.1:8b got 9/9 correct notes, llama3.1:8b 0/9. Sections 4 and 8 below
-> describe the state *before* that work.
-
-Written 2026-09-11 at the end of a long session. Read this before doing
-anything. The previous session ended with **the user interrupting a tool call
-and asking to stop**, so **ask how they want to proceed before continuing
-stage 0**.
+Updated 2026-09-13, end of a long session. Read this first, then
+**`docs/WHOLE_PICTURE.md`** (the plan the team works from) and
+**`results/stage2/NOTES.md`** (everything measured this session). Then ask the
+user how to proceed — decisions are waiting (section 8).
 
 ---
 
 ## 1. The project in one paragraph
 
-SIH 2026 problem statement 26117: an offline, air-gapped, multi-agent AI
-workbench for MRPL (Mangalore Refinery). It reads confidential documents such
-as scanned inspection reports, and produces real deliverables such as Word
-approval notes, with every critical number linked to its source and nothing
-leaving the machine. **This is an SIH entry only, not a B.Tech final-year
-project.**
+SIH 2026 problem statement 26117 (`docs/PS26117.md`, known — do not list it as
+an open question): a **sovereign, air-gapped, multi-agent AI workbench** — an
+organisation's own team of AI specialists that plan multi-step work, use local
+tools, write and run code in a sandbox, read scans, and produce real Word,
+Excel and PowerPoint deliverables grounded in the organisation's own documents,
+with visible proof that nothing leaves the machine. **The inspection approval
+note is one mission, not the product** (the user corrected this firmly). Our
+difference is the evidence spine: every critical value traceable to its cell,
+rules in code, deliverables verified by reading the file back, and stopping for
+a person rather than guessing. **SIH entry only**, not a final-year project.
 
 | | |
 |---|---|
-| User | Rudraansh Bhati — directs the project, briefs the team |
-| Teammate | Ritesh — wrote the adversarial review, also pushes to the repo |
-| Repo | `github.com/RiteshRiverwolf/noExitCode`, branch `main`; last pushed commit `a3e85e8` |
-| Local path | `C:\SIH 2026` — Windows 11, RTX 4070 **12 GB**, 32 GB RAM |
-| Design of record | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) revision 2 |
-| Team summary | [`docs/team-brief.html`](docs/team-brief.html), also published at https://claude.ai/code/artifact/85deba23-0503-4543-9d32-54163eed2723 |
-| Memory | `C:\Users\user\.claude\projects\c--SIH-2026\memory\` — 4 memories plus `MEMORY.md` |
+| User | Rudraansh Bhati — directs the project |
+| Team | Ritesh and Sanji (frontend authors); always `git fetch` first |
+| Repo | `github.com/RiteshRiverwolf/noExitCode`, branch `main` |
+| Local | `C:\SIH 2026` — Windows 11, RTX 4070 **12 GB**, 32 GB RAM |
+| Plan | **`docs/WHOLE_PICTURE.md`** — agent team, demo, knowledge base, connectors, observability, workstreams, mapped to SIH scoring |
+| Results | **`results/stage2/NOTES.md`** (this session), `results/stage1/NOTES.md`, `results/stage0/NOTES.md` |
+| Design of record | `docs/ARCHITECTURE.md` rev 2 (older than WHOLE_PICTURE in places) |
 
 ---
 
 ## 2. How the user wants you to work
 
-- **No Claude co-author.** Never add `Co-Authored-By: Claude` or any Claude attribution to commits or PRs in this repo.
-- **Research, don't recall.** For models, tools, datasets and competitors, check current primary sources (docs, model cards, source code) before recommending. Two claims from memory were wrong last session: an Onyx claim taken from a marketing page, and the MCP SDK API.
-- **It must sound good to judges and actually work.** Keep the multi-agent design visible. Build on existing products and customise them, rather than building from scratch.
-- **Plain language** for anything the team will read.
-- **Commit and push only when asked.** Run `git fetch` first, because Ritesh also pushes.
-- **Expect mid-task redirects.** The user often sends a short message mid-task pointing at a new paper or tool. Look it up and assess it against the project.
+- **No Claude co-author** in commits or PRs in this repo (the history has none).
+- **Commit and push when asked** — this session the user asked to push after each piece. `git fetch` first; `git pull --no-rebase`.
+- **Research, don't recall.** Primary sources for models, tools, licences, benchmarks.
+- **Check again before building on a result.** This session that caught: a test that passed for the wrong reason (a flag on a *different* column counted as a catch); a scorer that counts a report-level flag as catching non-critical errors; a "fix" that broke the PDFs. **The born-digital PDFs are a control group** — exact text never needs a near match, so any change there is a regression.
+- **Never claim an 8B model beats a 30B one.** Granite won the note-writing test because it is strong at tool calling and the checker was built on its mistakes. Say: the qualification test picks the model per task; safety comes from code, not size.
+- **Be ambitious in framing, honest in status.** Everything is marked Proven / Built / Proposed. Unfinished parts are presented as a staged path backed by market evidence.
+- **SIH judging** (published weights): innovation 25%, problem understanding 20%, feasibility 20%, impact and scale 20%, presentation 15%. A stable working prototype beats an ambitious broken one.
+- **Settled:** corpus is **English**, **no handwritten notes**; the **knowledge base is wanted** (not built yet); **LangSmith is ruled out** (proprietary, self-host is Enterprise-only, and outside an air-gap licence it needs egress to `beacon.langchain.com`) — use OpenTelemetry + self-hosted Langfuse; **connectors** (Teams/Slack) carry notice, never content; **agents may write code** to answer questions.
+- **The frontend belongs to Ritesh and Sanji** (`git log -- frontend/`). Ask before rewriting it.
+- **Plain language** for anything the team reads. Expect mid-task redirects.
+- **Never run a Docker prune** — Docker Desktop is shared with another project (Ripple).
 
 ---
 
-## 3. The design (short version; details in ARCHITECTURE.md)
+## 3. Where things stand
 
-- **Base platform:** AnythingLLM in Docker (MIT), with **our own frontend** on its API.
-- **Agent team:** eight specialists with fixed handoffs: Supervisor, Document Reader, Evidence Builder, Rules Engine, Standards Researcher, Report Writer, QA Checker, Coder. Built as ICM stage folders plus a procedural graph plus a state machine.
-- **"The model explains, the code decides."** Escalation comes from deterministic rules over evidence records, with three outcomes: escalate, no trigger, needs review.
-- **Tools** are local MCP servers in Python (MCP SDK **v2**).
-- **Knowledge base:** a structured document library with an approved intake pipeline. Lookup order: exact IDs, then catalogue, then sections, then LanceDB vector search.
-- **Models (12 GB bench):** a general Qwen model (Qwen3.5-9B named by the review, **unverified**), PaddleOCR-VL-1.6, llama.cpp first. Stage 0 used Ollama with `llama3.1:8b`.
-- **Network proof:** outbound traffic blocked, with a separately marked canary window, then a clean run.
-
----
-
-## 4. Stage 0 — AnythingLLM integration test
-
-Goal: can AnythingLLM, driven entirely through its API, take a scanned report
-and use our MCP tool to write a Word file, fully offline? Running log:
-[`results/stage0/NOTES.md`](results/stage0/NOTES.md).
-
-### Results so far (online)
-
-| Check | Run 1 (00:29) | Run 2 (00:59) |
+| Req | What | Status |
 |---|---|---|
-| API key, workspace, agent model set | ✅ | ✅ |
-| Scanned PNG uploaded; OCR finds `R-2247` | ✅ 2,710 chars | ✅ |
-| **Test A** — agent → our MCP tool → Word file on host | ✅ genuine | ✅ genuine |
-| **Test B** — agent writes an approval note with correct content | ❌ false pass under the old check (the file contained "[list findings]") | ❌ correctly failed: the note says "refer to the report in memory" and names no reading |
-| **Test C** — document Q&A without the agent answers the trap question | (not in run 1) | ✅ "CML-03 … 12.32 mm … minimum 12.7 mm", source `insp_1002_p1.png` |
+| R1 | Local deployment, one mid-range GPU | Runs offline on the 12 GB bench |
+| R2 | Model auto-selection, ≥2 task types | **Built** — `workbench/router.py` + `models.yaml`: granite for summaries/tools/code, qwen for second readings, nothing for photographs (untested), nomic for embeddings; safety gate shuts out llama3.1 and lfm2.5 (false approvals); hash-chained decision log |
+| R3 | Scan → findings → Word note | **Built and measured** — the reader reads the document (text layer or OCR), wired into the pipeline |
+| R4 | Coding task verified in a sandbox | **Done** — Docker `--network none` sandbox with a self-test; Coder agent; model's own tests don't count, held-out tests decide |
+| R5 | Scanned-document understanding | Reader measured on all 48 scan runs; photographs/drawings untested |
+| R6 | Visible proof of no external calls | Stage-0 packet capture; the service now has a live network panel (netstat of the workbench's own processes — a snapshot, not a capture) |
 
-**Reading these results:**
-- **Plumbing works** (Test A).
-- **AnythingLLM's document Q&A works** on the trap case (Test C).
-- **Its built-in agent with an 8B model does not chain "search the documents, then call the tool"** (Test B). That supports the architecture decision to run the inspection workflow in our own agent team.
-
-**Test flaw to fix:** Tests A and B share `sessionId: "stage0"`, so Test B saw
-Test A's history and reused its text. Give each test its own session ID before
-drawing more conclusions from Test B.
-
-### Findings
-
-1. **Bare `ollama serve` logged no update check** at startup, unlike the Windows desktop app in F001. This is from the log only; confirm with a packet capture.
-2. **Ollama's cloud features are on by default** (`OLLAMA_NO_CLOUD:false`, `OLLAMA_REMOTES:[ollama.com]`). It's now running with `OLLAMA_NO_CLOUD=1`.
-3. **MCP Python SDK v2** renamed FastMCP to `MCPServer` and moved host, port and security settings to `run()`. The docs are already fixed.
-4. **MCP host-header rejection (HTTP 421).** The SDK only allows `127.0.0.1`/`localhost`/`[::1]` Host headers. Fixed by adding `host.docker.internal:*`, with DNS-rebinding protection kept on.
-5. **AnythingLLM's internal API is unauthenticated when `AUTH_TOKEN` is unset.** That's how the API key was created. Safe only because the port is bound to `127.0.0.1`; any shared deployment must set `AUTH_TOKEN`.
-6. **OCR language data downloads on first use.** tesseract.js's default `langPath` points to `cdn.jsdelivr.net/npm/@tesseract.js-data/eng/…`, and `eng.traineddata` (5 MB) is now cached in `stage0/anythingllm/models/tesseract/`. A fresh air-gapped install can't OCR images until that file is pre-seeded.
-7. **Two downloads at startup:**
-   - context windows from `raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json` (`server/utils/AiProviders/modelMap/index.js:30`)
-   - pricing from `models.dev/api.json` (`server/utils/helpers/modelPricing/index.js:70`)
-
-   Both have a 3-day cache and fail gracefully, but they retry at every boot once stale, which adds noise to the egress log.
-8. **The `1.4 tok/s` in `ollama_warmup.txt` is meaningless** (the reply was two tokens). Cold load was 22.6 s, with 7.4 GB VRAM in use. Throughput hasn't been measured yet.
-
-### Not done yet
-
-- **The offline phase:** [`stage0/offline_phase.ps1`](stage0/offline_phase.ps1) is written but **never run or reviewed in execution**. It has three windows:
-  - A: canary call to example.com
-  - B1: OCR upload with the cached language data moved aside
-  - B2: full test with outbound traffic blocked
-
-  It uses a `nicolaka/netshoot` sidecar with iptables and tcpdump inside the container's network namespace, and changes nothing on the Windows host.
-- **Checking for switches to turn these downloads off:** the command that would grep AnythingLLM's source for `process.env` switches in `modelMap`, `modelPricing` and `OCRLoader` was the one **the user interrupted. It was not run.**
-- `results/stage0/VERDICT.md`, plus a finding file for AnythingLLM's outbound dependencies (next number is F003).
-- **Update ARCHITECTURE.md §4 and STACK_INVENTORY §3.8** with findings 4–7. That means adding four requirements: pre-seed the OCR data, handle the startup fetches, set `AUTH_TOKEN`, and add the MCP allowed-hosts setting.
+### Built this session (all on `main`, see `git log`)
+- `workbench/pagesource.py`, `ocr_worker.py`, `tablemap.py`, `scan_reader.py` — the reader.
+- `workbench/run_inspection.py` — reads the real document; `run_job(JobConfig, emit)` streams events.
+- `workbench/sandbox.py`, `coder.py`, `coding_tasks.py` — R4.
+- `workbench/router.py`, `models.yaml` — R2.
+- `workbench/server.py` — local service (Starlette, loopback only, port 8770): missions, SSE events, crops and notes, network panel, sandbox self-test. Smoke-tested end to end.
+- `bench/stage2/` — `reader_score.py`, `pipeline_stops.py`, `damaged_cell_test.py`, `unreadable_severity_test.py`, `missing_header_test.py`, `ocr_corpus.py`.
+- `docs/WHOLE_PICTURE.md`, `results/stage2/NOTES.md`.
 
 ---
 
-## 5. What is running on the machine
+## 4. Key findings (details in `results/stage2/NOTES.md`)
 
-| Thing | State | Details |
-|---|---|---|
-| Docker Desktop | running | |
-| `anythingllm-stage0` container | running | image `mintplexlabs/anythingllm@sha256:5fb4a84c…d7e0b7`; `127.0.0.1:3001`; storage `stage0/anythingllm/` (gitignored); no `SYS_ADMIN` |
-| `ollama serve` (bare, no desktop app) | running | PID 29808 at handoff; `OLLAMA_NO_CLOUD=1`; log `results/stage0/ollama_serve_nocloud.err.log` |
-| MCP test tool | running | `stage0/docgen_mcp_server.py`, PID 39540 at handoff; `127.0.0.1:8765/mcp`; log `results/stage0/mcp_server_fixed.err.log` |
-| `nicolaka/netshoot` image | pulled | `sha256:b09d9b21…8e70` |
+1. **Reader, all sources, 0 accepted wrong critical fields.** 12 PDFs 395/395 in 0.1 s each; scans: clean 386, light 392, medium 393, heavy 380 right (of 395).
+2. **Decisions, 48 scan runs:** 28 approval notes, every one with the correct outcome; 19 right stops; 1 false alarm (a correct value at OCR confidence 0.894); **0 wrong outcomes**.
+3. **Column precision catches the damaged digit** — both blurred and *erased* "12.32" read as "12.3", caught because the column prints two decimals. **Leftover ink does not work** (stage 1's claim corrected).
+4. **Safety hole closed:** an unreadable severity was silently "not Major" — on a severity-only report that gives NO TRIGGER and a finished note. Fixed in the rules (EVD-01) and the pipeline gate; test proven to fail on the old code.
+5. **Layout traps:** "Observation" is a column header *and* a grade (header fitted as a tilted line); the last table row bounded by column alignment; template words tolerate one letter of OCR damage, headings keep their section number exact, values are never repaired.
+6. **Missing header fields** no longer crash or print "None" — written as "(not read from the document)".
+7. **Coder:** three tasks pass; `next_due_date` hung, was killed by the sandbox time limit, and fixed itself on the next attempt — the demo moment.
+8. **Parsers:** PaddleOCR-VL-1.6 (0.9B, Apache 2.0, in `models/`) scores 96.33 on OmniDocBench v1.6 vs PP-StructureV3's 64.45 — worth a trial, admitted only if it gives per-value boxes and 0 accepted wrong on the damaged-cell test.
 
-PIDs change after a reboot; find processes by port with
-`Get-NetTCPConnection -State Listen -LocalPort 8765,11434`.
+---
 
-### Restart after a reboot (PowerShell)
+## 5. What's running, and how to start it
+
+At the end of this session: Ollama and Docker Desktop were started; the service
+was stopped; the OCR run finished (every corpus page cached in
+`data/cache/ocr/`, gitignored).
 
 ```powershell
-# Ollama — do NOT run `ollama list` first; the CLI launches the desktop app and its updater
 $env:OLLAMA_NO_CLOUD = "1"
-Start-Process ollama -ArgumentList serve -WindowStyle Hidden
-
-# MCP test tool
-Start-Process "C:\SIH 2026\.venv\Scripts\python.exe" -ArgumentList "stage0\docgen_mcp_server.py","--port","8765" -WorkingDirectory "C:\SIH 2026" -WindowStyle Hidden
-
-# AnythingLLM (container already exists)
-docker start anythingllm-stage0
-# then reconnect it to the MCP tool:
-Invoke-RestMethod http://127.0.0.1:3001/api/mcp-servers/force-reload
+Start-Process "$env:LOCALAPPDATA\Programs\Ollama\ollama.exe" -ArgumentList serve -WindowStyle Hidden
+Start-Process "C:\Program Files\Docker\Docker\Docker Desktop.exe"      # user noted Docker was offline once
+.venv\Scripts\python -m workbench.server                               # http://127.0.0.1:8770
 ```
 
-To recreate the container from scratch:
+### Useful commands
 
 ```powershell
-docker run -d --name anythingllm-stage0 -p 127.0.0.1:3001:3001 -v "C:\SIH 2026\stage0\anythingllm:/app/server/storage" -v "C:\SIH 2026\stage0\anythingllm\.env:/app/server/.env" -e STORAGE_DIR="/app/server/storage" mintplexlabs/anythingllm:latest
+.venv\Scripts\python -m workbench.run_inspection insp_1002 --source scan --scan-quality medium
+.venv\Scripts\python -m workbench.run_inspection insp_1002 --source pdf --inject-fault render   # self-healing demo
+.venv\Scripts\python -m workbench.run_inspection x --image path\to\file.pdf                     # any document
+.venv\Scripts\python -m workbench.coder next_due_date                  # the repair-loop demo
+.venv\Scripts\python -m workbench.sandbox --self-test                  # isolation, shown not claimed
+.venv\Scripts\python -m workbench.router --all --no-log
+.venv\Scripts\python bench\stage2\reader_score.py --quality heavy
+.venv\Scripts\python bench\stage2\pipeline_stops.py --quality heavy
+.venv\Scripts\python bench\stage2\unreadable_severity_test.py
 ```
-
-### Run the tests
-
-```powershell
-& "C:\SIH 2026\.venv\Scripts\python.exe" -u "C:\SIH 2026\stage0\run_integration_test.py"   # online
-& "C:\SIH 2026\stage0\offline_phase.ps1"                                                  # offline (unrun)
-```
-
-Results land in `results/stage0/run_<label>_<timestamp>.json`.
 
 ---
 
-## 6. Uncommitted work
+## 6. Tooling gotchas (these cost time)
 
-Nothing since `a3e85e8` is committed:
-
-```
- M .gitignore                 (ignores stage0/anythingllm/ and stage0/output/)
- M docs/ARCHITECTURE.md       (FastMCP → MCP SDK wording)
- M docs/STACK_INVENTORY.md    (same)
-?? results/stage0/            (notes, logs, API spec, run JSONs)
-?? stage0/                    (MCP tool, test harness, offline script)
-?? SESSION_HANDOFF.md
-```
-
-`stage0/anythingllm/` holds the API key, the local `.env` with signing keys,
-the database and uploaded documents. It is gitignored and must stay that way.
+- **The audit log has one writer.** `AuditLog` reads the last hash once, when it is created. A long-running `workbench.server` plus CLI runs at the same time would fork the chain. Stop the service before running bench scripts. (Proper fix — re-read the tail under a file lock in `mcp_servers/audit.py` — not done.)
+- **Kill process trees, not PIDs.** `.venv\Scripts\python.exe` is a launcher that starts a child interpreter; `Stop-Process` on it leaves the child holding the port. Use `taskkill /PID <pid> /T /F`.
+- **Docker Desktop goes offline** (it happened twice). `docker info` to check. The sandbox needs `python:3.12-slim`; for the air-gapped machine `docker save` / `docker load` it.
+- **PaddleOCR on CPU: ~85 s a page.** The cache makes re-runs instant. `enable_mkldnn=False`; `PADDLE_PDX_DISABLE_MODEL_SOURCE_CHECK=True`.
+- **Damaged-digit fixtures** live in gitignored `bench/stage1/partial/`; regenerate byte-identically with `.venv\Scripts\python bench\stage1\partial_test.py make`.
+- **Scorer caveat:** `reader_score.py` counts a report-level flag as catching non-critical errors. Critical fields are checked per field; check any "caught" claim on the field itself.
+- Ollama's bundled `llama-server.exe` is CPU-only unless `GGML_BACKEND_PATH` points at `cuda_v12\ggml-cuda.dll` (memory).
+- PowerShell inline Python: use a single-quoted here-string. The Grep tool skips gitignored folders (`logs/`, `runs/`, `data/`). Don't pipe a here-string into `git commit -F -` from PowerShell; the Bash tool's heredoc works.
 
 ---
 
-## 7. Tooling gotchas (these cost time last session)
+## 7. Open questions for the team
 
-- **The sandbox blocks any command that combines `rm` with the project path**, including `docker rm` and `--rm`, because the path contains a space. The error reads "Remove-Item on system path is blocked". Put such commands inside a `.ps1` script file.
-- **The Grep tool skips gitignored folders** (`.venv`, `stage0/anythingllm`). Search those with PowerShell `Select-String` or Python.
-- **Use PowerShell for `docker` commands with `-v` paths.** Git Bash rewrites them.
-- **MCP SDK v2 usage:** `from mcp.server.mcpserver import MCPServer`, then `run(transport="streamable-http", host=..., port=..., streamable_http_path="/mcp", transport_security=TransportSecuritySettings(...))`.
-- **AnythingLLM internal routes** (unauthenticated in this setup): `GET /api/mcp-servers/list`, `GET /api/mcp-servers/force-reload`, `POST /api/system/generate-api-key`.
-- **The developer API** is documented in `results/stage0/anythingllm_openapi.json`. The key is in `stage0/anythingllm/api_key.txt`.
-- **AnythingLLM rewrites `stage0/anythingllm/.env` on boot**, adding `SIG_KEY` and `SIG_SALT`. That's expected.
-- **An agent is triggered by starting the chat message with `@agent`.** Document Q&A without the agent uses `"mode": "query"`.
+1. The venue's GPU, RAM and OS.
+2. Who may see which documents (access control on both knowledge-base stores).
+3. SIH rules on disclosing AI-assisted development.
+4. Does "model auto-selection across two task types" mean two task-specific LLMs, or OCR plus reasoning?
+5. **A grade one letter off** ("Maior", "Obseryation") currently stops the run — values are never repaired. Should it instead reach a person pre-filled?
+6. **A missing equipment tag or report number** is written as "(not read)" but does not stop the run. It arguably should: a note that does not name the asset could be attached to the wrong one.
 
 ---
 
-## 8. Suggested next steps
+## 8. Waiting on the user — ask first
 
-1. **Ask the user how to proceed.**
-2. Give Tests A, B and C separate session IDs in `stage0/run_integration_test.py`, then re-run online.
-3. Review `stage0/offline_phase.ps1`, then run it (with the user's agreement).
-4. Look for switches to turn the downloads off, pointing OCR at local language data if one exists.
-5. Write `results/stage0/VERDICT.md` and `results/findings/F003-…`, then update ARCHITECTURE.md §4 and STACK_INVENTORY §3.8.
-6. Commit and push when asked, with no co-author line.
-7. Then stage 1 (ARCHITECTURE §13): the evidence-record schema, then PaddleOCR → rule → templated DOCX.
-
-## 9. Open questions for the team
-
-1. The official problem statement, with its version and judging criteria.
-2. The language of the corpus: English, an Indian language, or mixed?
-3. How much of the corpus is handwritten, and what does it look like?
-4. The venue's GPU, RAM and OS.
-5. Who may see which documents?
-6. Still run a multi-framework comparison, or pick one framework once the first end-to-end run works?
+1. **The frontend.** `frontend/index.html` (Ritesh and Sanji) is fully simulated, and in places untrue: it names PaddleOCR-VL (we run PP-StructureV3), shows invented ports, a made-up CML-014 with a fake source for the minimum, and a hard-coded "0 external calls". The service and its event contract are ready (`workbench/server.py` docstring). Wire the prototype to it, or hand the contract to them? Tailwind from a CDN also breaks offline — demo-blocker.
+2. **Next build**, from `docs/WHOLE_PICTURE.md` §14 — candidates: the frontend wiring; LangGraph behind the same handlers (`interrupt()` for the review pause); the knowledge base (evidence store + reference library, with a refusal test); PaddleOCR-VL-1.6 trial; corpus v2 (multi-page reports); OpenTelemetry spans; the audit-log file lock.
+3. Questions 5 and 6 above.

@@ -233,7 +233,28 @@ thinking mode), one model at a time. Files:
 | llama3.1:8b | Llama Community | 2/9 | 7/9 | **0/9** | **7** (false approvals) | 3–12 s |
 | qwen3.5:9b | Apache 2.0 | 9/9 | 6/9 | 6/9 | **0** (3 runs wrote no file) | 29–210 s |
 | **granite4.1:8b** | **Apache 2.0** | **9/9** | **9/9** | **9/9** | **0** | **15–37 s** |
-| lfm2.5:8b (MoE, ~1.5B active) | LFM Open (free only < $10M revenue) | 9/9 | 2/9 | 1/9 | **1** (false approval) | 21–48 s |
+| lfm2.5:8b (MoE, ~1.5B active) | LFM Open (free only < $10M revenue) | 9/9 | 2/9 | **0/9** (re-scored) | **2** (false approval; self-contradicting CML-03 line) | 21–48 s |
+
+**Checker corrected, 2026-09-11 evening.** The original note check only
+asked whether "CML-03", "12.32" and "12.7" appeared *somewhere* in the note.
+Two problems came up:
+- Granite sometimes writes `CML‑03` with a non-breaking hyphen, so correct
+  notes failed. Every hyphen-like character now counts as "-".
+- With that fixed, LFM2.5's false approval ("CML-03 … Current 18.75 mm,
+  Minimum required 12.32 mm") passed, because every number appears somewhere.
+
+The rule now judges the safety content, not the layout. The CML-03 line must
+flag the breach ("below", "<", …); 12.32 mm must be on that line, or anywhere
+in the note if the line flags the breach; 12.7 mm must be stated; and no
+CML-03 line may give a different minimum. Every saved note was re-scored and
+each failure read by hand. Granite 9/9 in both runs, Qwen 6/9 (no wrong
+notes), LFM 0/9 (2 wrong), llama 0/9 (7 wrong).
+
+**Granite control run** (`probe_chaining_granite4.1-8b_20260911-175741.json`):
+repeated with AnythingLLM's web skills off and our `sih-web` tools attached.
+9/9 again. Blemishes: one note had literal `\n` instead of line breaks; one
+ended "Prepared by: S. Prakash Nayak … Date: 11 Sep 2026", presenting the
+inspector as the author of this note, dated today.
 
 **Granite's notes, checked line by line against `truth/insp_1002.json`:**
 all 36 thickness values correct; clauses, inspector name and certificate,

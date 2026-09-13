@@ -1,0 +1,116 @@
+{
+  "result": {
+    "fields": 61,
+    "errors": 0,
+    "critical_fields": 29,
+    "critical_errors": 0,
+    "error_list": [],
+    "critical_list": [],
+    "doc": "insp_1005",
+    "model": "qwen3.5:9b",
+    "quality": "light",
+    "pages": 1,
+    "seconds": 44.7,
+    "eval_tokens": 1211,
+    "prompt_tokens": 4104
+  },
+  "extracted": {
+    "report_no": "MRPL/INSP/2026/5354",
+    "equipment_tag": "T-5520",
+    "equipment_name": "Storage Tank",
+    "unit": "CCR — Continuous Catalytic Reformer",
+    "plant": "Mangalore Refinery — Aromatic Complex",
+    "inspection_type": "Ultrasonic Thickness Survey",
+    "inspection_date": "13-08-2026",
+    "next_due_date": "12-08-2029",
+    "inspector_name": "K. Subramanian",
+    "inspector_cert": "API-510-64943",
+    "design_pressure_barg": "26.6 barg",
+    "design_temp_c": "320 °C",
+    "service_fluid": "Atmospheric Residue",
+    "year_built": "1997",
+    "corrosion_rate_mm_yr": "0.25 mm/yr",
+    "remaining_life_yr": "18.8 years",
+    "findings": [
+      {
+        "finding_id": "F-01",
+        "location": "Bottom head — knuckle",
+        "description": "Support saddle anchor bolt at south-west location found loose. No structural distress observed.",
+        "severity": "Observation",
+        "ref_clause": "OISD-STD-118 Cl. 6.5",
+        "recommendation": "Re-torque anchor bolt to specification and record in maintenance log."
+      },
+      {
+        "finding_id": "F-02",
+        "location": "Bottom head — knuckle",
+        "description": "Insulation cladding damaged and displaced over a 2 m section of the vapour line. No metal loss detected at this stage.",
+        "severity": "Minor",
+        "ref_clause": "OISD-STD-118 Cl. 6.2",
+        "recommendation": "Reinstate cladding and seal joints to prevent water ingress."
+      },
+      {
+        "finding_id": "F-03",
+        "location": "Shell course 2 — 270°",
+        "description": "Minor external scaling and paint chalking on head section. No measurable metal loss.",
+        "severity": "Observation",
+        "ref_clause": "OISD-STD-116 Cl. 7.3",
+        "recommendation": "Include in routine painting schedule. No immediate action required."
+      },
+      {
+        "finding_id": "F-04",
+        "location": "Shell course 1 — 0°",
+        "description": "Localised external corrosion observed on shell plate adjacent to support saddle. Coating breakdown over approximately 0.4 m² with visible rust scaling.",
+        "severity": "Minor",
+        "ref_clause": "OISD-STD-116 Cl. 7.3",
+        "recommendation": "Remove loose scale, surface prepare to St-3 and re-apply approved coating system during next available shutdown."
+      }
+    ],
+    "readings": [
+      {
+        "cml_id": "CML-01",
+        "location": "Shell course 1 — 0°",
+        "nominal_mm": "20.0",
+        "previous_mm": "19.43",
+        "current_mm": "19.26",
+        "min_required_mm": "13.4",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-02",
+        "location": "Bottom head — knuckle",
+        "nominal_mm": "20.0",
+        "previous_mm": "19.60",
+        "current_mm": "19.36",
+        "min_required_mm": "13.4",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-03",
+        "location": "Shell course 2 — 270°",
+        "nominal_mm": "20.0",
+        "previous_mm": "18.40",
+        "current_mm": "18.11",
+        "min_required_mm": "13.4",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-04",
+        "location": "Shell/head weld seam",
+        "nominal_mm": "20.0",
+        "previous_mm": "19.17",
+        "current_mm": "18.98",
+        "min_required_mm": "13.4",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-05",
+        "location": "Shell course 2 — 180°",
+        "nominal_mm": "20.0",
+        "previous_mm": "18.45",
+        "current_mm": "18.11",
+        "min_required_mm": "13.4",
+        "status": "Acceptable"
+      }
+    ]
+  }
+}

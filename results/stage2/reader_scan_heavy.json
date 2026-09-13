@@ -1,0 +1,333 @@
+{
+  "source": "heavy scan (OCR)",
+  "totals": {
+    "critical_right": 380,
+    "critical_caught": 15,
+    "critical_wrong": 0,
+    "other_right": 181,
+    "other_caught": 252,
+    "other_wrong": 0
+  },
+  "reports": [
+    {
+      "doc_id": "insp_1000",
+      "seconds": 0.1,
+      "problems": 14,
+      "critical": {
+        "right": 28,
+        "caught": 3,
+        "wrong": []
+      },
+      "other": {
+        "right": 15,
+        "caught": 18,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-02.description: low confidence 0.890",
+        "F-02.ref_clause: low confidence 0.897",
+        "F-03.description: low confidence 0.861",
+        "CML-02.previous_mm: low confidence 0.880",
+        "CML-02.min_required_mm: low confidence 0.833",
+        "CML-03.previous_mm: 2 pieces of text in one cell (13.48 | .)",
+        "CML-03.previous_mm: not a number as printed ('13.48 .')",
+        "CML-03.previous_mm: low confidence 0.138",
+        "CML-03.current_mm: 2 pieces of text in one cell (13.12 | 心)",
+        "CML-03.current_mm: not a number as printed ('13.12 心')",
+        "CML-03.current_mm: low confidence 0.103",
+        "CML-04.min_required_mm: low confidence 0.895",
+        "CML-04.location: low confidence 0.184",
+        "CML-05.min_required_mm: written to 0 decimal place(s) where the rest of the column uses 1 -- a digit may be missing"
+      ]
+    },
+    {
+      "doc_id": "insp_1001",
+      "seconds": 0.1,
+      "problems": 7,
+      "critical": {
+        "right": 34,
+        "caught": 2,
+        "wrong": []
+      },
+      "other": {
+        "right": 15,
+        "caught": 19,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-03.ref_clause: low confidence 0.888",
+        "CML-01.current_mm: 2 pieces of text in one cell (9.37 | ')",
+        "CML-01.current_mm: not a number as printed (\"9.37 '\")",
+        "CML-01.current_mm: low confidence 0.263",
+        "CML-06.current_mm: 2 pieces of text in one cell (9.00 | 2)",
+        "CML-06.current_mm: not a number as printed ('9.00 2')",
+        "CML-06.current_mm: low confidence 0.117"
+      ]
+    },
+    {
+      "doc_id": "insp_1002",
+      "seconds": 0.1,
+      "problems": 3,
+      "critical": {
+        "right": 29,
+        "caught": 1,
+        "wrong": []
+      },
+      "other": {
+        "right": 14,
+        "caught": 26,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-01.description: low confidence 0.841",
+        "F-03: severity '' is not one of the report's grades",
+        "F-03.severity: empty"
+      ]
+    },
+    {
+      "doc_id": "insp_1003",
+      "seconds": 0.1,
+      "problems": 9,
+      "critical": {
+        "right": 38,
+        "caught": 2,
+        "wrong": []
+      },
+      "other": {
+        "right": 19,
+        "caught": 23,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "identification: year_built is not a number as printed ('Mangalore Refinery-Phase 2005')",
+        "F-01.description: low confidence 0.888",
+        "F-01.ref_clause: low confidence 0.889",
+        "F-04: severity '' is not one of the report's grades",
+        "F-04.finding_id: empty",
+        "F-04.severity: empty",
+        "F-05: severity 'OISD-STD-118 CI. 8.4' is not one of the report's grades",
+        "F-05.finding_id: empty",
+        "F-05.ref_clause: empty"
+      ]
+    },
+    {
+      "doc_id": "insp_1004",
+      "seconds": 0.1,
+      "problems": 1,
+      "critical": {
+        "right": 26,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 14,
+        "caught": 18,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-02.description: low confidence 0.878"
+      ]
+    },
+    {
+      "doc_id": "insp_1005",
+      "seconds": 0.1,
+      "problems": 2,
+      "critical": {
+        "right": 33,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 16,
+        "caught": 21,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-01.description: low confidence 0.893",
+        "F-04.description: low confidence 0.892"
+      ]
+    },
+    {
+      "doc_id": "insp_1006",
+      "seconds": 0.1,
+      "problems": 3,
+      "critical": {
+        "right": 33,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 15,
+        "caught": 22,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-03.description: low confidence 0.855",
+        "F-03.ref_clause: low confidence 0.880",
+        "F-04.ref_clause: low confidence 0.834"
+      ]
+    },
+    {
+      "doc_id": "insp_1007",
+      "seconds": 0.1,
+      "problems": 2,
+      "critical": {
+        "right": 35,
+        "caught": 1,
+        "wrong": []
+      },
+      "other": {
+        "right": 16,
+        "caught": 18,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-03: severity '' is not one of the report's grades",
+        "F-03.severity: empty"
+      ]
+    },
+    {
+      "doc_id": "insp_1008",
+      "seconds": 0.1,
+      "problems": 2,
+      "critical": {
+        "right": 29,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 16,
+        "caught": 13,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-02.location: low confidence 0.893",
+        "F-02.description: low confidence 0.882"
+      ]
+    },
+    {
+      "doc_id": "insp_1009",
+      "seconds": 0.1,
+      "problems": 15,
+      "critical": {
+        "right": 26,
+        "caught": 4,
+        "wrong": []
+      },
+      "other": {
+        "right": 13,
+        "caught": 27,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "survey: corrosion_rate_mm_yr is not a number as printed ('0.056mmlyr')",
+        "F-03.ref_clause: low confidence 0.898",
+        "F-04.description: low confidence 0.893",
+        "F-04.ref_clause: low confidence 0.899",
+        "F-05: severity '' is not one of the report's grades",
+        "F-05.severity: empty",
+        "CML-04.previous_mm: 2 pieces of text in one cell (10.42 | 。)",
+        "CML-04.previous_mm: not a number as printed ('10.42 。')",
+        "CML-04.previous_mm: low confidence 0.276",
+        "CML-04.current_mm: 2 pieces of text in one cell (10.28 | 全)",
+        "CML-04.current_mm: not a number as printed ('10.28 全')",
+        "CML-04.current_mm: low confidence 0.332",
+        "CML-04.min_required_mm: 2 pieces of text in one cell (7.5 | .)",
+        "CML-04.min_required_mm: not a number as printed ('7.5 .')",
+        "CML-04.min_required_mm: low confidence 0.202"
+      ]
+    },
+    {
+      "doc_id": "insp_1010",
+      "seconds": 0.1,
+      "problems": 8,
+      "critical": {
+        "right": 34,
+        "caught": 2,
+        "wrong": []
+      },
+      "other": {
+        "right": 15,
+        "caught": 19,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-01.description: low confidence 0.899",
+        "F-01.ref_clause: low confidence 0.896",
+        "CML-03.nominal_mm: 2 pieces of text in one cell (16.0 | :)",
+        "CML-03.nominal_mm: not a number as printed ('16.0 :')",
+        "CML-03.nominal_mm: low confidence 0.710",
+        "CML-03.previous_mm: 2 pieces of text in one cell (14.20 | .)",
+        "CML-03.previous_mm: not a number as printed ('14.20 .')",
+        "CML-03.previous_mm: low confidence 0.112"
+      ]
+    },
+    {
+      "doc_id": "insp_1011",
+      "seconds": 0.1,
+      "problems": 2,
+      "critical": {
+        "right": 35,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 13,
+        "caught": 28,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-05.description: low confidence 0.888",
+        "F-05.ref_clause: low confidence 0.881"
+      ]
+    }
+  ]
+}

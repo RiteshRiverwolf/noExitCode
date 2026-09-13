@@ -1,0 +1,20 @@
+{
+  "task_id": "remaining_life",
+  "accepted": true,
+  "model": "granite4.1:8b",
+  "attempts": [
+    {
+      "n": 1,
+      "code": "def remaining_life(previous_mm: float, current_mm: float, years_between: float, min_required_mm: float) -> dict:\n    if years_between <= 0:\n        raise ValueError(\"years_between must be positive\")\n    \n    corrosion_rate_mm_yr = round((previous_mm - current_mm) / years_between, 3)\n    \n    if corrosion_rate_mm_yr <= 0:\n        remaining_life_yr = None\n    else:\n        if current_mm <= min_required_mm:\n            remaining_life_yr = 0.0\n        else:\n            remaining_life_yr = round((current_mm - min_required_mm) / corrosion_rate_mm_yr, 1)\n    \n    return {\"corrosion_rate_mm_yr\": corrosion_rate_mm_yr, \"remaining_life_yr\": remaining_life_yr}",
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "all acceptance tests passed\n",
+      "stderr": "",
+      "seconds": 0.28,
+      "isolation": "docker (no network, read-only root, capped memory and time)"
+    }
+  ],
+  "code": "def remaining_life(previous_mm: float, current_mm: float, years_between: float, min_required_mm: float) -> dict:\n    if years_between <= 0:\n        raise ValueError(\"years_between must be positive\")\n    \n    corrosion_rate_mm_yr = round((previous_mm - current_mm) / years_between, 3)\n    \n    if corrosion_rate_mm_yr <= 0:\n        remaining_life_yr = None\n    else:\n        if current_mm <= min_required_mm:\n            remaining_life_yr = 0.0\n        else:\n            remaining_life_yr = round((current_mm - min_required_mm) / corrosion_rate_mm_yr, 1)\n    \n    return {\"corrosion_rate_mm_yr\": corrosion_rate_mm_yr, \"remaining_life_yr\": remaining_life_yr}",
+  "isolation": "docker (no network, read-only root, capped memory and time)",
+  "seconds": 3.9
+}

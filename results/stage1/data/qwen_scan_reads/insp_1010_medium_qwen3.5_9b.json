@@ -1,0 +1,117 @@
+{
+  "result": {
+    "fields": 61,
+    "errors": 0,
+    "critical_fields": 33,
+    "critical_errors": 0,
+    "error_list": [],
+    "critical_list": [],
+    "doc": "insp_1010",
+    "model": "qwen3.5:9b",
+    "quality": "medium",
+    "pages": 1,
+    "seconds": 24.0,
+    "eval_tokens": 1228,
+    "prompt_tokens": 4156
+  },
+  "extracted": {
+    "report_no": "MRPL/INSP/2026/1459",
+    "equipment_tag": "C-4544",
+    "equipment_name": "Fractionation Column",
+    "unit": "VDU-II — Vacuum Distillation Unit",
+    "plant": "Mangalore Refinery — Phase III",
+    "inspection_type": "Turnaround Inspection",
+    "inspection_date": "16-04-2026",
+    "next_due_date": "16-04-2027",
+    "inspector_name": "R. Venkataraman",
+    "inspector_cert": "API-510-89208",
+    "design_pressure_barg": "32.8 barg",
+    "design_temp_c": "380 °C",
+    "service_fluid": "Sour Water",
+    "year_built": "1996",
+    "corrosion_rate_mm_yr": "0.367 mm/yr",
+    "remaining_life_yr": "0.0 years",
+    "findings": [
+      {
+        "finding_id": "F-01",
+        "location": "Top head — crown",
+        "description": "Nozzle N-1 internal projection shows erosion-corrosion consistent with high velocity impingement. Wall thickness reduced below nominal at 3 o'clock position.",
+        "severity": "Major",
+        "ref_clause": "API 510 Cl. 7.2",
+        "recommendation": "Install impingement plate. Increase UT monitoring frequency to 6-monthly at CML-04."
+      },
+      {
+        "finding_id": "F-02",
+        "location": "Shell course 2 — 180°",
+        "description": "Insulation cladding damaged and displaced over a 2 m section of the vapour line. No metal loss detected at this stage.",
+        "severity": "Minor",
+        "ref_clause": "OISD-STD-118 Cl. 6.2",
+        "recommendation": "Reinstate cladding and seal joints to prevent water ingress."
+      },
+      {
+        "finding_id": "F-03",
+        "location": "Nozzle N-1 neck",
+        "description": "Corrosion Under Insulation (CUI) detected at insulation termination near nozzle N-3. Moisture ingress evident; metal loss confirmed by follow-up UT.",
+        "severity": "Major",
+        "ref_clause": "OISD-STD-116 Cl. 7.9",
+        "recommendation": "Strip insulation over affected zone, carry out 100% UT scan, repair per API 510 and reinstate weatherproofing."
+      }
+    ],
+    "readings": [
+      {
+        "cml_id": "CML-01",
+        "location": "Bottom head — knuckle",
+        "nominal_mm": "16.0",
+        "previous_mm": "14.67",
+        "current_mm": "14.56",
+        "min_required_mm": "10.2",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-02",
+        "location": "Shell course 1 — 90°",
+        "nominal_mm": "16.0",
+        "previous_mm": "14.99",
+        "current_mm": "14.58",
+        "min_required_mm": "10.2",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-03",
+        "location": "Shell course 1 — 0°",
+        "nominal_mm": "16.0",
+        "previous_mm": "14.20",
+        "current_mm": "13.84",
+        "min_required_mm": "10.2",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-04",
+        "location": "Top head — crown",
+        "nominal_mm": "16.0",
+        "previous_mm": "14.20",
+        "current_mm": "13.86",
+        "min_required_mm": "10.2",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-05",
+        "location": "Shell/head weld seam",
+        "nominal_mm": "16.0",
+        "previous_mm": "15.49",
+        "current_mm": "15.27",
+        "min_required_mm": "10.2",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-06",
+        "location": "Shell course 2 — 180°",
+        "nominal_mm": "16.0",
+        "previous_mm": "14.68",
+        "current_mm": "10.09",
+        "min_required_mm": "10.2",
+        "status": "BELOW MIN"
+      }
+    ]
+  }
+}

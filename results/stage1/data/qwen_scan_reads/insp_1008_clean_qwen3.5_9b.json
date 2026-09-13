@@ -1,0 +1,100 @@
+{
+  "result": {
+    "fields": 51,
+    "errors": 0,
+    "critical_fields": 27,
+    "critical_errors": 0,
+    "error_list": [],
+    "critical_list": [],
+    "doc": "insp_1008",
+    "model": "qwen3.5:9b",
+    "quality": "clean",
+    "pages": 1,
+    "seconds": 38.6,
+    "eval_tokens": 999,
+    "prompt_tokens": 4104
+  },
+  "extracted": {
+    "report_no": "MRPL/INSP/2026/8367",
+    "equipment_tag": "R-3182",
+    "equipment_name": "Reactor",
+    "unit": "HGU — Hydrogen Generation Unit",
+    "plant": "Mangalore Refinery — Phase II",
+    "inspection_type": "Ultrasonic Thickness Survey",
+    "inspection_date": "01-07-2026",
+    "next_due_date": "01-07-2027",
+    "inspector_name": "A. Deshpande",
+    "inspector_cert": "API-510-67623",
+    "design_pressure_barg": "17.4 barg",
+    "design_temp_c": "380 °C",
+    "service_fluid": "Amine (MDEA) Solution",
+    "year_built": "2008",
+    "corrosion_rate_mm_yr": "0.088 mm/yr",
+    "remaining_life_yr": "0.0 years",
+    "findings": [
+      {
+        "finding_id": "F-01",
+        "location": "Bottom head — knuckle",
+        "description": "Insulation cladding damaged and displaced over a 2 m section of the vapour line. No metal loss detected at this stage.",
+        "severity": "Minor",
+        "ref_clause": "OISD-STD-118 Cl. 6.2",
+        "recommendation": "Reinstate cladding and seal joints to prevent water ingress."
+      },
+      {
+        "finding_id": "F-02",
+        "location": "Shell course 1 — 0°",
+        "description": "Localised external corrosion observed on shell plate adjacent to support saddle. Coating breakdown over approximately 0.4 m² with visible rust scaling.",
+        "severity": "Minor",
+        "ref_clause": "OISD-STD-116 Cl. 7.3",
+        "recommendation": "Remove loose scale, surface prepare to St-3 and re-apply approved coating system during next available shutdown."
+      }
+    ],
+    "readings": [
+      {
+        "cml_id": "CML-01",
+        "location": "Top head — crown",
+        "nominal_mm": "20.0",
+        "previous_mm": "19.45",
+        "current_mm": "13.01",
+        "min_required_mm": "13.4",
+        "status": "BELOW MIN"
+      },
+      {
+        "cml_id": "CML-02",
+        "location": "Shell course 2 — 270°",
+        "nominal_mm": "20.0",
+        "previous_mm": "18.22",
+        "current_mm": "18.02",
+        "min_required_mm": "13.4",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-03",
+        "location": "Nozzle N-3 neck",
+        "nominal_mm": "20.0",
+        "previous_mm": "19.63",
+        "current_mm": "19.54",
+        "min_required_mm": "13.4",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-04",
+        "location": "Shell course 1 — 90°",
+        "nominal_mm": "20.0",
+        "previous_mm": "18.55",
+        "current_mm": "18.35",
+        "min_required_mm": "13.4",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-05",
+        "location": "Shell/head weld seam",
+        "nominal_mm": "20.0",
+        "previous_mm": "18.39",
+        "current_mm": "17.97",
+        "min_required_mm": "13.4",
+        "status": "Acceptable"
+      }
+    ]
+  }
+}

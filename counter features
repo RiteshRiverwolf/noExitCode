@@ -1,0 +1,41 @@
+“Use code for fixed steps and AI for understanding.”
+Comparing two numbers needs code; understanding a loosely written inspection note benefits from AI.
+
+“Let multiple agents share one model.”
+Agents can have different instructions without needing separate models, saving memory and model-loading time.
+
+“Try Granite as our starting text model.”
+It performed best in our small test, but we still need to check it on different documents.
+
+“Check every number, unit, and decision.”
+A report can contain the correct numbers but swap their meanings, so checking keywords alone is insufficient.
+
+“Fill important report fields directly from verified data.”
+Copy measurements through code and let AI write explanations, reducing the chance of changed numbers or invented approvals.
+
+“Read each document once and reuse the result.”
+Save the extracted data so every agent does not repeat the same work.
+
+“Recheck only unclear cells.”
+If one reading is doubtful, inspect that small image region instead of processing the entire document again.
+
+“Search exact IDs before searching by meaning.”
+Equipment tags and clause numbers need exact matches; a similar-looking result could refer to something different.
+
+“Keep AnythingLLM for chat and search.”
+Reuse its working features, while our code ensures inspection steps happen in the required order.
+
+“Connect the dashboard to real activity.”
+Show actual processing steps and network logs so the interface proves what the system is doing.
+
+“Bundle everything locally and test without internet.”
+Models, fonts, styling, and other dependencies should already be available when the machine starts offline.
+
+“Test documents the system has not seen before.”
+Different layouts and scan quality show whether it works beyond our familiar examples.
+
+“Measure time to a correct report.”
+A fast answer is not useful if someone spends several minutes correcting it; include that correction time.
+
+“Send uncertain readings for human review.”
+Show the original image crop so a person can confirm the value instead of letting AI guess.

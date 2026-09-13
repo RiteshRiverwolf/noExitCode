@@ -1,0 +1,116 @@
+{
+  "result": {
+    "fields": 61,
+    "errors": 0,
+    "critical_fields": 29,
+    "critical_errors": 0,
+    "error_list": [],
+    "critical_list": [],
+    "doc": "insp_1006",
+    "model": "qwen3.5:9b",
+    "quality": "medium",
+    "pages": 1,
+    "seconds": 24.8,
+    "eval_tokens": 1260,
+    "prompt_tokens": 4230
+  },
+  "extracted": {
+    "report_no": "MRPL/INSP/2026/8547",
+    "equipment_tag": "E-2554",
+    "equipment_name": "Shell & Tube Heat Exchanger",
+    "unit": "CDU-I — Crude Distillation Unit",
+    "plant": "Mangalore Refinery — Phase II",
+    "inspection_type": "Turnaround Inspection",
+    "inspection_date": "04-01-2026",
+    "next_due_date": "04-01-2027",
+    "inspector_name": "N. Kulkarni",
+    "inspector_cert": "API-510-22869",
+    "design_pressure_barg": "35.6 barg",
+    "design_temp_c": "380 °C",
+    "service_fluid": "Crude Oil",
+    "year_built": "2003",
+    "corrosion_rate_mm_yr": "0.119 mm/yr",
+    "remaining_life_yr": "36.2 years",
+    "findings": [
+      {
+        "finding_id": "F-01",
+        "location": "Nozzle N-1 neck",
+        "description": "Support saddle anchor bolt at south-west location found loose. No structural distress observed.",
+        "severity": "Observation",
+        "ref_clause": "OISD-STD-118 Cl. 6.5",
+        "recommendation": "Re-torque anchor bolt to specification and record in maintenance log."
+      },
+      {
+        "finding_id": "F-02",
+        "location": "Shell course 1 — 0°",
+        "description": "Corrosion Under Insulation (CUI) detected at insulation termination near nozzle N-3. Moisture ingress evident; metal loss confirmed by follow-up UT.",
+        "severity": "Major",
+        "ref_clause": "OISD-STD-116 Cl. 7.9",
+        "recommendation": "Strip insulation over affected zone, carry out 100% UT scan, repair per API 510 and reinstate weatherproofing."
+      },
+      {
+        "finding_id": "F-03",
+        "location": "Top head — crown",
+        "description": "Nozzle N-1 internal projection shows erosion-corrosion consistent with high velocity impingement. Wall thickness reduced below nominal at 3 o'clock position.",
+        "severity": "Major",
+        "ref_clause": "API 510 Cl. 7.2",
+        "recommendation": "Install impingement plate. Increase UT monitoring frequency to 6-monthly at CML-04."
+      },
+      {
+        "finding_id": "F-04",
+        "location": "Shell course 1 — 0°",
+        "description": "Weld seam W-12 shows surface-breaking linear indication approximately 35 mm in length, confirmed by MPI. Indication is transverse to the weld axis.",
+        "severity": "Critical",
+        "ref_clause": "ASME Sec. VIII Div. 1 UW-51",
+        "recommendation": "Do not return to service. Excavate defect, re-weld per approved WPS and re-examine by RT. Notify Inspection Head immediately."
+      }
+    ],
+    "readings": [
+      {
+        "cml_id": "CML-01",
+        "location": "Shell course 1 — 0°",
+        "nominal_mm": "14.0",
+        "previous_mm": "13.65",
+        "current_mm": "13.45",
+        "min_required_mm": "7.8",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-02",
+        "location": "Shell/head weld seam",
+        "nominal_mm": "14.0",
+        "previous_mm": "13.79",
+        "current_mm": "13.56",
+        "min_required_mm": "7.8",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-03",
+        "location": "Shell course 2 — 180°",
+        "nominal_mm": "14.0",
+        "previous_mm": "13.02",
+        "current_mm": "12.84",
+        "min_required_mm": "7.8",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-04",
+        "location": "Nozzle N-1 neck",
+        "nominal_mm": "14.0",
+        "previous_mm": "13.63",
+        "current_mm": "13.27",
+        "min_required_mm": "7.8",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-05",
+        "location": "Nozzle N-3 neck",
+        "nominal_mm": "14.0",
+        "previous_mm": "12.39",
+        "current_mm": "12.11",
+        "min_required_mm": "7.8",
+        "status": "Acceptable"
+      }
+    ]
+  }
+}

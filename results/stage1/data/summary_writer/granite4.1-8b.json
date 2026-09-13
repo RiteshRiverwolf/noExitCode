@@ -1,0 +1,611 @@
+[
+  {
+    "doc": "insp_1000",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The rules engine concluded to ESCALATE due to two Major findings and one Observation. A Major finding (F-02) identified pitting on the internal shell surface at the liquid/vapour interface with a maximum depth of 1.8 mm against a nominal wall thickness of 12 mm. Another Major finding (F-03) noted that the pressure relief valve PSV-tag is overdue for overhaul, as its last test certificate exceeds the permitted 36-month interval for this service category. Thickness readings are all above minimum requirements, but engineering attention is required to address the pitting and perform a fitness-for-service evaluation per API 579 Level 1 before returning the equipment to service, and to withdraw and overhaul the pressure relief valve prior to unit restart.",
+        "problems": [],
+        "reply_tokens": 153
+      }
+    ],
+    "seconds": 6.9,
+    "words": 118,
+    "run": 1
+  },
+  {
+    "doc": "insp_1001",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The rules engine concluded NO TRIGGER, indicating that none of the evaluated safety rules were violated. Key findings include two Observations and one Minor issue: minor external scaling and paint chalking on the head section; a loose support saddle anchor bolt at the south-west location with no structural distress; and corroded ladder and platform grating adjacent to the manway requiring replacement due to significant corrosion loss. Thickness readings for all components are above their minimum requirements, but engineering attention is needed for the loose anchor bolt and corroded grating to ensure ongoing safety and compliance.",
+        "problems": [],
+        "reply_tokens": 113
+      }
+    ],
+    "seconds": 2.0,
+    "words": 95,
+    "run": 1
+  },
+  {
+    "doc": "insp_1002",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The inspection of R-2247 (Reactor), Continuous Catalytic Reformer (CCR) identified several findings requiring engineering attention. The critical issue is the wall thickness below the minimum required in CML-03 (Shell course 2 — 270°), measured at 12.32 mm, which falls short by 0.38 mm of the 12.7 mm threshold, triggering Rule THK-01 and resulting in an ESCALATE outcome from the rules engine. Additional findings include minor insulation damage, localized corrosion on shell plates, a loose support saddle anchor bolt, corroded ladder grating with significant section loss, and external scaling on the head section. Engineering must address the wall thickness deficiency and implement recommendations for coating repairs, structural reinforcement, grating replacement, and routine maintenance to ensure equipment integrity before service continuation.",
+        "problems": [],
+        "reply_tokens": 168
+      }
+    ],
+    "seconds": 2.7,
+    "words": 119,
+    "run": 1
+  },
+  {
+    "doc": "insp_1003",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The ultrasonic thickness survey of Storage Tank T-2839 in the NHT — Naphtha Hydrotreating Unit, conducted on 29-04-2026 (report MRPL/INSP/2026/4230), resulted in no rules engine triggers. The inspection identified 2 Observations and 3 Minor findings. Key issues include minor external scaling, localized corrosion requiring re-coating, a loose support saddle anchor bolt, damaged insulation cladding, and corroded ladder grating needing replacement. All thickness readings are above the minimum requirements. Engineering attention is required for corrosion mitigation, structural integrity checks, and safety equipment maintenance.",
+        "problems": [],
+        "reply_tokens": 131
+      }
+    ],
+    "seconds": 2.2,
+    "words": 82,
+    "run": 1
+  },
+  {
+    "doc": "insp_1004",
+    "result": "repaired",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The on-stream inspection of equipment E-6727 (Feed/Effluent Exchanger), VDU-II, reported under MRPL/INSP/2026/7384, resulted in an ESCALATE outcome due to critical findings. Rule THK-01 was triggered because the wall thickness at CML-03 (Shell course 1 — 90°) is 7.45 mm, which is below the minimum required of 7.9 mm by 0.45 mm. Additionally, Rule SEV-01 escalated due to a Major finding (F-02): pitting on the internal shell surface at the liquid/vapour interface, with a maximum pit depth of 1.8 mm against a nominal wall thickness of 12 mm. Other findings include an Observation (loose support saddle anchor bolt) and a Minor issue (localized external corrosion). Engineering attention is required to address the wall thickness shortfall and evaluate the pitting for fitness-for-service per API 579 Level 1 standards before returning the equipment to service.",
+        "problems": [
+          "longer than 120 words (132); cut it to under 110"
+        ],
+        "reply_tokens": 211
+      },
+      {
+        "attempt": 2,
+        "text": "The on-stream inspection of E-6727 (Feed/Effluent Exchanger), VDU-II, reported in MRPL/INSP/2026/7384, triggered an ESCALATE due to critical findings. Rule THK-01 was activated because the wall thickness at CML-03 (Shell course 1 — 90°) is 7.45 mm, below the required minimum of 7.9 mm by 0.45 mm. Additionally, Rule SEV-01 escalated a Major finding (F-02): pitting observed on the internal shell surface at the liquid/vapour interface, with a maximum pit depth of 1.8 mm against a nominal wall thickness of 12 mm. Other findings include an Observation (loose support saddle anchor bolt) and a Minor issue (localized external corrosion). Engineering attention is required to address the wall thickness shortfall and evaluate the pitting for fitness-for-service per API 579 Level 1 before returning the equipment to service.",
+        "problems": [],
+        "reply_tokens": 204
+      }
+    ],
+    "seconds": 6.4,
+    "words": 125,
+    "run": 1
+  },
+  {
+    "doc": "insp_1005",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The ultrasonic thickness survey of T-5520 (Storage Tank), CCR, conducted on 13-08-2026, resulted in a \"NO TRIGGER\" outcome from the rules engine, indicating no immediate safety concerns based on thickness measurements. Key findings include two Observations and two Minors: a loose support saddle anchor bolt, displaced insulation cladding on a vapor line, minor external scaling on the head section, and localized corrosion near a support saddle. All thickness readings were above their minimum requirements. Engineering attention is required for the loose anchor bolt, damaged insulation, and localized corrosion to ensure continued safe operation of the equipment.",
+        "problems": [],
+        "reply_tokens": 129
+      }
+    ],
+    "seconds": 2.2,
+    "words": 96,
+    "run": 1
+  },
+  {
+    "doc": "insp_1006",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The rules engine concluded to ESCALATE due to three findings graded Major or Critical. A Major finding (F-02) identified Corrosion Under Insulation at nozzle N-3 caused by moisture ingress, requiring insulation stripping and repair per API 510. Another Major finding (F-03) noted erosion-corrosion on nozzle N-1's internal projection, necessitating an impingement plate installation and increased UT monitoring. The Critical finding (F-04) detected a surface-breaking weld indication in seam W-12, mandating excavation, re-welding per the approved WPS, and immediate notification to the Inspection Head. Thickness readings are all above minimum requirements, but engineering attention is required for the corrosion, erosion, and weld defect issues.",
+        "problems": [],
+        "reply_tokens": 154
+      }
+    ],
+    "seconds": 2.6,
+    "words": 103,
+    "run": 1
+  },
+  {
+    "doc": "insp_1007",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The on-stream inspection of Separator Vessel V-3859 in the FCCU reported no rule triggers per the rules engine, indicating no immediate safety concerns based on evaluated criteria. Key findings include two Minor issues: corroded ladder grating with significant section loss and localized external corrosion on a shell plate requiring coating repair, and one Observation of a loose support saddle anchor bolt without observed structural distress. Thickness measurements across all critical locations were above the minimum required thickness, thus no thickness-related actions are mandated by the rules engine. Engineering attention is needed for the Minor findings to prevent potential hazards and ensure long-term integrity of the vessel components.",
+        "problems": [],
+        "reply_tokens": 126
+      }
+    ],
+    "seconds": 2.2,
+    "words": 107,
+    "run": 1
+  },
+  {
+    "doc": "insp_1008",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The rules engine escalated the inspection report for R-3182 (Reactor), HGU due to a critical finding where the wall thickness of the top head—crown (CML-01) measured at 13.01 mm is below the required minimum of 13.4 mm, resulting in a shortfall of 0.39 mm. Additionally, two minor observations were noted: damaged insulation cladding over a 2 m section of the vapour line and localized external corrosion on a shell plate adjacent to a support saddle, both requiring attention during the next maintenance window. Engineering must address the insufficient wall thickness to ensure structural integrity before approving service continuation.",
+        "problems": [],
+        "reply_tokens": 133
+      }
+    ],
+    "seconds": 2.2,
+    "words": 98,
+    "run": 1
+  },
+  {
+    "doc": "insp_1009",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The on-stream inspection of V-4179 (Reflux Accumulator) in CDU-I concluded with NO TRIGGER from the rules engine, indicating no immediate safety concerns based on evaluated criteria. Key findings include three Minor issues: damaged insulation cladding, corroded ladder grating exceeding 20% loss at two treads, and localized external corrosion on a shell plate requiring coating restoration; plus two Observations: minor scaling on the head section and a loose support saddle anchor bolt. All thickness measurements are above minimum requirements. Engineering attention is required for the Minor findings to prevent potential service interruptions or safety hazards.",
+        "problems": [],
+        "reply_tokens": 123
+      }
+    ],
+    "seconds": 2.1,
+    "words": 94,
+    "run": 1
+  },
+  {
+    "doc": "insp_1010",
+    "result": "repaired",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The rules engine escalated the inspection report for VDU-II's Fractionation Column (C-4544) due to critical findings. A Major finding (F-01) identified erosion-corrosion at Nozzle N-1 requiring an impingement plate and increased ultrasonic monitoring. Another Major finding (F-03) detected Corrosion Under Insulation (CUI) near Nozzle N-3 necessitating insulation removal, a full ultrasonic scan, and repairs per API 510 standards. Additionally, a Minor observation noted damaged insulation cladding over a 2-meter section of the vapor line. Immediate engineering attention is required to address these issues before the equipment can be considered for service.",
+        "problems": [
+          "does not mention CML-06, which is below its minimum"
+        ],
+        "reply_tokens": 141
+      },
+      {
+        "attempt": 2,
+        "text": "The rules engine escalated the inspection report for VDU-II's Fractionation Column (C-4544) due to critical findings. A Major finding (F-01) identified erosion-corrosion at Nozzle N-1 requiring an impingement plate and increased ultrasonic monitoring frequency to 6-monthly at CML-04. Another Major finding (F-03) detected Corrosion Under Insulation (CUI) near Nozzle N-3, necessitating insulation removal, a full ultrasonic scan, and repairs per API 510 standards. A Minor observation noted damaged insulation cladding over a 2-meter section of the vapor line. Additionally, CML-06 (Shell course 2 — 180°) measured at 10.09 mm is below the minimum required thickness of 10.20 mm by 0.11 mm, triggering Rule THK-01. Immediate engineering attention is required to address these issues before the equipment can be considered for service.",
+        "problems": [],
+        "reply_tokens": 200
+      }
+    ],
+    "seconds": 5.4,
+    "words": 121,
+    "run": 1
+  },
+  {
+    "doc": "insp_1011",
+    "result": "repaired",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The on-stream inspection of equipment E-1524 (Shell & Tube Heat Exchanger) in the SRU-III unit, conducted on 15-02-2026 and documented in report MRPL/INSP/2026/2491, resulted in no triggers from the rules engine, indicating that none of the evaluated safety criteria were violated. The inspection identified five findings: two observations and three minor issues. Key concerns include external scaling and paint chalking (Observation), corroded ladder grating requiring replacement (Minor), a loose support saddle anchor bolt (Observation), damaged insulation cladding on a vapor line (Minor), and localized external corrosion on the shell plate adjacent to a support saddle (Minor). All thickness measurements were above their minimum requirements, with no critical or major findings reported. Engineering attention is needed for the grating replacement, anchor bolt re-torquing, insulation reinstatement, and coating repair during the next maintenance window.",
+        "problems": [
+          "longer than 120 words (132); cut it to under 110"
+        ],
+        "reply_tokens": 193
+      },
+      {
+        "attempt": 2,
+        "text": "The on-stream inspection of equipment E-1524 (Shell & Tube Heat Exchanger) in the SRU-III unit, conducted on 15-02-2026 and documented in report MRPL/INSP/2026/2491, resulted in no triggers from the rules engine, indicating compliance with evaluated safety criteria. Five findings were noted: two observations and three minor issues. Key concerns include external scaling and paint chalking (Observation), corroded ladder grating requiring replacement (Minor), a loose support saddle anchor bolt (Observation), damaged insulation cladding on a vapor line (Minor), and localized external corrosion on the shell plate adjacent to a support saddle (Minor). All thickness measurements exceeded minimum requirements, with no critical or major findings. Engineering attention is required for grating replacement, anchor bolt re-torquing, insulation reinstatement, and coating repair during the next maintenance window.",
+        "problems": [],
+        "reply_tokens": 184
+      }
+    ],
+    "seconds": 5.9,
+    "words": 123,
+    "run": 1
+  },
+  {
+    "doc": "insp_1000",
+    "result": "repaired",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The internal visual inspection of equipment E-4461 (Feed/Effluent Exchanger), VDU-II, conducted on 17-01-2026, resulted in an ESCALATE outcome due to two major findings triggering Rule SEV-01. A Major finding (F-02) identified pitting on the internal shell surface at the liquid/vapour interface with a maximum depth of 1.8 mm against a nominal wall thickness of 12 mm. Another Major finding (F-03) noted that the pressure relief valve PSV-tag is overdue for overhaul, as its last test certificate exceeds the permitted 36-month interval for this service category. Additionally, an Observation (F-01) reported a loose support saddle anchor bolt at the south-west location, with no structural distress observed. Thickness readings are all above minimum requirements, but engineering attention is required to address the pitting and PSV overhaul before the unit can be safely returned to service.",
+        "problems": [
+          "longer than 120 words (133); cut it to under 110"
+        ],
+        "reply_tokens": 194
+      },
+      {
+        "attempt": 2,
+        "text": "The internal visual inspection of equipment E-4461 (Feed/Effluent Exchanger), VDU-II, on 17-01-2026 (report MRPL/INSP/2026/2783) triggered an ESCALATE due to two Major findings under Rule SEV-01. Pitting was observed on the internal shell surface at the liquid/vapour interface with a maximum depth of 1.8 mm against a nominal wall thickness of 12 mm (F-02). Additionally, the pressure relief valve PSV-tag is overdue for overhaul as its last test certificate exceeds the 36-month interval permitted for this service category (F-03). An Observation noted a loose support saddle anchor bolt at the south-west location with no structural distress (F-01). All thickness readings exceed minimum requirements. Engineering attention is required to address the pitting, PSV overhaul, and re-torque the anchor bolt before safe unit restart.",
+        "problems": [],
+        "reply_tokens": 192
+      }
+    ],
+    "seconds": 5.9,
+    "words": 121,
+    "run": 2
+  },
+  {
+    "doc": "insp_1001",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The external visual inspection of Separator Vessel V-1668 in the DHDT unit, conducted on 20-08-2026 (report MRPL/INSP/2026/1581), resulted in no rule triggers per the rules engine, indicating no immediate safety concerns based on evaluated criteria. Key findings include two observations and one minor issue: external scaling and paint chalking; a loose support saddle anchor bolt; and corroded ladder grating with significant section loss. All thickness measurements were above minimum requirements. Engineering attention is required for the loose anchor bolt, corroded grating, and routine maintenance of scaled surfaces to ensure continued safe operation.",
+        "problems": [],
+        "reply_tokens": 132
+      }
+    ],
+    "seconds": 2.1,
+    "words": 92,
+    "run": 2
+  },
+  {
+    "doc": "insp_1002",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The inspection of R-2247 (Reactor), Continuous Catalytic Reformer (CCR) on 03-02-2026 identified several findings requiring engineering attention. The critical issue is the wall thickness below the minimum required in CML-03 (Shell course 2 — 270°), measured at 12.32 mm, which falls short by 0.38 mm of the required 12.7 mm, triggering Rule THK-01 and resulting in an ESCALATE outcome from the rules engine. Additionally, there are three Minor findings: insulation cladding damage over a 2 m section, localized external corrosion on a shell plate, and corroded ladder/platform grating with significant section loss. Two Observations noted include a loose support saddle anchor bolt and minor external scaling on the head section. Engineering must address the wall thickness reduction and implement recommendations for insulation, coating, structural integrity, and maintenance scheduling.",
+        "problems": [],
+        "reply_tokens": 187
+      }
+    ],
+    "seconds": 2.9,
+    "words": 128,
+    "run": 2
+  },
+  {
+    "doc": "insp_1003",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The ultrasonic thickness survey of Storage Tank T-2839 in the NHT — Naphtha Hydrotreating Unit, conducted on 29-04-2026 (report MRPL/INSP/2026/4230), resulted in no rules engine triggers. The inspection identified 2 Observations and 3 Minor findings. Key issues include minor external scaling, localized corrosion requiring re-coating, a loose support saddle anchor bolt, damaged insulation cladding, and corroded ladder grating needing replacement. All thickness readings were above the minimum requirements. Engineering attention is needed for corrosion mitigation, structural integrity checks, and safety surface preparations.",
+        "problems": [],
+        "reply_tokens": 131
+      }
+    ],
+    "seconds": 2.1,
+    "words": 82,
+    "run": 2
+  },
+  {
+    "doc": "insp_1004",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The on-stream inspection of equipment E-6727 (Feed/Effluent Exchanger), VDU-II, reported in MRPL/INSP/2026/7384 dated 19-05-2026 resulted in an ESCALATE outcome due to critical findings. Rule THK-01 was triggered because the wall thickness at CML-03 (Shell course 1 — 90°) is 7.45 mm, which is below the minimum required of 7.9 mm by 0.45 mm. Additionally, Rule SEV-01 escalated due to a Major finding (F-02): pitting with a maximum depth of 1.8 mm was observed at the liquid/vapour interface on the internal shell surface. Other findings include an Observation (loose support saddle anchor bolt) and a Minor issue (localized external corrosion). Engineering attention is required to assess fitness-for-service, perform pit depth mapping, re-torque the anchor bolt, and address coating issues before any return to service.",
+        "problems": [],
+        "reply_tokens": 207
+      }
+    ],
+    "seconds": 3.1,
+    "words": 123,
+    "run": 2
+  },
+  {
+    "doc": "insp_1005",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The ultrasonic thickness survey of T-5520 (Storage Tank), CCR, conducted on 13-08-2026, resulted in a \"NO TRIGGER\" outcome from the rules engine, indicating no immediate safety concerns based on evaluated criteria. Key findings include two Observations and two Minors: a loose support saddle anchor bolt, damaged insulation cladding on a vapor line section, minor external scaling on the head section, and localized corrosion adjacent to a support saddle. All thickness measurements were above their minimum requirements. Engineering attention is required for the loose anchor bolt, insulation repair, routine painting schedule inclusion, and re-coating of the corroded shell plate area during the next shutdown.",
+        "problems": [],
+        "reply_tokens": 140
+      }
+    ],
+    "seconds": 2.2,
+    "words": 103,
+    "run": 2
+  },
+  {
+    "doc": "insp_1006",
+    "result": "repaired",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The rules engine escalated the inspection report for E-2554 due to three major findings and one critical finding. A Major corrosion under insulation (CUI) was detected at nozzle N-3, requiring insulation removal, ultrasonic testing, repair per API 510, and reinstallation of weatherproofing. Another Major finding involved erosion-corrosion on nozzle N-1, necessitating the installation of an impingement plate and increased monitoring frequency. The Critical finding is a surface-breaking linear indication in weld seam W-12, which must be excavated, rewelded per an approved welding procedure specification (WPS), and re-examined by radiography before any return to service. All thickness measurements are above minimum requirements, but immediate engineering attention is required for the critical weld defect and major corrosion issues.",
+        "problems": [
+          "says 3 major finding(s); the report has 2"
+        ],
+        "reply_tokens": 164
+      },
+      {
+        "attempt": 2,
+        "text": "The rules engine escalated the inspection report for E-2554 due to two Major findings and one Critical finding. A Major corrosion under insulation (CUI) was detected at nozzle N-3, requiring insulation removal, ultrasonic testing, repair per API 510, and reinstallation of weatherproofing. Another Major finding involved erosion-corrosion on nozzle N-1, necessitating the installation of an impingement plate and increased monitoring frequency. The Critical finding is a surface-breaking linear indication in weld seam W-12, which must be excavated, rewelded per an approved welding procedure specification (WPS), and re-examined by radiography before any return to service. All thickness measurements are above minimum requirements, but immediate engineering attention is required for the critical weld defect and major corrosion issues.",
+        "problems": [],
+        "reply_tokens": 164
+      }
+    ],
+    "seconds": 5.1,
+    "words": 116,
+    "run": 2
+  },
+  {
+    "doc": "insp_1007",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The on-stream inspection of Separator Vessel V-3859 in the FCCU, conducted on 03-07-2026 (report MRPL/INSP/2026/8266), resulted in no triggers from the rules engine, indicating that none of the evaluated criteria for concern were met. However, three findings require engineering attention: two Minor issues involving corrosion and one Observation regarding a loose anchor bolt. All thickness measurements are above their minimum requirements, with readings ranging from 13.98 mm to 15.48 mm on various components such as shell courses and nozzles. Engineers should address the corroded grating, remove rust scaling from the shell plate, and re-torque the identified anchor bolt before the next scheduled inspection or maintenance event.",
+        "problems": [],
+        "reply_tokens": 154
+      }
+    ],
+    "seconds": 2.4,
+    "words": 106,
+    "run": 2
+  },
+  {
+    "doc": "insp_1008",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The ultrasonic thickness survey for equipment R-3182 (Reactor), HGU — Hydrogen Generation Unit, conducted on 01-07-2026, resulted in an ESCALATE outcome due to a critical finding. The top head crown (CML-01) measured 13.01 mm, which is below the minimum required thickness of 13.4 mm by 0.39 mm, triggering rule THK-01. Two minor observations were noted: damaged insulation cladding over a 2 m section and localized external corrosion on a shell plate adjacent to a support saddle. Engineering attention is required to address the wall thickness shortfall and mitigate potential risks associated with the identified corrosion and insulation issues.",
+        "problems": [],
+        "reply_tokens": 144
+      }
+    ],
+    "seconds": 2.3,
+    "words": 98,
+    "run": 2
+  },
+  {
+    "doc": "insp_1009",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The on-stream inspection of V-4179 (Reflux Accumulator) in CDU-I concluded with NO TRIGGER from the rules engine, indicating no immediate safety concerns based on evaluated criteria. Key findings include three Minor issues: damaged insulation cladding, corroded ladder grating exceeding 20% loss at two treads, and localized external corrosion on a shell plate requiring coating repair; plus two Observations: minor scaling on the head section and a loose support saddle anchor bolt. All thickness measurements are above minimum requirements. Engineering attention is required for the Minor findings to prevent potential failures or safety hazards during operation.",
+        "problems": [],
+        "reply_tokens": 124
+      }
+    ],
+    "seconds": 2.0,
+    "words": 95,
+    "run": 2
+  },
+  {
+    "doc": "insp_1010",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The rules engine escalated the inspection report for VDU-II's Fractionation Column (C-4544) due to critical findings. A Major finding (F-01) identified erosion-corrosion at Nozzle N-1 requiring an impingement plate and increased ultrasonic monitoring. Another Major finding (F-03) detected Corrosion Under Insulation (CUI) near Nozzle N-3, necessitating insulation removal, a full ultrasonic scan, and repairs per API 510 standards. Additionally, a Minor observation noted damaged insulation cladding over a 2-meter section of the vapor line, which should be reinstated to prevent water ingress. The wall thickness at Shell course 2 (CML-06) is below the minimum required by 0.11 mm, prompting immediate engineering attention.",
+        "problems": [],
+        "reply_tokens": 165
+      }
+    ],
+    "seconds": 2.6,
+    "words": 102,
+    "run": 2
+  },
+  {
+    "doc": "insp_1011",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The on-stream inspection of equipment E-1524 (Shell & Tube Heat Exchanger) in the SRU-III unit, conducted on 15-02-2026 and documented in report MRPL/INSP/2026/2491, resulted in no triggers from the rules engine, indicating that none of the evaluated criteria for concern were met. However, several findings require engineering attention: two observations (minor external scaling and a loose support saddle anchor bolt) and three minor issues (corroded ladder grating, damaged insulation cladding, and localized external corrosion on the shell plate). All thickness measurements are above their minimum requirements, but corrective actions should be scheduled to address the identified minor conditions before the next internal inspection.",
+        "problems": [],
+        "reply_tokens": 148
+      }
+    ],
+    "seconds": 2.4,
+    "words": 103,
+    "run": 2
+  },
+  {
+    "doc": "insp_1000",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The internal visual inspection of equipment E-4461 (Feed/Effluent Exchanger), VDU-II, conducted on 17-01-2026, resulted in an ESCALATE outcome due to two Major findings and one Observation. A Major finding (F-02) identified pitting on the internal shell surface at the liquid/vapour interface, with a maximum pit depth of 1.8 mm against a nominal wall thickness of 12 mm. Another Major finding (F-03) noted that the pressure relief valve PSV-tag is overdue for overhaul, as its last test certificate exceeds the permitted 36-month interval for this service category. Thickness readings are all above minimum requirements, but engineering attention is required to address the pitting and perform a fitness-for-service evaluation per API 579 Level 1 before returning the unit to service, and to withdraw and overhaul the pressure relief valve prior to restart.",
+        "problems": [],
+        "reply_tokens": 185
+      }
+    ],
+    "seconds": 2.8,
+    "words": 130,
+    "run": 3
+  },
+  {
+    "doc": "insp_1001",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The external visual inspection of Separator Vessel V-1668 in the DHDT unit, conducted on 20-08-2026 (report MRPL/INSP/2026/1581), resulted in no rule triggers per the evaluation engine. The findings include two Observations and one Minor issue: minor scaling and paint chalking on the head section; a loose support saddle anchor bolt at the south-west location with no structural distress; and corroded ladder/platform grating adjacent to the manway requiring replacement due to significant corrosion loss. All thickness measurements are above their minimum thresholds, indicating no immediate thickness-related concerns. Engineering attention is required for the loose anchor bolt and the degraded grating sections as part of routine maintenance.",
+        "problems": [],
+        "reply_tokens": 147
+      }
+    ],
+    "seconds": 2.3,
+    "words": 105,
+    "run": 3
+  },
+  {
+    "doc": "insp_1002",
+    "result": "long but accurate",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The inspection of R-2247 (Reactor), Continuous Catalytic Reformer (CCR) on 03-02-2026 identified several findings requiring engineering attention. The critical issue is the wall thickness below the minimum required in CML-03 (Shell course 2 — 270°), measured at 12.32 mm, which falls short by 0.38 mm of the required 12.7 mm, triggering Rule THK-01 and resulting in an ESCALATE outcome from the rules engine. Additionally, there are three Minor findings: insulation cladding damage over a 2 m section of the vapor line, localized external corrosion on a shell plate adjacent to a support saddle covering ~0.4 m², and corroded ladder/platform grating with >20% section loss at two treads. Two Observations include a loose support saddle anchor bolt and minor external scaling on the head section. Engineering must address the thickness shortfall in CML-03 and implement recommendations for insulation, corrosion repair, grating replacement, and maintenance logging to ensure safe operation.",
+        "problems": [
+          "longer than 120 words (148); cut it to under 110"
+        ],
+        "reply_tokens": 218
+      },
+      {
+        "attempt": 2,
+        "text": "The external visual inspection of R-2247 (Reactor), Continuous Catalytic Reformer (CCR) on 03-02-2026 identified critical and minor issues requiring engineering attention. Rule THK-01 triggered due to wall thickness below minimum in CML-03 (Shell course 2 — 270°), measured at 12.32 mm, falling short by 0.38 mm of the required 12.7 mm, resulting in an ESCALATE outcome from the rules engine. Minor findings include insulation cladding damage over a 2 m section of the vapor line, localized external corrosion on a shell plate adjacent to a support saddle (~0.4 m²), and corroded ladder/platform grating with >20% section loss at two treads. Observations involve a loose support saddle anchor bolt and minor external scaling on the head section. Engineering must address the thickness shortfall in CML-03 and implement recommendations for insulation, corrosion repair, grating replacement, and maintenance logging to ensure safe operation.",
+        "problems": [
+          "longer than 120 words (140); cut it to under 110"
+        ],
+        "reply_tokens": 208
+      }
+    ],
+    "seconds": 6.4,
+    "words": 140,
+    "run": 3
+  },
+  {
+    "doc": "insp_1003",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The ultrasonic thickness survey of Storage Tank T-2839 in the NHT — Naphtha Hydrotreating Unit, conducted on 29-04-2026 (report MRPL/INSP/2026/4230), resulted in no rules engine triggers. The inspection identified 2 Observations and 3 Minor issues. Key findings include minor external scaling, localized corrosion requiring re-coating, a loose support saddle anchor bolt, damaged insulation cladding, and corroded ladder grating needing replacement. All thickness readings were above the minimum requirements. Engineering attention is required for corrosion mitigation, structural integrity checks, and safety equipment maintenance.",
+        "problems": [],
+        "reply_tokens": 131
+      }
+    ],
+    "seconds": 2.1,
+    "words": 82,
+    "run": 3
+  },
+  {
+    "doc": "insp_1004",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The on-stream inspection of equipment E-6727 (Feed/Effluent Exchanger), VDU-II, reported in MRPL/INSP/2026/7384 on 19-05-2026 resulted in an ESCALATE outcome due to critical findings. Rule THK-01 was triggered because the wall thickness at CML-03 (Shell course 1 — 90°) is 7.45 mm, which is below the minimum required of 7.9 mm by 0.45 mm. Additionally, Rule SEV-01 escalated due to a Major finding (F-02): pitting on the internal shell surface at the liquid/vapour interface with a maximum depth of 1.8 mm against a nominal wall thickness of 12 mm. Other findings include an Observation (loose support saddle anchor bolt) and a Minor issue (localized external corrosion). Engineering attention is required to assess fitness-for-service, perform pit depth mapping, re-torque the anchor bolt, and address coating issues before returning the equipment to service.",
+        "problems": [],
+        "reply_tokens": 215
+      }
+    ],
+    "seconds": 3.2,
+    "words": 130,
+    "run": 3
+  },
+  {
+    "doc": "insp_1005",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The ultrasonic thickness survey of T-5520 (Storage Tank), CCR, conducted on 13-08-2026, resulted in a \"NO TRIGGER\" outcome from the rules engine, indicating no immediate safety concerns based on thickness measurements. Key findings include two Observations and two Minors: a loose support saddle anchor bolt, damaged insulation cladding on a vapor line section, minor external scaling on the head section, and localized corrosion near a support saddle. All measured thicknesses are above their minimum requirements. Engineering attention is required for the loose anchor bolt, insulation repair, routine painting schedule inclusion, and re-coating of the corroded shell plate area during the next shutdown.",
+        "problems": [],
+        "reply_tokens": 140
+      }
+    ],
+    "seconds": 2.2,
+    "words": 102,
+    "run": 3
+  },
+  {
+    "doc": "insp_1006",
+    "result": "long but accurate",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The rules engine escalated the inspection report for E-2554 due to three major and one critical findings. A Major finding (F-02) identified Corrosion Under Insulation at nozzle N-3 caused by moisture ingress, requiring insulation stripping, ultrasonic testing, repair per API 510, and reinstatement of weatherproofing. Another Major finding (F-03) noted erosion-corrosion on nozzle N-1's internal projection, necessitating installation of an impingement plate and increased ultrasonic monitoring frequency. The Critical finding (F-04) revealed a surface-breaking linear indication in weld seam W-12, transverse to the weld axis, mandating excavation, re-welding per approved WPS, radiographic examination, and immediate notification to the Inspection Head. An Observation (F-01) indicated a loose support saddle anchor bolt, requiring re-torquing and log entry. All thickness readings are above minimum requirements, but critical repairs must be addressed before any service return consideration.",
+        "problems": [
+          "says 3 major finding(s); the report has 2",
+          "longer than 120 words (133); cut it to under 110"
+        ],
+        "reply_tokens": 205
+      },
+      {
+        "attempt": 2,
+        "text": "The rules engine escalated the inspection report for E-2554 due to two Major and one Critical findings. A Major finding (F-02) identified Corrosion Under Insulation at nozzle N-3 caused by moisture ingress, requiring insulation stripping, ultrasonic testing, repair per API 510, and reinstatement of weatherproofing. Another Major finding (F-03) noted erosion-corrosion on nozzle N-1's internal projection, necessitating installation of an impingement plate and increased ultrasonic monitoring frequency. The Critical finding (F-04) revealed a surface-breaking linear indication in weld seam W-12, transverse to the weld axis, mandating excavation, re-welding per approved WPS, radiographic examination, and immediate notification to the Inspection Head. An Observation (F-01) indicated a loose support saddle anchor bolt, requiring re-torquing and log entry. All thickness readings exceed minimum requirements; critical repairs must be addressed before any service return consideration.",
+        "problems": [
+          "longer than 120 words (131); cut it to under 110"
+        ],
+        "reply_tokens": 203
+      }
+    ],
+    "seconds": 6.2,
+    "words": 131,
+    "run": 3
+  },
+  {
+    "doc": "insp_1007",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The on-stream inspection of Separator Vessel V-3859 in the FCCU was conducted on 03-07-2026 (report MRPL/INSP/2026/8266). The rules engine did not trigger any alerts, indicating no immediate safety concerns; however, this does not confirm fitness for service. Key findings include two Minor issues: corroded ladder grating with significant section loss and localized external corrosion on the shell plate requiring coating repair, and one Observation of a loose support saddle anchor bolt without observed structural distress. Thickness measurements across all critical locations are above minimum requirements. Engineering attention is needed to address the Minor findings before the next internal inspection.",
+        "problems": [],
+        "reply_tokens": 135
+      }
+    ],
+    "seconds": 2.1,
+    "words": 99,
+    "run": 3
+  },
+  {
+    "doc": "insp_1008",
+    "result": "repaired",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The ultrasonic thickness survey for R-3182 (Reactor), HGU on 01-07-2026 identified a critical issue with the top head crown wall thickness measuring 13.01 mm, which is below the required minimum of 13.4 mm by 0.39 mm, triggering rule THK-01. Two minor observations were noted: damaged insulation cladding over a 2 m section and localized external corrosion on a shell plate adjacent to a support saddle, both requiring attention during the next shutdown. All other thickness measurements are above their minimum requirements. Engineering must address the wall thickness shortfall and the identified corrosion and insulation issues before the equipment can be considered for service.",
+        "problems": [
+          "does not mention CML-01, which is below its minimum"
+        ],
+        "reply_tokens": 140
+      },
+      {
+        "attempt": 2,
+        "text": "The ultrasonic thickness survey for R-3182 (Reactor), HGU on 01-07-2026 revealed that the top head crown (CML-01) has a wall thickness of 13.01 mm, which is below the minimum required thickness of 13.4 mm by 0.39 mm, triggering rule THK-01. Additionally, two minor findings were observed: damaged insulation cladding over a 2 m section of the vapor line and localized external corrosion on a shell plate adjacent to a support saddle, both necessitating corrective actions during the next available shutdown. All other thickness measurements (CML-02 through CML-05) are above their respective minimum requirements. Engineering attention is required to address the critical wall thickness shortfall and the identified minor issues before the equipment can be considered for service.",
+        "problems": [],
+        "reply_tokens": 169
+      }
+    ],
+    "seconds": 4.8,
+    "words": 117,
+    "run": 3
+  },
+  {
+    "doc": "insp_1009",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The on-stream inspection of V-4179 (Reflux Accumulator) in CDU-I concluded with NO TRIGGER from the rules engine, indicating no immediate safety concerns based on evaluated criteria. Key findings include three Minor issues: damaged insulation cladding, corroded ladder grating exceeding 20% loss at two treads, and localized external corrosion on a shell plate requiring coating restoration. Additionally, two Observations were noted: minor scaling on the head section and a loose support saddle anchor bolt, both warranting routine maintenance actions. All thickness measurements are above their minimum requirements, but engineering attention is needed for insulation repair, grating replacement, and structural bolt re-torquing to ensure continued safe operation.",
+        "problems": [],
+        "reply_tokens": 144
+      }
+    ],
+    "seconds": 2.3,
+    "words": 105,
+    "run": 3
+  },
+  {
+    "doc": "insp_1010",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The rules engine escalated the inspection report for VDU-II's Fractionation Column (C-4544) due to critical findings. A Major finding (F-01) identified erosion-corrosion at Nozzle N-1 requiring an impingement plate and increased ultrasonic monitoring. Another Major finding (F-03) detected Corrosion Under Insulation (CUI) near Nozzle N-3, necessitating insulation removal, a full ultrasonic scan, and repair per API 510 standards. Additionally, a Minor observation noted damaged insulation cladding over a 2-meter section of the vapor line, which should be reinstated to prevent water ingress. The wall thickness at Shell course 2 (CML-06) is below the minimum required by 0.11 mm, prompting immediate engineering attention.",
+        "problems": [],
+        "reply_tokens": 165
+      }
+    ],
+    "seconds": 2.6,
+    "words": 102,
+    "run": 3
+  },
+  {
+    "doc": "insp_1011",
+    "result": "clean",
+    "attempts": [
+      {
+        "attempt": 1,
+        "text": "The on-stream inspection of equipment E-1524 (Shell & Tube Heat Exchanger) in the SRU-III unit, conducted on 15-02-2026 and documented in report MRPL/INSP/2026/2491, resulted in no triggers from the rules engine, indicating that none of the evaluated safety criteria were violated. The inspection identified five findings: two observations and three minor issues. Key concerns include external scaling and paint chalking (Observation), corroded ladder grating requiring replacement (Minor), a loose support saddle anchor bolt (Observation), damaged insulation cladding on a vapor line (Minor), and localized corrosion on the shell plate adjacent to a support saddle (Minor). All thickness measurements were above their minimum requirements. Engineering attention is needed for the grating, anchor bolt, insulation cladding, and localized corrosion to ensure continued safe operation.",
+        "problems": [],
+        "reply_tokens": 178
+      }
+    ],
+    "seconds": 2.7,
+    "words": 122,
+    "run": 3
+  }
+]

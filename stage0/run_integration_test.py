@@ -82,15 +82,40 @@ def expected_facts() -> dict:
     }
 
 
+HYPHENS = re.compile("[‐‑‒–—―−]")
+BREACH_WORDS = re.compile(r"below|under|<|breach|not meet|does not meet|insufficient|fails?\b", re.IGNORECASE)
+# "Minimum required 12.32" is a claimed minimum; "BELOW MIN: Current 12.32"
+# is not -- so the match may not cross the word "current".
+MIN_VALUE = re.compile(r"min\w*(?:(?!current)[^0-9\n]){0,30}?(\d+\.\d+)", re.IGNORECASE)
+
+
 def content_checks(text: str, facts: dict) -> dict:
+    # Models sometimes write "CML‑03" with a non-breaking hyphen (U+2011);
+    # it reads the same, so treat every hyphen-like character as "-".
+    text = HYPHENS.sub("-", text)
     checks = {
         f"mentions {facts['tag']}": facts["tag"] in text,
         "no template placeholders": PLACEHOLDER.search(text) is None,
     }
+    # Judge what matters for safety, not layout. Correct notes often state the
+    # minimum once in a heading ("Minimum Required = 12.7 mm") and write
+    # "CML-03: 12.32 mm - Below Minimum"; a wrong note can contain every
+    # number in the wrong place ("CML-03 ... Current 18.75 mm, Minimum
+    # required 12.32 mm" -- lfm2.5, 2026-09-11). So the breached CML's own
+    # line must flag the breach, and must not pair "minimum" with another
+    # number. Some notes carry literal "\n" instead of line breaks.
+    lines = re.split(r"\n|\\n", text)
     for cml, current, minimum in facts["breached"]:
-        checks[f"names breached {cml}"] = cml in text
-        checks[f"gives {cml} current {current} mm"] = current in text
-        checks[f"gives {cml} minimum {minimum} mm"] = minimum in text
+        own = [line for line in lines if cml in line]
+        flagged = any(BREACH_WORDS.search(line) for line in own)
+        wrong_min = [m.group(1) for line in own for m in MIN_VALUE.finditer(line)
+                     if float(m.group(1)) != float(minimum)]
+        checks[f"names breached {cml}"] = bool(own)
+        checks[f"flags {cml} as below minimum"] = flagged
+        checks[f"gives {cml} current {current} mm"] = (
+            any(current in line for line in own) or (flagged and current in text))
+        checks[f"states minimum {minimum} mm"] = minimum in text
+        checks[f"no other minimum given for {cml}"] = not wrong_min
     return checks
 
 

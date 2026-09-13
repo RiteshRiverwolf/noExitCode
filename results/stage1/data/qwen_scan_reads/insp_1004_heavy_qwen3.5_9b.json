@@ -1,0 +1,99 @@
+{
+  "result": {
+    "fields": 51,
+    "errors": 0,
+    "critical_fields": 23,
+    "critical_errors": 0,
+    "error_list": [],
+    "critical_list": [],
+    "doc": "insp_1004",
+    "model": "qwen3.5:9b",
+    "quality": "heavy",
+    "pages": 1,
+    "seconds": 38.5,
+    "eval_tokens": 1022,
+    "prompt_tokens": 4358
+  },
+  "extracted": {
+    "report_no": "MRPL/INSP/2026/7384",
+    "equipment_tag": "E-6727",
+    "equipment_name": "Feed/Effluent Exchanger",
+    "unit": "VDU-II - Vacuum Distillation Unit",
+    "plant": "Mangalore Refinery — Phase II",
+    "inspection_type": "On-Stream Inspection",
+    "inspection_date": "19-05-2026",
+    "next_due_date": "18-05-2029",
+    "inspector_name": "R. Venkataraman",
+    "inspector_cert": "API-510-34545",
+    "design_pressure_barg": "28.9 barg",
+    "design_temp_c": "320 °C",
+    "service_fluid": "Atmospheric Residue",
+    "year_built": "2012",
+    "corrosion_rate_mm_yr": "0.381 mm/yr",
+    "remaining_life_yr": "0.0 years",
+    "findings": [
+      {
+        "finding_id": "F-01",
+        "location": "Bottom head — knuckle",
+        "description": "Support saddle anchor bolt at south-west location found loose. No structural distress observed.",
+        "severity": "Observation",
+        "ref_clause": "OISD-STD-118 Cl. 6.5",
+        "recommendation": "Re-torque anchor bolt to specification and record in maintenance log."
+      },
+      {
+        "finding_id": "F-02",
+        "location": "Shell course 1 — 90°",
+        "description": "Pitting observed on internal shell surface at liquid/vapour interface. Maximum pit depth measured 1.8 mm against nominal 12 mm wall.",
+        "severity": "Major",
+        "ref_clause": "API 510 Cl. 5.4.2",
+        "recommendation": "Perform pit depth mapping. Evaluate fitness-for-service per API 579 Level 1 before returning to service."
+      },
+      {
+        "finding_id": "F-03",
+        "location": "Shell/head weld seam",
+        "description": "Localised external corrosion observed on shell plate adjacent to support saddle. Coating breakdown over approximately 0.4 m² with visible rust scaling.",
+        "severity": "Minor",
+        "ref_clause": "OISD-STD-116 Cl. 7.3",
+        "recommendation": "Remove loose scale, surface prepare to St-3 and re-apply approved coating system during next available shutdown."
+      }
+    ],
+    "readings": [
+      {
+        "cml_id": "CML-01",
+        "location": "Shell course 1 — 0°",
+        "nominal_mm": "12.0",
+        "previous_mm": "11.11",
+        "current_mm": "11.05",
+        "min_required_mm": "7.9",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-02",
+        "location": "Shell course 2 — 180°",
+        "nominal_mm": "12.0",
+        "previous_mm": "11.12",
+        "current_mm": "10.88",
+        "min_required_mm": "7.9",
+        "status": "Acceptable"
+      },
+      {
+        "cml_id": "CML-03",
+        "location": "Shell course 1 — 90°",
+        "nominal_mm": "12.0",
+        "previous_mm": "10.63",
+        "current_mm": "7.45",
+        "min_required_mm": "7.9",
+        "status": "BELOW MIN"
+      },
+      {
+        "cml_id": "CML-04",
+        "location": "Shell/head weld seam",
+        "nominal_mm": "12.0",
+        "previous_mm": "11.33",
+        "current_mm": "11.27",
+        "min_required_mm": "7.9",
+        "status": "Acceptable"
+      }
+    ]
+  }
+}

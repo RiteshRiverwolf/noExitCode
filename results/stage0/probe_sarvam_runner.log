@@ -1,0 +1,4 @@
+started 2026-09-11T18:54:08.6041013+05:30
+=== hf.co/bartowski/sarvamai_sarvam-m-GGUF:Q4_K_M : downloaded 18:54:08; arch=llama; capabilities=thinking,completion
+model hf.co/bartowski/sarvamai_sarvam-m-GGUF:Q4_K_M; workspace probe-185408; scan upload 200, 2710 chars
+V1 original  #1: tools=['rag-memory', 'rag-memory'] searched=True word=False correct=False (590.48s)

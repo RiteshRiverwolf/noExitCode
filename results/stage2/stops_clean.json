@@ -1,0 +1,124 @@
+{
+  "quality": "clean",
+  "counts": {
+    "note_right": 4,
+    "note_WRONG": 0,
+    "right_stop": 8,
+    "false_alarm": 0
+  },
+  "reports": [
+    {
+      "doc_id": "insp_1000",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "ESCALATE",
+      "expected": "ESCALATE",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1001",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "NO TRIGGER",
+      "expected": "NO TRIGGER",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1002",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "ESCALATE",
+      "expected": "ESCALATE",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1003",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.17s  -> needs_review  severity not readable, which could hide an escalation: F-02",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "F-02.severity: read '', printed 'Minor'"
+      ],
+      "right_but_flagged": []
+    },
+    {
+      "doc_id": "insp_1004",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.11s  -> needs_review  severity not readable, which could hide an escalation: F-02, F-03",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "F-02.severity: read 'Maior', printed 'Major'",
+        "F-03.severity: read '', printed 'Minor'"
+      ],
+      "right_but_flagged": []
+    },
+    {
+      "doc_id": "insp_1005",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "NO TRIGGER",
+      "expected": "NO TRIGGER",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1006",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.17s  -> needs_review  severity not readable, which could hide an escalation: F-03",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "F-03.severity: read 'Maior', printed 'Major'"
+      ],
+      "right_but_flagged": []
+    },
+    {
+      "doc_id": "insp_1007",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.14s  -> needs_review  severity not readable, which could hide an escalation: F-02",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "F-02.severity: read '', printed 'Minor'"
+      ],
+      "right_but_flagged": []
+    },
+    {
+      "doc_id": "insp_1008",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.11s  -> needs_review  severity not readable, which could hide an escalation: F-02",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "F-02.severity: read '', printed 'Minor'"
+      ],
+      "right_but_flagged": []
+    },
+    {
+      "doc_id": "insp_1009",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.14s  -> needs_review  severity not readable, which could hide an escalation: F-04",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "F-04.severity: read 'Obseryation', printed 'Observation'"
+      ],
+      "right_but_flagged": []
+    },
+    {
+      "doc_id": "insp_1010",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.14s  -> needs_review  severity not readable, which could hide an escalation: F-01",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "F-01.severity: read 'Maior', printed 'Major'"
+      ],
+      "right_but_flagged": []
+    },
+    {
+      "doc_id": "insp_1011",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.16s  -> needs_review  severity not readable, which could hide an escalation: F-05",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "F-05.severity: read '', printed 'Minor'"
+      ],
+      "right_but_flagged": []
+    }
+  ]
+}
