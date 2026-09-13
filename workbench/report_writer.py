@@ -131,7 +131,12 @@ def _mm(v: Decimal | None) -> str:
 def render(ev: EvidenceSet, decision: Decision, summary: Summary, run: dict, out: Path,
            qa_results: list[tuple[str, bool, str]] | None = None, corrupt: bool = False) -> Path:
     """Write the note. `corrupt` deliberately alters one value (fault-injection demo only)."""
-    h = ev.header
+    # A header field the reader could not find is written as exactly that -- never
+    # as the word "None", and never a crash: report_no.split() below would fail on a
+    # missing report number. (Found by reading this code on 2026-09-13, after a
+    # missing Inspection Type crashed the summary on insp_1005 and insp_1008.)
+    from workbench.prose import NOT_READ
+    h = {k: (NOT_READ if v in (None, "") else v) for k, v in ev.header.items()}
     doc = Document()
     normal = doc.styles["Normal"]
     normal.font.name, normal.font.size = "Calibri", Pt(9.5)

@@ -1,16 +1,16 @@
 {
   "quality": "heavy",
   "counts": {
-    "note_right": 4,
+    "note_right": 5,
     "note_WRONG": 0,
-    "right_stop": 8,
+    "right_stop": 7,
     "false_alarm": 0
   },
   "reports": [
     {
       "doc_id": "insp_1000",
       "ended": "needs_review",
-      "stopped_because": "[FAIL] build_evidence  attempt 2    0.69s  -> needs_review  thickness values need a person: CML-02, CML-03, CML-04, CML-05",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.58s  -> needs_review  thickness values need a person: CML-02, CML-03, CML-04, CML-05",
       "verdict": "right stop",
       "wrong_and_flagged": [
         "CML-03.previous_mm: read None, printed 13.48",
@@ -26,7 +26,7 @@
     {
       "doc_id": "insp_1001",
       "ended": "needs_review",
-      "stopped_because": "[FAIL] build_evidence  attempt 2    0.78s  -> needs_review  thickness values need a person: CML-01, CML-06",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.64s  -> needs_review  thickness values need a person: CML-01, CML-06",
       "verdict": "right stop",
       "wrong_and_flagged": [
         "CML-01.current_mm: read None, printed 9.37",
@@ -37,7 +37,7 @@
     {
       "doc_id": "insp_1002",
       "ended": "needs_review",
-      "stopped_because": "[FAIL] build_evidence  attempt 2    0.69s  -> needs_review  severity not readable, which could hide an escalation: F-03",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.59s  -> needs_review  severity not readable, which could hide an escalation: F-03",
       "verdict": "right stop",
       "wrong_and_flagged": [
         "F-03.severity: read '', printed 'Observation'"
@@ -47,7 +47,7 @@
     {
       "doc_id": "insp_1003",
       "ended": "needs_review",
-      "stopped_because": "[FAIL] build_evidence  attempt 2    0.91s  -> needs_review  severity not readable, which could hide an escalation: F-04, F-05",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.78s  -> needs_review  severity not readable, which could hide an escalation: F-04, F-05",
       "verdict": "right stop",
       "wrong_and_flagged": [
         "F-04.severity: read '', printed 'Minor'",
@@ -82,7 +82,7 @@
     {
       "doc_id": "insp_1007",
       "ended": "needs_review",
-      "stopped_because": "[FAIL] build_evidence  attempt 2    0.73s  -> needs_review  severity not readable, which could hide an escalation: F-03",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.61s  -> needs_review  severity not readable, which could hide an escalation: F-03",
       "verdict": "right stop",
       "wrong_and_flagged": [
         "F-03.severity: read '', printed 'Observation'"
@@ -91,18 +91,16 @@
     },
     {
       "doc_id": "insp_1008",
-      "ended": "needs_review",
-      "stopped_because": "[FAIL] build_evidence  attempt 2    0.16s  -> needs_review  the findings or thickness table was not read",
-      "verdict": "right stop",
-      "wrong_and_flagged": [
-        "thickness rows not read: CML-01, CML-02, CML-03, CML-04, CML-05"
-      ],
-      "right_but_flagged": []
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "ESCALATE",
+      "expected": "ESCALATE",
+      "correct": true
     },
     {
       "doc_id": "insp_1009",
       "ended": "needs_review",
-      "stopped_because": "[FAIL] build_evidence  attempt 2    0.72s  -> needs_review  thickness values need a person: CML-04",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.59s  -> needs_review  thickness values need a person: CML-04",
       "verdict": "right stop",
       "wrong_and_flagged": [
         "CML-04.previous_mm: read None, printed 10.42",
@@ -115,7 +113,7 @@
     {
       "doc_id": "insp_1010",
       "ended": "needs_review",
-      "stopped_because": "[FAIL] build_evidence  attempt 2    0.67s  -> needs_review  thickness values need a person: CML-03",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.64s  -> needs_review  thickness values need a person: CML-03",
       "verdict": "right stop",
       "wrong_and_flagged": [
         "CML-03.nominal_mm: read None, printed 16.0",

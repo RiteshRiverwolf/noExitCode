@@ -1,17 +1,17 @@
 {
   "source": "heavy scan (OCR)",
   "totals": {
-    "critical_right": 355,
+    "critical_right": 380,
     "critical_caught": 15,
     "critical_wrong": 0,
-    "other_right": 179,
-    "other_caught": 249,
+    "other_right": 181,
+    "other_caught": 252,
     "other_wrong": 0
   },
   "reports": [
     {
       "doc_id": "insp_1000",
-      "seconds": 0.2,
+      "seconds": 0.1,
       "problems": 14,
       "critical": {
         "right": 28,
@@ -46,7 +46,7 @@
     },
     {
       "doc_id": "insp_1001",
-      "seconds": 0.2,
+      "seconds": 0.1,
       "problems": 7,
       "critical": {
         "right": 34,
@@ -75,7 +75,7 @@
     {
       "doc_id": "insp_1002",
       "seconds": 0.1,
-      "problems": 4,
+      "problems": 3,
       "critical": {
         "right": 29,
         "caught": 1,
@@ -91,7 +91,6 @@
         "extra": []
       },
       "problem_list": [
-        "identification: plant not found on the page",
         "F-01.description: low confidence 0.841",
         "F-03: severity '' is not one of the report's grades",
         "F-03.severity: empty"
@@ -99,7 +98,7 @@
     },
     {
       "doc_id": "insp_1003",
-      "seconds": 0.2,
+      "seconds": 0.1,
       "problems": 9,
       "critical": {
         "right": 38,
@@ -174,7 +173,7 @@
     },
     {
       "doc_id": "insp_1006",
-      "seconds": 0.2,
+      "seconds": 0.1,
       "problems": 3,
       "critical": {
         "right": 33,
@@ -198,8 +197,8 @@
     },
     {
       "doc_id": "insp_1007",
-      "seconds": 0.2,
-      "problems": 3,
+      "seconds": 0.1,
+      "problems": 2,
       "critical": {
         "right": 35,
         "caught": 1,
@@ -215,40 +214,31 @@
         "extra": []
       },
       "problem_list": [
-        "identification: plant not found on the page",
         "F-03: severity '' is not one of the report's grades",
         "F-03.severity: empty"
       ]
     },
     {
       "doc_id": "insp_1008",
-      "seconds": 0.0,
-      "problems": 4,
+      "seconds": 0.1,
+      "problems": 2,
       "critical": {
-        "right": 4,
+        "right": 29,
         "caught": 0,
         "wrong": []
       },
       "other": {
-        "right": 14,
-        "caught": 10,
+        "right": 16,
+        "caught": 13,
         "wrong": []
       },
       "rows": {
-        "missing": [
-          "CML-01",
-          "CML-02",
-          "CML-03",
-          "CML-04",
-          "CML-05"
-        ],
+        "missing": [],
         "extra": []
       },
       "problem_list": [
-        "UT thickness survey: the table was not found",
         "F-02.location: low confidence 0.893",
-        "F-02.description: low confidence 0.882",
-        "no thickness readings were read"
+        "F-02.description: low confidence 0.882"
       ]
     },
     {
@@ -289,7 +279,7 @@
     },
     {
       "doc_id": "insp_1010",
-      "seconds": 0.2,
+      "seconds": 0.1,
       "problems": 8,
       "critical": {
         "right": 34,
@@ -318,7 +308,7 @@
     },
     {
       "doc_id": "insp_1011",
-      "seconds": 0.2,
+      "seconds": 0.1,
       "problems": 2,
       "critical": {
         "right": 35,

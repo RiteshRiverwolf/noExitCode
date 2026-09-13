@@ -71,11 +71,28 @@ def best_match(key: str, choices: dict[str, str], notes: list[str] | None = None
         return None
     ratio, matched = scored[0]
     runner_up = scored[1][0] if len(scored) > 1 else 0.0
-    if ratio < threshold or ratio - runner_up < margin:
+    # One wrong letter in a short word: 'Min. Req.' read as 'Min. Reg.' is only 0.83
+    # alike -- a six-letter word cannot reach 0.88 with any letter wrong -- and on four
+    # of the twelve clean scans that one letter threw away the whole thickness table.
+    # So a word of five letters or more may instead be exactly one edit away.
+    one_edit = len(key) >= 5 and _edits(key, matched) <= 1
+    if (ratio < threshold and not one_edit) or ratio - runner_up < margin:
         return None
     if notes is not None:
-        notes.append(f"{what}read {key!r} as {matched!r} ({ratio:.2f} alike)")
+        how = f"{ratio:.2f} alike" if ratio >= threshold else "one letter different"
+        notes.append(f"{what}read {key!r} as {matched!r} ({how})")
     return choices[matched]
+
+
+def _edits(a: str, b: str) -> int:
+    """Letters inserted, deleted or changed to turn a into b (Levenshtein distance)."""
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        cur = [i]
+        for j, cb in enumerate(b, 1):
+            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
+        prev = cur
+    return prev[-1]
 
 
 @dataclass

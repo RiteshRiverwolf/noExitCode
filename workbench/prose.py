@@ -60,8 +60,9 @@ class Summary:
 def facts_for_model(ev: EvidenceSet, decision: Decision, guidance: str = "") -> str:
     h = ev.header
     lines = [
-        f"Equipment: {h['equipment_tag']} ({h['equipment_name']}), {h['unit']}.",
-        f"Inspection: {h['inspection_type']} on {h['inspection_date']}; report {h['report_no']}.",
+        f"Equipment: {field(h, 'equipment_tag')} ({field(h, 'equipment_name')}), {field(h, 'unit')}.",
+        f"Inspection: {field(h, 'inspection_type')} on {field(h, 'inspection_date')}; "
+        f"report {field(h, 'report_no')}.",
         f"Rules engine outcome: {decision.outcome}.",
     ]
     for t in decision.triggers:
@@ -175,10 +176,27 @@ def check(text: str, ev: EvidenceSet, decision: Decision) -> list[str]:
     return problems
 
 
+NOT_READ = "(not read from the document)"
+
+
+def field(header: dict, key: str) -> str:
+    """A header value for a sentence -- or a plain statement that it was not read.
+
+    OCR can miss a label on a real scan. A missing Inspection Type crashed this
+    summary on insp_1005 and insp_1008 ('NoneType' object has no attribute
+    'lower'), so the run stopped for a person over a field no decision depends
+    on; and the same gap reached the model's instructions as the word "None".
+    """
+    value = header.get(key)
+    return NOT_READ if value in (None, "") else str(value)
+
+
 def code_summary(ev: EvidenceSet, decision: Decision) -> str:
     h = ev.header
-    parts = [f"The rules engine returned {decision.outcome} for {h['equipment_tag']} "
-             f"({h['equipment_name']}), from {h['inspection_type'].lower()} report {h['report_no']}."]
+    kind = h.get("inspection_type")
+    source = f"{kind.lower()} report" if kind else "inspection report"
+    parts = [f"The rules engine returned {decision.outcome} for {field(h, 'equipment_tag')} "
+             f"({field(h, 'equipment_name')}), from {source} {field(h, 'report_no')}."]
     for t in decision.triggers:
         parts.append(f"Rule {t.rule_id}: {t.detail.rstrip('.')}.")
     for t in decision.review_items:

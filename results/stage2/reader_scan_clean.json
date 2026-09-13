@@ -1,0 +1,300 @@
+{
+  "source": "clean scan (OCR)",
+  "totals": {
+    "critical_right": 386,
+    "critical_caught": 9,
+    "critical_wrong": 0,
+    "other_right": 293,
+    "other_caught": 140,
+    "other_wrong": 0
+  },
+  "reports": [
+    {
+      "doc_id": "insp_1000",
+      "seconds": 0.1,
+      "problems": 2,
+      "critical": {
+        "right": 31,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 24,
+        "caught": 9,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "CML-01.location: low confidence 0.822",
+        "CML-02.location: low confidence 0.765"
+      ]
+    },
+    {
+      "doc_id": "insp_1001",
+      "seconds": 0.1,
+      "problems": 1,
+      "critical": {
+        "right": 36,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 22,
+        "caught": 12,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "CML-02.location: low confidence 0.889"
+      ]
+    },
+    {
+      "doc_id": "insp_1002",
+      "seconds": 0.1,
+      "problems": 2,
+      "critical": {
+        "right": 30,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 25,
+        "caught": 15,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "CML-01.location: low confidence 0.873",
+        "CML-03.location: low confidence 0.857"
+      ]
+    },
+    {
+      "doc_id": "insp_1003",
+      "seconds": 0.1,
+      "problems": 5,
+      "critical": {
+        "right": 39,
+        "caught": 1,
+        "wrong": []
+      },
+      "other": {
+        "right": 31,
+        "caught": 11,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-02: severity '' is not one of the report's grades",
+        "F-02.location: low confidence 0.894",
+        "F-02.severity: empty",
+        "F-05.ref_clause: empty",
+        "CML-04.location: low confidence 0.896"
+      ]
+    },
+    {
+      "doc_id": "insp_1004",
+      "seconds": 0.0,
+      "problems": 4,
+      "critical": {
+        "right": 24,
+        "caught": 2,
+        "wrong": []
+      },
+      "other": {
+        "right": 21,
+        "caught": 11,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-02: severity 'Maior' is not one of the report's grades",
+        "F-03: severity '' is not one of the report's grades",
+        "F-03.severity: empty",
+        "CML-03.location: low confidence 0.888"
+      ]
+    },
+    {
+      "doc_id": "insp_1005",
+      "seconds": 0.1,
+      "problems": 1,
+      "critical": {
+        "right": 33,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 23,
+        "caught": 14,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-04.ref_clause: empty"
+      ]
+    },
+    {
+      "doc_id": "insp_1006",
+      "seconds": 0.1,
+      "problems": 3,
+      "critical": {
+        "right": 32,
+        "caught": 1,
+        "wrong": []
+      },
+      "other": {
+        "right": 27,
+        "caught": 10,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-02.location: low confidence 0.897",
+        "F-03: severity 'Maior' is not one of the report's grades",
+        "F-04.location: low confidence 0.829"
+      ]
+    },
+    {
+      "doc_id": "insp_1007",
+      "seconds": 0.1,
+      "problems": 5,
+      "critical": {
+        "right": 35,
+        "caught": 1,
+        "wrong": []
+      },
+      "other": {
+        "right": 21,
+        "caught": 13,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-02: severity '' is not one of the report's grades",
+        "F-02.severity: empty",
+        "CML-01.location: low confidence 0.900",
+        "CML-03.location: low confidence 0.886",
+        "CML-04.location: low confidence 0.899"
+      ]
+    },
+    {
+      "doc_id": "insp_1008",
+      "seconds": 0.1,
+      "problems": 3,
+      "critical": {
+        "right": 28,
+        "caught": 1,
+        "wrong": []
+      },
+      "other": {
+        "right": 21,
+        "caught": 8,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-02: severity '' is not one of the report's grades",
+        "F-02.severity: empty",
+        "CML-02.location: low confidence 0.900"
+      ]
+    },
+    {
+      "doc_id": "insp_1009",
+      "seconds": 0.1,
+      "problems": 1,
+      "critical": {
+        "right": 29,
+        "caught": 1,
+        "wrong": []
+      },
+      "other": {
+        "right": 28,
+        "caught": 12,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-04: severity 'Obseryation' is not one of the report's grades"
+      ]
+    },
+    {
+      "doc_id": "insp_1010",
+      "seconds": 0.1,
+      "problems": 3,
+      "critical": {
+        "right": 35,
+        "caught": 1,
+        "wrong": []
+      },
+      "other": {
+        "right": 22,
+        "caught": 12,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-01: severity 'Maior' is not one of the report's grades",
+        "F-01.ref_clause: low confidence 0.857",
+        "CML-02.location: low confidence 0.874"
+      ]
+    },
+    {
+      "doc_id": "insp_1011",
+      "seconds": 0.1,
+      "problems": 5,
+      "critical": {
+        "right": 34,
+        "caught": 1,
+        "wrong": []
+      },
+      "other": {
+        "right": 28,
+        "caught": 13,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-01.location: low confidence 0.898",
+        "F-05: severity '' is not one of the report's grades",
+        "F-05.description: low confidence 0.625",
+        "F-05.severity: empty",
+        "CML-05.location: low confidence 0.889"
+      ]
+    }
+  ]
+}

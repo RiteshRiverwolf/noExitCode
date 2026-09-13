@@ -13,7 +13,7 @@ What this router adds is the reason a choice is *allowed*:
        untested is not qualified, and a bigger model is not qualified by size;
     2. a safety GATE decides who may do a task at all (a model that ever wrote
        a false approval is out); a RANK then orders those left;
-    3. the model has to actually be running and fit the GPU;
+    3. the model has to be available on this machine and fit the GPU;
     4. every decision is written to a hash-chained log with every candidate
        considered and why each one was or was not chosen.
 
@@ -156,20 +156,23 @@ def choose(task: str, registry: dict | None = None, sha: str | None = None,
         elif model.get("vram_gb", model["size_gb"]) > vram:
             c.reason = f"does not fit: needs {model.get('vram_gb', model['size_gb'])} GB, {vram} GB available"
         elif not running.get(name):
-            c.reason = f"qualified, but not running ({model['served_by']})"
+            # "Available", not "running": for Ollama this means the model is on the
+            # machine (Ollama loads it into memory on first use); for llama-server,
+            # that its server is answering.
+            c.reason = f"qualified, but not available on this machine ({model['served_by']})"
         else:
             c.eligible = True
             c.rank_key = _rank_key(result, spec["rank"])
-            c.reason = "qualified and running; " + ", ".join(
+            c.reason = "qualified and available; " + ", ".join(
                 f"{f.lstrip('-')} {result.get(f.lstrip('-'))}" for f in spec["rank"])
         candidates.append(c)
 
     eligible = sorted((c for c in candidates if c.eligible), key=lambda c: c.rank_key)
     if not eligible:
-        near = [c for c in candidates if "not running" in c.reason]
+        near = [c for c in candidates if c.reason.startswith("qualified, but not available")]
         reason = ("no model has passed a qualification test for this task"
                   if not near else
-                  f"qualified model(s) not running: {', '.join(c.model for c in near)}")
+                  f"qualified model(s) not available: {', '.join(c.model for c in near)}")
         return Decision(task, None, "no qualified model", reason, candidates, sha)
 
     best = eligible[0]

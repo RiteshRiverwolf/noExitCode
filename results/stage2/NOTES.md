@@ -326,7 +326,72 @@ that has to search first is a `tool_agent` job.
 The pipeline and the Coder both ask the Router now. `--model` still works, and
 is logged as an override.
 
-## 11. Left to do
+## 11. All four scan qualities — and a fix that broke something first
+
+Once the background run had OCR'd every page, the clean and light scans could
+be scored too. **Clean came out worst**: only 2 of 12 reached a note. Safe —
+nothing accepted wrong, every stop right — but a scan that clean should not
+lose whole tables.
+
+A survey of every template-word miss across the 12 clean reports found five,
+from two causes:
+
+- **4×** the column header "Min. Req." read as "Min. **Reg.**" — 0.83 alike.
+  A six-letter word cannot reach the 0.88 tolerance with *any* letter wrong, so
+  each one discarded the whole thickness table.
+- **1×** the heading "2. INSPECTION FINDINGS" read as "2.INSPECTIONFIN**P**INGS"
+  — headings had no tolerance at all, so the findings table was lost.
+
+**Fix, fitted to that evidence:** a template word of five letters or more may
+be exactly one edit away, and headings get the same tolerance as column
+headers. Every near match is written into the evidence notes.
+
+**That fix broke the PDFs**, and the PDFs are why it was caught. On
+born-digital text nothing should ever need a near match, so the PDFs are a
+control group: any change there is a regression by definition. 24 non-critical
+fields went wrong on insp_1003, 1005 and 1008 — all three are "Ultrasonic
+Thickness Survey" inspections, and that *value* is one edit from the heading
+"**3.** Ultrasonic Thickness Survey", the edit being the missing "3". The new
+rule took a value cell for the start of section 3 and cut the identification
+table in half. **Second fix:** a heading's words may be damaged, its section
+number may not.
+
+**And it exposed a crash.** With the Inspection Type missing, the code summary
+crashed on `None.lower()`. The graph turned the crash into a stop for a person
+— safe, but over a field no decision depends on; on the scans it showed up as
+false alarms on insp_1005 and 1008. Reading the rest of the code showed the
+same gap in two more places: the model's instructions would have said
+"Inspection: None on None", and the note would have printed "None barg" — or
+crashed on `report_no.split()`, which was found by reading, not by watching it
+fail. **Third fix:** a missing header field is written as "(not read from the
+document)" everywhere. `bench/stage2/missing_header_test.py` blanks every header
+field at once and checks the summary, the model's instructions and the rendered
+note: no crash, no "None", 14/14 read-back checks.
+
+**Where it ended up** (full regression after all three fixes):
+
+| Source | Critical right | Caught | Accepted wrong | Notes, all correct | Right stops | False alarms |
+|---|---|---|---|---|---|---|
+| 12 PDFs | 395 | 0 | **0** | 12 of 12 | — | — |
+| clean | **386** (was 270) | 9 | **0** | **4** (was 2) | 8 | 0 |
+| light | 392 | 3 | **0** | 10 | 2 | 0 |
+| medium | 393 | 2 | **0** | 9 | 2 | 1 |
+| heavy | **380** (was 355) | 15 | **0** | **5** (was 4) | 7 | 0 |
+
+Across 48 scan runs: **28 notes, every one with the correct outcome; 19 right
+stops; 1 false alarm; 0 wrong outcomes.** The heavy figures in section 8 are
+from before these fixes. The PDFs are back exactly to their baseline (433
+non-critical fields right). Damaged-cell and unreadable-severity tests pass; the
+injected-fault loop still repairs itself; the audit chain is intact.
+
+Clean scans still stop 8 times in 12. In the run before these fixes, four of
+those reports stopped on a grade misread as "Maior" or "Obseryation" — values,
+which are never repaired, so these fixes do not touch them (details per report
+in `results/stage2/stops_clean.json`). Whether a grade one letter off should
+reach a person pre-filled rather than as a plain stop is a question for the
+team, not something the code should decide.
+
+## 12. Left to do
 
 - The corpus has one two-page report. The reader is built for any length and
   joins rows across pages by CML id, but nothing has tested a table split over

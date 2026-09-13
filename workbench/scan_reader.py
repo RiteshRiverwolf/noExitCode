@@ -94,7 +94,38 @@ RECOMMENDATION_TABLE = TableSpec(
 
 # --- sections ----------------------------------------------------------------
 
-def section_regions(pages: list[Page]) -> dict[str, list[tuple[Page, float, float]]]:
+HEADING_TARGETS = {pattern.pattern.lstrip("^"): name for name, pattern in SECTIONS}
+
+
+def _heading(bare: str, notes: list[str] | None = None) -> str | None:
+    """Which numbered section a line starts, allowing for OCR damage to the heading.
+
+    '2. INSPECTION FINDINGS' came back from OCR as '2.INSPECTIONFINPINGS' on a
+    clean scan, and with exact matching the whole findings table was lost. A
+    heading is a template word -- a fixed phrase of the form -- so it gets the
+    same tolerance as a column header, and every near match is noted. A line
+    much longer than the heading is body text, not a heading.
+    """
+    from workbench.tablemap import best_match
+
+    for name, pattern in SECTIONS:
+        if pattern.match(bare):
+            return name
+    if len(bare) < 8:
+        return None
+    # The section NUMBER must be exact; only the words may be damaged. Without
+    # this, the value "Ultrasonic Thickness Survey" in the Inspection Type cell --
+    # one edit from "3. Ultrasonic Thickness Survey", the edit being the missing
+    # "3" -- was taken for the start of section 3, and it cut the identification
+    # table in half on insp_1003, 1005 and 1008 (found 2026-09-13 on the PDFs,
+    # where nothing should ever need a near match).
+    targets = {t: n for t, n in HEADING_TARGETS.items()
+               if bare[:1] == t[:1] and len(bare) <= len(t) + 6}
+    return best_match(bare, targets, notes, "section heading: ") if targets else None
+
+
+def section_regions(pages: list[Page], notes: list[str] | None = None
+                    ) -> dict[str, list[tuple[Page, float, float]]]:
     """Where each numbered section sits, page by page.
 
     A section that runs past the foot of a page simply continues at the top of
@@ -108,11 +139,9 @@ def section_regions(pages: list[Page]) -> dict[str, list[tuple[Page, float, floa
         # starts below its own heading and stops *above* the next one.
         marks: list[tuple[float, float, str]] = []
         for item in page.items:
-            bare = norm(item.text)
-            for name, pattern in SECTIONS:
-                if pattern.match(bare):
-                    marks.append((item.bbox[1], item.bbox[3], name))
-                    break
+            name = _heading(norm(item.text), notes)
+            if name:
+                marks.append((item.bbox[1], item.bbox[3], name))
         marks.sort()
         if open_section and (not marks or marks[0][0] > 0):
             regions[open_section].append((page, 0.0, marks[0][0] if marks else page.height))
@@ -214,7 +243,7 @@ def build_evidence(doc_id: str, pages: list[Page], crop_dir: Path | None = None)
     """Evidence records from the pages, with every problem the checks found."""
     problems: list[str] = []
     notes: list[str] = []          # what was read as what -- not problems, but on the record
-    regions = section_regions(pages)
+    regions = section_regions(pages, notes)
     by_number = {p.number: p for p in pages}
     hashes = {p.source_file: sha256_file(Path(ROOT / p.source_file)) for p in pages}
 

@@ -1,0 +1,320 @@
+{
+  "source": "light scan (OCR)",
+  "totals": {
+    "critical_right": 392,
+    "critical_caught": 3,
+    "critical_wrong": 0,
+    "other_right": 252,
+    "other_caught": 139,
+    "other_wrong": 42
+  },
+  "reports": [
+    {
+      "doc_id": "insp_1000",
+      "seconds": 0.1,
+      "problems": 2,
+      "critical": {
+        "right": 29,
+        "caught": 2,
+        "wrong": []
+      },
+      "other": {
+        "right": 17,
+        "caught": 16,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-01: severity 'Obseryation' is not one of the report's grades",
+        "CML-05.previous_mm: not a number as printed ('.12.57')"
+      ]
+    },
+    {
+      "doc_id": "insp_1001",
+      "seconds": 0.1,
+      "problems": 1,
+      "critical": {
+        "right": 36,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 18,
+        "caught": 16,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-02.location: low confidence 0.886"
+      ]
+    },
+    {
+      "doc_id": "insp_1002",
+      "seconds": 0.1,
+      "problems": 2,
+      "critical": {
+        "right": 30,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 24,
+        "caught": 16,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-01.location: low confidence 0.897",
+        "F-02.location: low confidence 0.898"
+      ]
+    },
+    {
+      "doc_id": "insp_1003",
+      "seconds": 0.1,
+      "problems": 1,
+      "critical": {
+        "right": 40,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 28,
+        "caught": 14,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-05.location: low confidence 0.891"
+      ]
+    },
+    {
+      "doc_id": "insp_1004",
+      "seconds": 0.1,
+      "problems": 1,
+      "critical": {
+        "right": 26,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 23,
+        "caught": 9,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-02.location: low confidence 0.891"
+      ]
+    },
+    {
+      "doc_id": "insp_1005",
+      "seconds": 0.1,
+      "problems": 0,
+      "critical": {
+        "right": 33,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 18,
+        "caught": 0,
+        "wrong": [
+          "CML-01.location: read 'Shell course 1—0°', printed 'Shell course 1 — 0°'",
+          "CML-02.location: read 'Bottomhead—knuckle', printed 'Bottom head — knuckle'",
+          "CML-03.location: read 'Shell course 2—270°', printed 'Shell course 2 — 270°'",
+          "CML-05.location: read 'Shell course 2-180°', printed 'Shell course 2 — 180°'",
+          "F-01.location: read 'Bottom head—knuckle', printed 'Bottom head — knuckle'",
+          "F-01.description: read 'Support saddle anchor bolt at south-west location found loose.No structural distress observed.', printed 'Support saddle anchor bolt at south-west location found loose. No structural distress observed.'",
+          "F-01.ref_clause: read 'OISD-STD-118CI.6.5', printed 'OISD-STD-118 Cl. 6.5'",
+          "F-02.location: read 'Bottom head—knuckle', printed 'Bottom head — knuckle'",
+          "F-02.description: read 'Insulation cladding damaged and displaced over a2 m section of the vapour line. No metal loss detected at this stage.', printed 'Insulation cladding damaged and displaced over a 2 m section of the vapour line. No metal loss detected at this stage.'",
+          "F-02.ref_clause: read 'OISD-STD-118 CI. 6.2', printed 'OISD-STD-118 Cl. 6.2'",
+          "F-03.location: read 'Shell course 2—270°', printed 'Shell course 2 — 270°'",
+          "F-03.description: read 'Minor external scaling and paint chalking on head section.No measurable metal loss.', printed 'Minor external scaling and paint chalking on head section. No measurable metal loss.'",
+          "F-03.ref_clause: read 'OISD-STD-116CI.7.3', printed 'OISD-STD-116 Cl. 7.3'",
+          "F-04.location: read 'Shell course 1-0°', printed 'Shell course 1 — 0°'",
+          "F-04.description: read 'Localised external corrosion observed on shell plate adjacent to support saddle.Coating breakdown over approximately 0.4 m2 with visible rust scaling.', printed 'Localised external corrosion observed on shell plate adjacent to support saddle. Coating breakdown over approximately 0.4 m² with visible rust scaling.'",
+          "F-04.ref_clause: read 'OISD-STD-116CI.7.3', printed 'OISD-STD-116 Cl. 7.3'",
+          "header.unit: read 'CCR—Continuous Catalytic Reformer', printed 'CCR — Continuous Catalytic Reformer'",
+          "header.plant: read 'Mangalore Refinery —Aromatic Complex', printed 'Mangalore Refinery — Aromatic Complex'",
+          "header.inspector_name: read 'K.Subramanian', printed 'K. Subramanian'"
+        ]
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1006",
+      "seconds": 0.1,
+      "problems": 1,
+      "critical": {
+        "right": 33,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 22,
+        "caught": 15,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-04.ref_clause: low confidence 0.898"
+      ]
+    },
+    {
+      "doc_id": "insp_1007",
+      "seconds": 0.1,
+      "problems": 1,
+      "critical": {
+        "right": 36,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 20,
+        "caught": 14,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-03.location: low confidence 0.857"
+      ]
+    },
+    {
+      "doc_id": "insp_1008",
+      "seconds": 0.1,
+      "problems": 0,
+      "critical": {
+        "right": 29,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 19,
+        "caught": 0,
+        "wrong": [
+          "CML-02.location: read 'Shell course 2 —270°', printed 'Shell course 2 — 270°'",
+          "F-01.description: read 'Insulation cladding damaged and displaced over a2 m section of the vapour line. No metal loss detected at this stage.', printed 'Insulation cladding damaged and displaced over a 2 m section of the vapour line. No metal loss detected at this stage.'",
+          "F-01.ref_clause: read 'OISD-STD-118CI.6.2', printed 'OISD-STD-118 Cl. 6.2'",
+          "F-02.location: read 'Shell course 1-0°', printed 'Shell course 1 — 0°'",
+          "F-02.description: read 'Localised external corrosion observed on shell plateadjacent to support saddle.Coating breakdown over approximately 0.4 m2 with visible rust scaling.', printed 'Localised external corrosion observed on shell plate adjacent to support saddle. Coating breakdown over approximately 0.4 m² with visible rust scaling.'",
+          "F-02.ref_clause: read 'OISD-STD-116CI.7.3', printed 'OISD-STD-116 Cl. 7.3'",
+          "F-02.recommendation: read 'Remove loose scale; surface prepare to St-3 and re-apply approved coating system during next available shutdown.', printed 'Remove loose scale, surface prepare to St-3 and re-apply approved coating system during next available shutdown.'",
+          "header.unit: read 'HGU— Hydrogen Generation Unit', printed 'HGU — Hydrogen Generation Unit'",
+          "header.plant: read 'Mangalore Refinery — Phase Il', printed 'Mangalore Refinery — Phase II'",
+          "header.inspector_name: read 'A.Deshpande', printed 'A. Deshpande'"
+        ]
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1009",
+      "seconds": 0.1,
+      "problems": 2,
+      "critical": {
+        "right": 29,
+        "caught": 1,
+        "wrong": []
+      },
+      "other": {
+        "right": 22,
+        "caught": 18,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-01.location: low confidence 0.891",
+        "F-05: severity 'Obseryation' is not one of the report's grades"
+      ]
+    },
+    {
+      "doc_id": "insp_1010",
+      "seconds": 0.1,
+      "problems": 0,
+      "critical": {
+        "right": 36,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 21,
+        "caught": 0,
+        "wrong": [
+          "CML-03.location: read 'Shell course 1—0°', printed 'Shell course 1 — 0°'",
+          "CML-04.location: read 'Top head —crown', printed 'Top head — crown'",
+          "CML-06.location: read 'Shell course 2 —180°', printed 'Shell course 2 — 180°'",
+          "F-01.ref_clause: read 'API510CI.7.2', printed 'API 510 Cl. 7.2'",
+          "F-01.recommendation: read 'Install impingement plate. Increase UT monitoring freguency to 6-monthly at CML-04.', printed 'Install impingement plate. Increase UT monitoring frequency to 6-monthly at CML-04.'",
+          "F-02.location: read 'Shell course 2—180°', printed 'Shell course 2 — 180°'",
+          "F-02.description: read 'Insulation cladding damaged and displaced over a2 m section of the vapour line.No metal loss detected at this stage.', printed 'Insulation cladding damaged and displaced over a 2 m section of the vapour line. No metal loss detected at this stage.'",
+          "F-02.ref_clause: read 'OISD-STD-118CI.6.2', printed 'OISD-STD-118 Cl. 6.2'",
+          "F-03.description: read 'CorrosionUnder Insulation (CUl) detected at insulation termination near nozzle N-3. Moisture ingress evident; metal loss confirmed by follow-upUT.', printed 'Corrosion Under Insulation (CUI) detected at insulation termination near nozzle N-3. Moisture ingress evident; metal loss confirmed by follow-up UT.'",
+          "F-03.ref_clause: read 'OISD-STD-116CI.7.9', printed 'OISD-STD-116 Cl. 7.9'",
+          "F-03.recommendation: read 'Strip insulation over affected zone, carry out 100% UT scan, repair per APl 510 and reinstate weatherproofing.', printed 'Strip insulation over affected zone, carry out 100% UT scan, repair per API 510 and reinstate weatherproofing.'",
+          "header.plant: read 'Mangalore Refinery —Phase II', printed 'Mangalore Refinery — Phase III'",
+          "header.inspector_name: read 'R.Venkataraman', printed 'R. Venkataraman'"
+        ]
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": []
+    },
+    {
+      "doc_id": "insp_1011",
+      "seconds": 0.1,
+      "problems": 2,
+      "critical": {
+        "right": 35,
+        "caught": 0,
+        "wrong": []
+      },
+      "other": {
+        "right": 20,
+        "caught": 21,
+        "wrong": []
+      },
+      "rows": {
+        "missing": [],
+        "extra": []
+      },
+      "problem_list": [
+        "F-05.location: low confidence 0.896",
+        "CML-03.location: low confidence 0.865"
+      ]
+    }
+  ]
+}

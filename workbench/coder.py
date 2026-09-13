@@ -35,6 +35,7 @@ import sys
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
+from typing import Callable
 
 import httpx
 
@@ -123,24 +124,39 @@ def failure_report(result: sandbox.SandboxResult) -> str:
 
 
 def solve(task: CodingTask, model: str = DEFAULT_MODEL,
-          force_subprocess: bool = False) -> CodingResult:
+          force_subprocess: bool = False,
+          emit: Callable[[dict], None] | None = None) -> CodingResult:
+    """`emit`, if given, receives attempt_start before each model call and attempt
+    after each result -- the live view of the loop. A broken viewer cannot break it."""
     t0 = time.time()
     out = CodingResult(task_id=task.task_id, accepted=False, model=model)
+
+    def send(event: dict) -> None:
+        if emit is not None:
+            try:
+                emit(event)
+            except Exception:
+                pass
+
+    def announce(attempt: Attempt) -> None:
+        out.attempts += [attempt]
+        send({"type": "attempt", **asdict(attempt)})
     messages = [{"role": "system", "content": SYSTEM},
                 {"role": "user", "content": task.brief}]
 
     for n in range(1, task.max_attempts + 1):
+        send({"type": "attempt_start", "n": n, "max_attempts": task.max_attempts})
         try:
             reply = ask_model(messages, model)
         except Exception as e:
-            out.attempts.append(Attempt(n, "", False, -1, "", f"{type(e).__name__}: {e}",
+            announce(Attempt(n, "", False, -1, "", f"{type(e).__name__}: {e}",
                                         0.0, "model unavailable"))
             break
         code = extract_code(reply)
         if not code:
             messages += [{"role": "assistant", "content": reply},
                          {"role": "user", "content": "Reply with a single ```python code block."}]
-            out.attempts.append(Attempt(n, "", False, -1, "", "no code block in the reply",
+            announce(Attempt(n, "", False, -1, "", "no code block in the reply",
                                         0.0, "not run"))
             continue
 
@@ -149,7 +165,7 @@ def solve(task: CodingTask, model: str = DEFAULT_MODEL,
         run = sandbox.run(files, entry="acceptance_test.py", timeout=task.timeout,
                           force_subprocess=force_subprocess)
         out.isolation = run.isolation
-        out.attempts.append(Attempt(n, code, run.ok, run.exit_code, run.stdout, run.stderr,
+        announce(Attempt(n, code, run.ok, run.exit_code, run.stdout, run.stderr,
                                     run.seconds, run.isolation))
         if run.ok:
             out.accepted, out.code = True, code
