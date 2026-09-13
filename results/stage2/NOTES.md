@@ -210,6 +210,51 @@ column-precision check, which flagged nothing wrongly on any medium scan. A
 false stop costs a person a look at a correct value; that is the threshold's
 intended trade-off, and it is not being tuned on one example.
 
+### The 12 heavy scans — the worst quality
+
+**Reader** (`results/stage2/reader_scan_heavy.json`): critical fields 355 right,
+15 caught, **0 accepted wrong**.
+
+Scorer caveat, stated so it is not mistaken for a result: the non-critical
+line for heavy ("0 accepted wrong, 249 caught") flatters the reader. Every
+heavy report carried at least one flag, and the scorer counts a report-level
+flag as catching that report's prose errors. The critical figures are checked
+per field and are sound.
+
+**Through the whole pipeline** (`--no-model`): 4 reach a verified note, 8 stop
+for a person. `bench/stage2/pipeline_stops.py --quality heavy` re-runs this.
+
+- **All 4 notes have the right outcome**, checked against `index.json` rather
+  than reasoned: insp_1004 ESCALATE, insp_1005 NO TRIGGER, insp_1006 ESCALATE,
+  insp_1011 NO TRIGGER.
+- **All 8 stops are right**: each had at least one critical value genuinely
+  wrong or missing. None was a false alarm.
+
+Stops worth naming:
+
+| Report | What was wrong | Why it matters |
+|---|---|---|
+| insp_1000 | CML-05 minimum read as **82** for **8.2** — a dropped decimal point | exactly the misread that flips a verdict; caught |
+| insp_1003 | F-05 severity read as "OISD-STD-118 CI. 8.4" — the clause cell landed in the severity column | caught only by the unreadable-grade gate added today (section 9) |
+| insp_1008 | the thickness table was not found at all | no readings is not "no breach"; stopped |
+
+The rest: severities left empty (insp_1002, 1007, 1009) and thickness values
+unreadable (insp_1001, 1009, 1010).
+
+**Three of the eight stops exist only because of today's fix** (insp_1002, 1003
+and 1007 — their only problem was an unreadable grade). The grades lost there
+were Observation and Minor, so the notes those runs would have produced were
+right by luck. The same misread on a Major grade is the NO TRIGGER case in
+section 9.
+
+| Quality | Reach a note | Stop | Right stops | False alarms |
+|---|---|---|---|---|
+| medium | 9 | 3 | 2 | 1 (confidence 0.894) |
+| heavy | 4 | 8 | 8 | 0 |
+
+Worse scans send more work to people. That is the right direction: the system
+degrades into asking, not into guessing.
+
 ## 9. A safety hole, found by scoring and closed
 
 insp_1010 was the first stop in the table above only *after* this fix. Before

@@ -1,0 +1,135 @@
+{
+  "quality": "heavy",
+  "counts": {
+    "note_right": 4,
+    "note_WRONG": 0,
+    "right_stop": 8,
+    "false_alarm": 0
+  },
+  "reports": [
+    {
+      "doc_id": "insp_1000",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.69s  -> needs_review  thickness values need a person: CML-02, CML-03, CML-04, CML-05",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "CML-03.previous_mm: read None, printed 13.48",
+        "CML-03.current_mm: read None, printed 13.12",
+        "CML-05.min_required_mm: read 82, printed 8.2"
+      ],
+      "right_but_flagged": [
+        "CML-02.previous_mm: read 12.66, printed 12.66",
+        "CML-02.min_required_mm: read 8.2, printed 8.2",
+        "CML-04.min_required_mm: read 8.2, printed 8.2"
+      ]
+    },
+    {
+      "doc_id": "insp_1001",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.78s  -> needs_review  thickness values need a person: CML-01, CML-06",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "CML-01.current_mm: read None, printed 9.37",
+        "CML-06.current_mm: read None, printed 9.0"
+      ],
+      "right_but_flagged": []
+    },
+    {
+      "doc_id": "insp_1002",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.69s  -> needs_review  severity not readable, which could hide an escalation: F-03",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "F-03.severity: read '', printed 'Observation'"
+      ],
+      "right_but_flagged": []
+    },
+    {
+      "doc_id": "insp_1003",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.91s  -> needs_review  severity not readable, which could hide an escalation: F-04, F-05",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "F-04.severity: read '', printed 'Minor'",
+        "F-05.severity: read 'OISD-STD-118 CI. 8.4', printed 'Minor'"
+      ],
+      "right_but_flagged": []
+    },
+    {
+      "doc_id": "insp_1004",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "ESCALATE",
+      "expected": "ESCALATE",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1005",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "NO TRIGGER",
+      "expected": "NO TRIGGER",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1006",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "ESCALATE",
+      "expected": "ESCALATE",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1007",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.73s  -> needs_review  severity not readable, which could hide an escalation: F-03",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "F-03.severity: read '', printed 'Observation'"
+      ],
+      "right_but_flagged": []
+    },
+    {
+      "doc_id": "insp_1008",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.16s  -> needs_review  the findings or thickness table was not read",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "thickness rows not read: CML-01, CML-02, CML-03, CML-04, CML-05"
+      ],
+      "right_but_flagged": []
+    },
+    {
+      "doc_id": "insp_1009",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.72s  -> needs_review  thickness values need a person: CML-04",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "CML-04.previous_mm: read None, printed 10.42",
+        "CML-04.current_mm: read None, printed 10.28",
+        "CML-04.min_required_mm: read None, printed 7.5",
+        "F-05.severity: read '', printed 'Observation'"
+      ],
+      "right_but_flagged": []
+    },
+    {
+      "doc_id": "insp_1010",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.67s  -> needs_review  thickness values need a person: CML-03",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "CML-03.nominal_mm: read None, printed 16.0",
+        "CML-03.previous_mm: read None, printed 14.2"
+      ],
+      "right_but_flagged": []
+    },
+    {
+      "doc_id": "insp_1011",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "NO TRIGGER",
+      "expected": "NO TRIGGER",
+      "correct": true
+    }
+  ]
+}

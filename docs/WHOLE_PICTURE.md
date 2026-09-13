@@ -135,6 +135,7 @@ Measured by `bench/stage2/reader_score.py` against ground truth:
 | insp_1002 medium scan (OCR) | 30 / 30 | 0 | 0.1 s |
 | insp_1002 heavy scan (OCR) | 29 right, 1 flagged | 0 | 0.1 s |
 | **all 12 medium scans (OCR)** | **393 right, 2 flagged** | **0** | 0.1 s each |
+| **all 12 heavy scans (OCR)** | **355 right, 15 flagged** | **0** | 0.1 s each |
 
 "Accepted wrong" — a wrong value nothing flagged, which would reach a signed
 note — is the only number that matters. It is zero everywhere. The whole-page

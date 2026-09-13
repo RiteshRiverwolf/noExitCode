@@ -1,0 +1,113 @@
+{
+  "quality": "medium",
+  "counts": {
+    "note_right": 9,
+    "note_WRONG": 0,
+    "right_stop": 2,
+    "false_alarm": 1
+  },
+  "reports": [
+    {
+      "doc_id": "insp_1000",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "ESCALATE",
+      "expected": "ESCALATE",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1001",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "NO TRIGGER",
+      "expected": "NO TRIGGER",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1002",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "ESCALATE",
+      "expected": "ESCALATE",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1003",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.69s  -> needs_review  thickness values need a person: CML-05",
+      "verdict": "FALSE ALARM",
+      "wrong_and_flagged": [],
+      "right_but_flagged": [
+        "CML-05.current_mm: read 13.49, printed 13.49"
+      ]
+    },
+    {
+      "doc_id": "insp_1004",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "ESCALATE",
+      "expected": "ESCALATE",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1005",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "NO TRIGGER",
+      "expected": "NO TRIGGER",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1006",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "ESCALATE",
+      "expected": "ESCALATE",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1007",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "NO TRIGGER",
+      "expected": "NO TRIGGER",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1008",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "ESCALATE",
+      "expected": "ESCALATE",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1009",
+      "ended": "done",
+      "stopped_because": "",
+      "outcome": "NO TRIGGER",
+      "expected": "NO TRIGGER",
+      "correct": true
+    },
+    {
+      "doc_id": "insp_1010",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.58s  -> needs_review  severity not readable, which could hide an escalation: F-03",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "F-03.severity: read '', printed 'Major'"
+      ],
+      "right_but_flagged": []
+    },
+    {
+      "doc_id": "insp_1011",
+      "ended": "needs_review",
+      "stopped_because": "[FAIL] build_evidence  attempt 2    0.61s  -> needs_review  thickness values need a person: CML-01",
+      "verdict": "right stop",
+      "wrong_and_flagged": [
+        "CML-01.current_mm: read None, printed 12.62"
+      ],
+      "right_but_flagged": []
+    }
+  ]
+}

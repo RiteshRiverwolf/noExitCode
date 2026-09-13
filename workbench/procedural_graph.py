@@ -85,7 +85,10 @@ class RunResult:
 
 
 def run(graph: Graph, handlers: dict[str, Callable[[dict], StageResult]], ctx: dict,
-        on_step: Callable[[Step], None] | None = None) -> RunResult:
+        on_step: Callable[[Step], None] | None = None,
+        on_enter: Callable[[str, str, int], None] | None = None) -> RunResult:
+    """on_step fires when a stage has finished; on_enter(node, agent, attempt) as it
+    starts -- so a live view can show which agent is working, not only what it did."""
     missing = [n for n, spec in graph.nodes.items() if spec["kind"] != "end" and n not in handlers]
     if missing:
         raise ValueError(f"no handler for: {', '.join(missing)}")
@@ -101,6 +104,8 @@ def run(graph: Graph, handlers: dict[str, Callable[[dict], StageResult]], ctx: d
         attempts[node] = attempts.get(node, 0) + 1
         ctx["guidance"] = graph.guidance(node)
         ctx["attempt"] = attempts[node]
+        if on_enter:
+            on_enter(node, spec.get("agent", ""), attempts[node])
         t0 = time.monotonic()
         try:
             outcome = handlers[node](ctx)
