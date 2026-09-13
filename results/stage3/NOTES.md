@@ -131,7 +131,43 @@ address (a security rule, not a setting).
 | Reader score, 12 medium scans | Critical fields 393 right, 2 caught, **0 accepted wrong** — same as stage 2 |
 | Unreadable-severity test | All checks passed |
 
-## 8. Open
+## 8. The agent loop: LangGraph engine, tool allow-lists, stop and resume (13 September, evening)
+
+| Piece | What it does | Checked by | Result |
+|---|---|---|---|
+| `workbench/graph_engine.py` | The procedural graph YAML compiled into LangGraph: same transition rules, budgets and trace. Default engine in `orchestration.yaml`; the old runner is kept | `bench/stage3/engine_parity_test.py` | 9 named + 600 random scripted runs: traces, ends, callbacks, `attempt` and `guidance` **identical** to the old runner |
+| `workbench/tools.py` | One gateway from agents to tools. Each agent's `tools` list in `agents.yaml` is enforced; refusals and calls logged in `logs/agents.jsonl`; lifecycle events started / completed / failed | `bench/stage3/tool_gate_test.py` | **16/16**: the Rules Engine cannot reach the sandbox, the Coder cannot search the library, the QA Checker cannot write a note, a call with no agent acting is refused |
+| Stop and resume (graph v3) | A doubtful value goes to `review_values`. The service pauses there (LangGraph `interrupt()`); the Review tab takes the value from the original report and a name; code checks it against the column; the run resumes from that step. The note records who entered what and what the scan read | `bench/stage3/review_resume_test.py` | **27/27**, on the blurred R-2247 scan: 12.3 refused (column prints 2 decimals), 12.32 resumes to ESCALATE on CML-03 and a checked note; re-measurement ends at needs_review |
+
+The command line cannot pause: its runs go through `review_values`, record "no one
+to ask in this run", and end at needs_review as before. The unreadable-severity
+test and the self-healing run pass unchanged. Paused runs are held in memory:
+**a restart of the service loses them.**
+
+### The Coder repeated itself — and the fix
+
+In the demo run after the pause was added, the Coder failed all 4 attempts on
+`next_due_date`. Five more runs showed why: in both failures the model sent **the
+same failed program, byte for byte**, on every retry, and the sandbox ran it again
+for the same traceback. The test's feedback was fine; the loop never made the
+model change anything.
+
+Fix, in the loop and not in the task: a program identical to one that already
+failed is not run again (recorded as "the same program as attempt k"), and the
+model gets a fresh conversation showing that program and its failure, with
+`repeat_options` from `agents.yaml` (temperature 0.7). It still costs an attempt.
+
+| `next_due_date`, granite4.1:8b, budget 4 | Runs | First attempt | Accepted after retries | Not accepted |
+|---|---|---|---|---|
+| Before (5 runs + the demo run) | 6 | 3 | 1 | **2** |
+| After | 10 | 4 | 5 (a repeat caught in 3 of them) | **1** (a repeat caught, then two new failures) |
+
+`cml_report` and `remaining_life` still pass on the first attempt. Small samples,
+one model; the Router's figures in `models.yaml` (stage 2) are not changed by this.
+A failure still shows on stage as "not accepted — handed to a person", which is
+true.
+
+## 9. Open
 
 1. **Answering a nearby question** needs something the checks cannot do. Options:
    try another model through the qualification test (qwen3.5:9b); a second,

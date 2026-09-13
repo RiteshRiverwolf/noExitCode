@@ -294,6 +294,10 @@ def render(ev: EvidenceSet, decision: Decision, summary: Summary, run: dict, out
     ]
     if ev.problems:
         rows.insert(3, ("Reading problems", "; ".join(ev.problems)))
+    if ev.reviewed:
+        rows.append(("Entered by a person", "; ".join(
+            f"{e['field']} = {e['entered']}, entered by {e['reviewer']} from the original report "
+            f"(the scan read {e['read_as'] or 'nothing'})" for e in ev.reviewed)))
     kv = _kv(doc, rows)
     # Amber until a second reader cross-checks the values: the stand-in, and a single model's reading.
     if ev.extraction == STAND_IN or "single reader" in ev.extraction:

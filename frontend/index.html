@@ -341,6 +341,10 @@
   .demo-btn { font: inherit; font-size: 11.5px; padding: .2rem .6rem; border-radius: .375rem; border: 1px solid rgba(129,140,248,.35); color: var(--indigo-200); background: rgba(129,140,248,.08); cursor: pointer; }
   .demo-btn:hover { background: rgba(129,140,248,.18); }
   .demo-btn:disabled { opacity: .45; cursor: not-allowed; }
+  .review-field { width: 100%; font: inherit; font-size: 12.5px; padding: .3rem .5rem; border-radius: .375rem; border: 1px solid rgba(148,163,184,.3); background: rgba(15,23,42,.35); color: inherit; }
+  .review-field:focus { outline: none; border-color: rgba(129,140,248,.6); }
+  .review-field:disabled { opacity: .6; }
+  .review-field option { color: #0f172a; }
   .ev-table { width: 100%; border-collapse: collapse; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11px; }
   .ev-table th { text-align: left; color: var(--ink-500); font-weight: 500; padding: .3rem .4rem; background: var(--base-850); }
   .ev-table td { padding: .3rem .4rem; border-top: 1px solid var(--base-800); color: var(--ink-300); }
@@ -768,7 +772,6 @@
     lastEvidence[runId] = e;
     evidenceStatus.textContent = doubt.length ? `${doubt.length} to review` : `${e.readings.length} readings`;
     evidenceStatus.className = `text-[11px] font-mono ${doubt.length ? 'text-signal-warn' : 'text-ink-500'}`;
-    if (doubt.length) renderReview(e, doubt);
   }
 
   function renderDecision(e, runId) {
@@ -791,34 +794,85 @@
     }
   }
 
-  function renderReview(e, doubt) {
-    reviewBody.innerHTML = doubt.map(r => {
-      const why = (e.problems || []).filter(p => p.startsWith(`${r.cml_id}.current_mm`)).map(p => p.split(': ').slice(1).join(': '));
-      return `
+  // A paused run: each doubtful value with its crop, an entry per value, the engineer's name.
+  // The service checks every entry against its column; nothing here decides.
+  function renderReview(e) {
+    const items = e.items || [];
+    const placeholder = it => it.decimals == null ? 'as printed' : `as printed, ${it.decimals} decimal${it.decimals === 1 ? '' : 's'}`;
+    reviewBody.innerHTML = `
+      <div class="card card-shadow mb-2 fade-swap">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-[13px] text-ink-100 font-medium">${esc(e.doc_id)} · paused for a person</span>
+          <span class="pill warn">run paused</span>
+        </div>
+        <div class="text-[12px] text-ink-300 leading-relaxed">${esc(e.reason)}. The run stopped instead of guessing. Read each value from the original report and enter it exactly as printed; the run then resumes from this step.</div>
+      </div>
+      ${items.map(it => `
       <div class="card card-shadow mb-2 fade-swap">
         <div class="flex items-center justify-between mb-2">
-          <span class="text-[13px] text-ink-100 font-medium">${esc(r.cml_id)} · current thickness</span>
+          <span class="text-[13px] text-ink-100 font-medium">${esc(it.label)}</span>
           <span class="pill warn">needs a person</span>
         </div>
-        ${r.crop_url ? `<img class="crop" src="${esc(r.crop_url)}" alt="the cell as scanned">` : ''}
+        ${it.crop_url ? `<img class="crop" src="${esc(it.crop_url)}" alt="the cell as scanned">` : ''}
         <div class="space-y-1 mt-2">
-          ${kv('Read as', r.current_mm ?? 'unread')}
-          ${kv('Minimum required', r.min_required_mm ?? '—')}
-          ${kv('Page · box', `${r.page} · ${(r.bbox || []).map(v => Math.round(v)).join(', ')}`)}
-          ${kv('Recogniser confidence', r.score != null ? Number(r.score).toFixed(3) : '—')}
+          ${kv('Location', it.location || '—')}
+          ${kv('Read by the scan as', it.read_as ?? 'unread')}
+          ${it.kind === 'thickness' ? kv('Minimum required', it.min_required_mm ?? '—') : ''}
+          ${it.kind === 'thickness' && it.decimals != null ? kv('Column prints', `${it.decimals} decimal${it.decimals === 1 ? '' : 's'}`) : ''}
+          ${kv('Page · box', `${it.page ?? '—'} · ${(it.bbox || []).map(v => Math.round(v)).join(', ')}`)}
+          ${kv('Recogniser confidence', it.score != null ? Number(it.score).toFixed(3) : '—')}
         </div>
-        ${why.length ? `<div class="text-[12px] text-signal-warn mt-2">${esc(why.join('; '))}</div>` : ''}
-        <div class="text-[12px] text-ink-300 mt-2">The run stopped here instead of guessing a digit. An engineer confirms the value or sends it for re-measurement.</div>
-        <div class="flex gap-2 mt-2">
-          <button class="demo-btn" disabled>Confirm value</button>
-          <button class="demo-btn" disabled>Re-measure</button>
+        ${it.why && it.why.length ? `<div class="text-[12px] text-signal-warn mt-2">${esc(it.why.join('; '))}</div>` : ''}
+        <label class="block text-[11.5px] text-ink-500 mt-2">Value on the original report</label>
+        ${it.kind === 'grade'
+          ? `<select class="review-field review-input mt-1" data-field="${esc(it.field)}"><option value="">choose…</option>${(it.options || []).map(o => `<option>${esc(o)}</option>`).join('')}</select>`
+          : `<input class="review-field review-input mt-1 font-mono" data-field="${esc(it.field)}" inputmode="decimal" autocomplete="off" placeholder="${esc(placeholder(it))}">`}
+      </div>`).join('')}
+      <div class="card card-shadow mb-2">
+        <label class="block text-[11.5px] text-ink-500">Your name — recorded with every value you enter</label>
+        <input class="review-field review-name mt-1" autocomplete="name">
+        <div class="flex gap-2 mt-2 flex-wrap">
+          <button class="demo-btn review-action" data-action="confirm">Confirm values and resume</button>
+          <button class="demo-btn review-action" data-action="remeasure">Send for re-measurement</button>
         </div>
-        <div class="text-[11px] text-ink-700 mt-1">Resuming the stopped run from this decision is planned (LangGraph interrupt), not built yet.</div>
+        <div class="review-status text-[12px] mt-2 text-ink-600">${running ? 'Available when the current mission finishes.' : ''}</div>
       </div>`;
-    }).join('');
-    reviewBadge.textContent = doubt.length;
+    reviewBody.querySelectorAll('.review-action').forEach(btn => btn.addEventListener('click', () => submitReview(e, btn.dataset.action)));
+    setButtons();
+    reviewBadge.textContent = items.length;
     reviewBadge.classList.remove('hidden');
     showTab('review');
+  }
+
+  async function submitReview(e, action) {
+    if (running) return;
+    const status = reviewBody.querySelector('.review-status');
+    const reviewer = reviewBody.querySelector('.review-name').value.trim();
+    const values = {};
+    if (action === 'confirm') reviewBody.querySelectorAll('.review-input').forEach(el => { values[el.dataset.field] = el.value.trim(); });
+    status.className = 'review-status text-[12px] mt-2 text-ink-400';
+    status.textContent = 'Checking the entries…';
+    try {
+      const j = await api(`/api/runs/${encodeURIComponent(e.run_id)}/review`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, reviewer, values }),
+      });
+      reviewBody.querySelectorAll('.review-action, .review-field').forEach(el => { el.disabled = true; el.classList.add('used'); });
+      const pill = reviewBody.querySelector('.pill');
+      if (pill) { pill.textContent = action === 'confirm' ? 'resumed' : 'sent for re-measurement'; pill.className = `pill ${action === 'confirm' ? 'ok' : 'warn'}`; }
+      status.className = 'review-status text-[12px] mt-2 text-signal-ok';
+      status.textContent = action === 'confirm'
+        ? `Accepted. The run resumes from this step, each value recorded as entered by ${reviewer}.`
+        : `Sent for re-measurement by ${reviewer}. The run ends here, with the reason logged.`;
+      reviewBadge.classList.add('hidden');
+      appendUserMessage(action === 'confirm'
+        ? `${reviewer}: from the original report, ${Object.entries(values).map(([k, v]) => `${k} = ${v}`).join(', ')}. Resume the run.`
+        : `${reviewer}: send it for re-measurement.`, []);
+      startJob(Promise.resolve(j), true);
+    } catch (err) {
+      status.className = 'review-status text-[12px] mt-2 text-signal-warn';
+      status.textContent = err.message;
+    }
   }
 
   function renderRouter(tasks) {
@@ -1004,14 +1058,20 @@
 
   function setButtons() {
     ['demoBtnHeader', 'demoBtnEmpty'].forEach(id => { document.getElementById(id).disabled = running || !served; });
+    document.querySelectorAll('.review-action:not(.used)').forEach(b => { b.disabled = running || !served; });
+    const reviewStatus = document.querySelector('.review-status');
+    if (reviewStatus && !running && reviewStatus.textContent === 'Available when the current mission finishes.') reviewStatus.textContent = '';
   }
 
-  async function startJob(request) {
+  // keep: a resumed run continues the same mission, so its timeline and evidence stay on screen.
+  async function startJob(request, keep = false) {
     running = true;
     setButtons();
-    resetActivity();
-    resetEvidence();
-    lastEvidence = {};
+    if (!keep) {
+      resetActivity();
+      resetEvidence();
+      lastEvidence = {};
+    }
     startTimer();
     try {
       const j = await request;
@@ -1056,7 +1116,7 @@
       case 'run_start': state.run = e.run_id; upsertRow(`${b}-run-${e.run_id}`, { agent: 'Procedural graph', detail: `${e.graph} · ${e.image && e.image.length ? 'uploaded / given file' : e.source + (e.source === 'scan' ? ' (' + e.scan_quality + ')' : '')}${e.inject_fault ? ' · fault injected on purpose' : ''}`, status: 'info' }); break;
       case 'stage_enter': upsertRow(`${b}-${e.run_id}-${e.node}-${e.attempt}`, { agent: e.agent, detail: `${e.node} · attempt ${e.attempt}…`, status: 'active', tag: '', tagClass: '' }); break;
       case 'stage': {
-        const stop = e.next === 'needs_review';
+        const stop = e.next_kind === 'review' || e.next === 'needs_review';
         const sentBack = e.status !== 'ok' && !stop;
         upsertRow(`${b}-${e.run_id}-${e.node}-${e.attempt}`, {
           agent: e.agent, detail: `${e.note} · ${e.seconds}s`,
@@ -1067,13 +1127,24 @@
         break;
       }
       case 'evidence': renderEvidence(e, state.run); break;
+      case 'review': renderReview(e); break;
+      case 'run_resumed':
+        state.run = e.run_id;
+        addGroup(`Resumed · ${e.doc_id}`, e.action === 'remeasure'
+          ? `${e.reviewer} sent it for re-measurement; the run ends with the reason logged.`
+          : `${e.reviewer} entered ${Object.entries(e.values || {}).map(([k, v]) => `${k} = ${v}`).join(', ')} from the original report. The run continues from the review step, on the ${e.engine} engine.`);
+        break;
       case 'decision': renderDecision(e, state.run); break;
       case 'route': upsertRow(`${b}-route-${e.task}`, { agent: 'Router', detail: `${e.task} → ${e.chosen || 'no qualified model'} · ${e.decision}`, status: e.chosen ? 'ok' : 'stop', tag: e.chosen || 'none', tagClass: e.chosen ? 'info' : 'warn' }); break;
       case 'summary': break;
       case 'run_end': {
+        if (e.end === 'paused') {
+          appendReply(`<span class="text-signal-warn">Paused for a person.</span> ${esc(e.reason || 'A value could not be read with certainty')}. Nothing was guessed: an engineer enters the value from the original report in <b>Review</b>, and the run resumes from exactly that step.`);
+          break;
+        }
         const stopped = e.end === 'needs_review';
         appendReply(stopped
-          ? `<span class="text-signal-warn">Stopped for a person.</span> A value could not be read with certainty, so no note was drafted — see <b>Review</b>.`
+          ? `<span class="text-signal-warn">Stopped for a person.</span> ${esc(e.reason || 'A value could not be read with certainty')}. No note was drafted.`
           : `<span class="text-signal-ok">Draft ready.</span> ${esc(e.summary_text || '')}
              ${e.note_url ? `<div class="mt-2"><a class="chat-link" href="${esc(e.note_url)}" download>Download the draft approval note (.docx)</a> <span class="text-ink-600 text-[11.5px]">· summary by ${esc(e.written_by)}</span></div>` : ''}`);
         break;

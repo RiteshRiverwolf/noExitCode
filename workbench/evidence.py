@@ -84,6 +84,7 @@ class EvidenceSet:
     problems: list[str] = field(default_factory=list)            # validation problems from reading the scan
     pages: list[dict] = field(default_factory=list)              # per page: how it was read, its image
     notes: list[str] = field(default_factory=list)               # template words matched through OCR damage
+    reviewed: list[dict] = field(default_factory=list)           # values a person entered in place of doubtful readings
 
     def to_json(self) -> str:
         return json.dumps(asdict(self), indent=2, ensure_ascii=False,

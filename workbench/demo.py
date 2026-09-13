@@ -61,7 +61,8 @@ def _inspection(beat: dict, emit: Emit) -> str:
     cfg = JobConfig(doc_id=beat["doc_id"], source=beat.get("source", "scan"),
                     scan_quality=beat.get("scan_quality", "medium"),
                     image=[ROOT / p for p in beat["image"]] if beat.get("image") else None,
-                    inject_fault=beat.get("inject_fault"))
+                    inject_fault=beat.get("inject_fault"),
+                    pause_for_review=beat.get("pause_for_review", False))
     return run_job(cfg, emit=emit)["end"]
 
 

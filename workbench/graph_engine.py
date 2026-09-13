@@ -10,7 +10,11 @@ compiled, not rewritten by hand:
     stage retries within max_attempts, a failed check sends the work back to its
     cause, a stage sent back to more often than its budget allows is exhausted;
   - `step_budget` stays an enforced counter, and guidance and pitfalls still go
-    to each stage in `ctx["guidance"]`.
+    to each stage in `ctx["guidance"]`;
+  - a `kind: review` node runs like any stage, except that with pause_at_review,
+    when ctx holds a `review_request`, the run pauses there (LangGraph
+    `interrupt()`) and Execution.resume continues from exactly that node with the
+    person's decision in `ctx["review_decision"]`.
 
 Stage handlers are the same plain functions, with no framework imports. The
 run's working data (pages, evidence, the summary) stays in `ctx` and in the run
@@ -36,6 +40,7 @@ os.environ["LANGCHAIN_TRACING_V2"] = "false"
 
 from langgraph.checkpoint.memory import InMemorySaver  # noqa: E402
 from langgraph.graph import END, START, StateGraph  # noqa: E402
+from langgraph.types import Command, interrupt  # noqa: E402
 
 from workbench.procedural_graph import Graph, RunResult, StageResult, Step  # noqa: E402
 
@@ -74,8 +79,9 @@ def compile_graph(graph: Graph, handlers: dict[str, Callable[[dict], StageResult
                   trace: list[Step],
                   on_step: Callable[[Step], None] | None = None,
                   on_enter: Callable[[str, str, int], None] | None = None,
-                  checkpointer=None):
-    """The graph file as a compiled LangGraph graph. Steps are appended to `trace` as they finish."""
+                  checkpointer=None, pause_at_review: bool = False):
+    """The graph file as a compiled LangGraph graph. Steps are appended to `trace` as they finish.
+    With pause_at_review, review nodes pause for a person (needs a checkpointer)."""
     missing = [n for n, spec in graph.nodes.items() if spec["kind"] != "end" and n not in handlers]
     if missing:
         raise ValueError(f"no handler for: {', '.join(missing)}")
@@ -91,6 +97,10 @@ def compile_graph(graph: Graph, handlers: dict[str, Callable[[dict], StageResult
         spec = graph.nodes[name]
 
         def run_stage(state: RunState) -> dict:
+            if pause_at_review and spec["kind"] == "review" and ctx.get("review_request"):
+                # Pause for a person. On resume LangGraph runs this node again from the top,
+                # and interrupt() returns the person's decision instead of pausing.
+                ctx["review_decision"] = interrupt(ctx["review_request"])
             attempts = dict(state["pg_attempts"])
             attempts[name] = attempts.get(name, 0) + 1
             ctx["guidance"] = graph.guidance(name)
@@ -137,15 +147,52 @@ def compile_graph(graph: Graph, handlers: dict[str, Callable[[dict], StageResult
     return sg.compile(checkpointer=checkpointer)
 
 
+class Execution:
+    """One run of a graph, which may pause at a review node for a person and be resumed there.
+
+    The run's position is checkpointed in memory: a paused run lives as long as
+    this object, not across a restart of the process. While paused,
+    `result.end` is "paused" and `paused_at` names the node.
+    """
+
+    def __init__(self, graph: Graph, handlers: dict[str, Callable[[dict], StageResult]], ctx: dict,
+                 on_step: Callable[[Step], None] | None = None,
+                 on_enter: Callable[[str, str, int], None] | None = None,
+                 pause_at_review: bool = False):
+        self.graph = graph
+        self.result = RunResult(end="needs_review")
+        self.app = compile_graph(graph, handlers, ctx, self.result.trace, on_step, on_enter,
+                                 InMemorySaver(), pause_at_review=pause_at_review)
+        self.config = {"configurable": {"thread_id": uuid.uuid4().hex},
+                       "recursion_limit": graph.step_budget + 3}   # every stage, then one end or budget node
+        self.paused_at: str | None = None
+        self._started = False
+
+    def start(self) -> RunResult:
+        if self._started:
+            raise RuntimeError("this run has already started")
+        self._started = True
+        return self._drive({"pg_attempts": {}, "pg_steps": 0, "pg_next": self.graph.start, "pg_end": ""})
+
+    def resume(self, decision) -> RunResult:
+        """Continue a paused run from its review node; the node receives `decision`."""
+        if self.paused_at is None:
+            raise RuntimeError("this run is not paused")
+        return self._drive(Command(resume=decision))
+
+    def _drive(self, value) -> RunResult:
+        final = self.app.invoke(value, self.config)
+        waiting = self.app.get_state(self.config).next
+        if waiting:
+            self.paused_at, self.result.end = waiting[0], "paused"
+        else:
+            self.paused_at, self.result.end = None, final.get("pg_end") or "needs_review"
+        return self.result
+
+
 def run(graph: Graph, handlers: dict[str, Callable[[dict], StageResult]], ctx: dict,
         on_step: Callable[[Step], None] | None = None,
         on_enter: Callable[[str, str, int], None] | None = None) -> RunResult:
-    """Drop-in for procedural_graph.run: on_step fires when a stage has finished,
+    """Drop-in for procedural_graph.run, never pausing: on_step fires when a stage has finished,
     on_enter(node, agent, attempt) as it starts."""
-    result = RunResult(end="needs_review")
-    app = compile_graph(graph, handlers, ctx, result.trace, on_step, on_enter, InMemorySaver())
-    config = {"configurable": {"thread_id": uuid.uuid4().hex},
-              "recursion_limit": graph.step_budget + 3}   # every stage, then one end or budget node
-    final = app.invoke({"pg_attempts": {}, "pg_steps": 0, "pg_next": graph.start, "pg_end": ""}, config)
-    result.end = final["pg_end"] or "needs_review"
-    return result
+    return Execution(graph, handlers, ctx, on_step, on_enter).start()

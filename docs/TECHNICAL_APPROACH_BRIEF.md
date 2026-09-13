@@ -216,7 +216,9 @@ and a call with no agent acting is refused (16/16 checks).
 | Vector search speed | 6 ms at 100,000 passages (SQLite) | Proven |
 | Evidence store | 4 = 4 below-minimum readings; 45 = 45 findings vs ground truth | Proven |
 | Librarian written answers | 17/22 correct, but answered 4 unanswerable questions, so **not qualified** | Measured and honestly failed |
-| LangGraph | 0 network calls; pause and resume 30/30; **609/609 identical traces** vs our original runner | Built |
+| LangGraph | 0 network calls; **609/609 identical traces** vs our original runner | Built |
+| Stop for a person, then resume | Blurred R-2247 scan pauses; "12.3" refused (column prints 2 decimals); "12.32" with the engineer's name resumes to ESCALATE and a checked note that records the entry — 27/27 checks, and driven in a real browser | Built |
+| Coder repair loop | A resubmitted failed program is caught and the model restarts clean: `next_due_date` accepted 9/10 runs (was 4/6) | Built (small sample) |
 | Pitch demo end to end | 18–42 s; 0 external connections; all audit chains intact | Built |
 
 ### 7. Models and why each has its job
@@ -305,8 +307,7 @@ Nothing else changes.
 - Only Word deliverables are built. Excel and PowerPoint are Proposed.
 - The Planner is not built; the demo's plan is the scenario file, and the demo
   labels it so.
-- Resuming a stopped run from the engineer's decision is Proposed (the pause and
-  resume mechanism itself is tested 30/30).
+- A run paused for a person is held in memory: restarting the service loses it.
 - The corpus is synthetic plus one public CSB report. Results on 12 documents do
   not prove results on a real refinery's library.
 - Nothing has been tested on 120B-class hardware.
@@ -655,8 +656,8 @@ event in a tamper-evident log, not a polite instruction to the model.*
 ---
 
 ### C10. Stop for a person, then resume exactly there
-*Place in section 11. Label this diagram **Proposed**: the pause/resume
-mechanism is tested 30/30; wiring it to the Review tab is the next build step.*
+*Place in section 11. Label this diagram **Built**: 27/27 checks on the blurred
+R-2247 scan, and the Review tab drives it in the live demo.*
 
 ```mermaid
 sequenceDiagram
@@ -760,7 +761,9 @@ flowchart LR
   end
 
   subgraph B3["Beat 3 — same report, blurred digit"]
-    c1["OCR reads 12.3"] --> c2["Stopped for a person — Review tab shows the crop"]
+    c1["OCR reads 12.3"] --> c2["Paused for a person — Review tab shows the crop"]
+    c2 --> c3["Engineer types 12.32 from the original, with their name — 12.3 would be refused"]
+    c3 --> c4["Run resumes from that step → ESCALATE → checked note recording the entry"]
   end
 
   subgraph B4["Beat 4 — 'When is the next inspection due?'"]
@@ -771,6 +774,7 @@ flowchart LR
   class a4 bad
   class a6,d3 ok
   class c2 stop
+  class c4 ok
 ```
 *Caption: throughout, the footer shows 0 external connections and every audit
 chain intact.*
@@ -801,10 +805,10 @@ flowchart LR
     u4["Tool allow-lists + agent lifecycle log"]
     u5["Evidence store + reference library"]
     u6["Live interface + network footer"]
+    u7["Stop for a person, resume from the Review tab"]
   end
 
   subgraph NEXT["Proposed — next"]
-    x1["Resume a stopped run from the Review tab"]
     x2["Planner: JSON plan validated in code"]
     x3["Excel and PowerPoint deliverables"]
     x4["Qualify a stronger Librarian + Verifier pass"]
@@ -816,8 +820,8 @@ flowchart LR
 
   NOW --> BUILT --> NEXT
   class p1,p2,p3,p4,p5 proven
-  class u1,u2,u3,u4,u5,u6 built
-  class x1,x2,x3,x4,x5,x6,x7,x8 proposed
+  class u1,u2,u3,u4,u5,u6,u7 built
+  class x2,x3,x4,x5,x6,x7,x8 proposed
 ```
 
 ---

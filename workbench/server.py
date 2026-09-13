@@ -23,6 +23,10 @@ POST /api/inspections                    start an inspection: JSON {doc_id, sour
 POST /api/code                           start a coding task: JSON {task_id, model}
 GET  /api/demo                           the pitch demo's scenario (workbench/demo.yaml)
 POST /api/demo                           run the pitch demo: every beat a real run, events streamed
+GET  /api/runs/paused                    runs paused for a person, with what each one asks
+POST /api/runs/{run_id}/review           a person's decision on a paused run: JSON {action: confirm |
+                                         remeasure, reviewer, values: {field: value as printed}};
+                                         checked, then the run resumes as a job of its own
 GET  /api/code/tasks                     the coding tasks and their briefs
 GET  /api/code/tasks/{id}/acceptance     the held-out tests -- shown to people, never to the model
 GET  /api/jobs/{job}                     every event of a job so far
@@ -71,7 +75,7 @@ from starlette.responses import FileResponse, JSONResponse, StreamingResponse
 from starlette.routing import Route
 
 from mcp_servers.audit import LOG_DIR, verify
-from workbench import coder, coding_tasks, demo, pagesource, router, sandbox
+from workbench import coder, coding_tasks, demo, pagesource, router, run_inspection, sandbox
 from workbench.evidence import CORPUS
 from workbench.run_inspection import JobConfig, run_job
 
@@ -184,6 +188,9 @@ def _with_urls(event: dict) -> dict:
             page["image_url"] = url(page.get("image"))
     elif event.get("type") == "run_end":
         event["note_url"] = url(event.get("note"))
+    elif event.get("type") == "review":
+        for item in event.get("items", []):
+            item["crop_url"] = url(item.get("crop"))
     return event
 
 
@@ -217,7 +224,8 @@ async def start_inspection(request: Request) -> JSONResponse:
         model = str(form.get("model") or "") or None
         fault = str(form.get("inject_fault") or "") or None
         cfg = JobConfig(doc_id=_safe_id(str(form.get("doc_id") or saved[0].stem)), image=saved,
-                        no_model=_truthy(form.get("no_model")), model=model, inject_fault=fault)
+                        no_model=_truthy(form.get("no_model")), model=model, inject_fault=fault,
+                        pause_for_review=True)
     else:
         try:
             body = await request.json()
@@ -232,7 +240,8 @@ async def start_inspection(request: Request) -> JSONResponse:
             return reply({"error": "source is scan|pdf|stand-in; scan_quality is clean|light|medium|heavy"}, 400)
         model, fault = body.get("model") or None, body.get("inject_fault") or None
         cfg = JobConfig(doc_id=doc_id, source=source, scan_quality=quality,
-                        no_model=bool(body.get("no_model")), model=model, inject_fault=fault)
+                        no_model=bool(body.get("no_model")), model=model, inject_fault=fault,
+                        pause_for_review=True)
 
     if cfg.model and cfg.model not in _registry_models():
         return reply({"error": f"{cfg.model!r} is not in the model registry"}, 400)
@@ -307,6 +316,31 @@ async def demo_endpoint(request: Request) -> JSONResponse:
     job = Job("demo", demo.scenario()["title"])
     _start(job, lambda job: demo.run(emit=lambda e: job.emit(_with_urls(e))))
     return reply({"job": job.id, "events": f"/api/jobs/{job.id}/events"})
+
+
+async def review_run(request: Request) -> JSONResponse:
+    """A person's decision on a paused run: checked, taken once, then resumed as a job of its own."""
+    run_id = request.path_params["run_id"]
+    try:
+        decision = await request.json()
+    except Exception:
+        return reply({"error": "send JSON {action, reviewer, values}"}, 400)
+    try:
+        paused = run_inspection.claim_review(run_id, decision)
+    except KeyError:
+        return reply({"error": f"no run {run_id!r} is waiting for a person (paused runs are kept in "
+                               f"memory until the service restarts)"}, 404)
+    except run_inspection.ReviewRefused as e:
+        return reply({"error": str(e), "problems": e.problems}, 400)
+    job = Job("resume", run_id)
+    _start(job, lambda job: run_inspection.continue_run(paused, decision,
+                                                        emit=lambda e: job.emit(_with_urls(e))))
+    return reply({"job": job.id, "events": f"/api/jobs/{job.id}/events"})
+
+
+async def paused_list(request: Request) -> JSONResponse:
+    return reply([_with_urls({"type": "review", **json.loads(json.dumps(p["request"])),
+                              "paused_at": p["paused_at"]}) for p in run_inspection.paused_runs()])
 
 
 async def job_snapshot(request: Request) -> JSONResponse:
@@ -569,6 +603,8 @@ app = Starlette(routes=[
     Route("/api/code/tasks/{task_id}/acceptance", code_acceptance),
     Route("/api/code", start_code, methods=["POST"]),
     Route("/api/demo", demo_endpoint, methods=["GET", "POST"]),
+    Route("/api/runs/paused", paused_list),
+    Route("/api/runs/{run_id}/review", review_run, methods=["POST"]),
     Route("/api/jobs/{job}", job_snapshot),
     Route("/api/jobs/{job}/events", job_events),
     Route("/api/files/{path:path}", files),

@@ -35,6 +35,14 @@ qa_checker:
     record. It cannot write a note; it can only stamp checks that all passed.
   tools: [read_back_note, stamp_note]
 
+reviewer:
+  purpose: >
+    An engineer, through the Review tab. Enters a value the scan could not give
+    with certainty, read from the original report, or sends it for
+    re-measurement. Code checks every entry against its printed column before the
+    run continues, and records who entered what and what the scan had read.
+  tools: []
+
 
 librarian:
   purpose: >
@@ -142,6 +150,9 @@ coder:
     failed_tests: "Your program failed the acceptance tests.\n\n{report}\n\nFix the program and reply with the complete corrected file."
     timed_out: "Your program did not finish within the time limit. It is probably waiting or looping forever."
     silent_exit: "The program exited with code {code} and said nothing."
+    # Sent in a fresh conversation when the model sends a program that already failed, unchanged.
+    repeated: "This program was already tried and it failed:\n\n```python\n{program}\n```\n\nIt failed like this:\n\n{report}\n\nWrite a corrected program that fixes this failure. Reply with the complete file in a single ```python code block."
+  repeat_options: {temperature: 0.7, num_ctx: 8192}   # for that fresh conversation: more variety than a repeat
   output_tail_chars: 2500          # how much of stdout and stderr the model sees
 
 

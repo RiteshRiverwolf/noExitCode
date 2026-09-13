@@ -179,7 +179,7 @@ One workbench, several missions, one visible agent timeline.
 | 1 | **The machine is sealed.** Live panel: outbound attempts blocked, packet capture as evidence (R6) | Proven at container level; **panel live** (connection snapshot + audit-log chains, 2026-09-13) |
 | 2 | **"Read this inspection report and draft the approval note."** The Planner lays out steps; agents light up as they work | Graph, trace and **live streaming Built** — the frontend shows every stage event; the plan shown is the demo scenario (Planner not built) |
 | 3 | **Reader** extracts every finding and reading, each shown with the crop of its cell | **Built** |
-| 4 | **One cell is flagged** — the damaged digit. The run *pauses*; the engineer sees the crop and decides | Detection Proven; the run **stops** and the Review tab shows the cell crop (Built); resuming from the engineer's decision is Proposed (§10) |
+| 4 | **One cell is flagged** — the damaged digit. The run *pauses*; the engineer sees the crop and decides | Detection Proven; **pause and resume Built** (2026-09-13): the run pauses at `review_values`, the engineer enters the value from the original with their name, code checks it against the column, and the run resumes from that step (`review_resume_test.py` 27/27). Paused runs live in memory only |
 | 5 | **Rules fire in code** and say why: severity, or a reading below minimum | **Built** |
 | 6 | **Author** writes the Word note; **Verifier** reads the finished file back and checks every number | **Built** |
 | 7 | **We break it on purpose.** A wrong number is injected; the Verifier catches it; the work is sent back and repaired | **Built** — our best 30 seconds |
@@ -290,10 +290,10 @@ Architectures for Language Agents* (Sumers, Yao, Narasimhan, Griffiths; TMLR
 
 | Memory | What it is (CoALA) | Ours | Status |
 |---|---|---|---|
-| **Working** | What the current step needs: inputs, retrieved knowledge, active goals | The mission's LangGraph state, checkpointed so a paused mission resumes where it stopped | Pause and resume tested 30/30, in memory only |
+| **Working** | What the current step needs: inputs, retrieved knowledge, active goals | The mission's LangGraph state, checkpointed so a paused mission resumes where it stopped | **Built**: a paused inspection resumes from `review_values` (27/27); checkpoints in memory only, so a restart loses a paused run |
 | **Semantic** — facts | The agent's knowledge about the world | Evidence store (§7a, exact numbers); reference library (§7b, wording and citations); recorded knowledge graph (HARNESS_AND_ROADMAP §5.1) | Evidence store **Built**; library **Built**, first score 16/17; graph Proposed |
 | **Episodic** — what happened | Experience from earlier runs | Run folders `runs/<job-id>/<stage>/`, the hash-chained audit log, every reviewer decision on a flagged cell. Recalled as "last time": the previous reading for *thickness grew*, a correction an engineer made, a plan that worked, shown to the Planner as an example | Records **Built**; recall Proposed |
-| **Procedural** — how the work is done | Model weights plus the agent's code and instructions | The procedural graph (steps, guidance, pitfalls), agent definitions with tool allow-lists, rules in code, the models in `models.yaml` | Graph and rules **Built**; agent definitions Proposed |
+| **Procedural** — how the work is done | Model weights plus the agent's code and instructions | The procedural graph (steps, guidance, pitfalls), agent definitions with tool allow-lists, rules in code, the models in `models.yaml` | Graph and rules **Built**; agent definitions with enforced tool lists **Built** |
 
 **Rules:**
 
@@ -366,8 +366,11 @@ option was rejected.
 
 ## 10. LangGraph — the decision
 
-Today the pipeline runs on our own `workbench/procedural_graph.py`: YAML graph,
-retries, trace, hash-chained log. It works and produced the self-healing demo.
+Until 2026-09-13 the pipeline ran on our own `workbench/procedural_graph.py`: YAML
+graph, retries, trace, hash-chained log. **It now runs on LangGraph**
+(`workbench/graph_engine.py`, chosen in `orchestration.yaml`), after 609 scripted
+runs gave identical traces on both engines and the self-healing demo passed
+unchanged; the old runner is kept as the fallback.
 
 **Recommendation: move to LangGraph**, for three things the agent team needs:
 
@@ -415,8 +418,8 @@ here for the first time):
 
 | Idea | Where it lands | Status |
 |---|---|---|
-| Each agent is a small definition with a list of the only tools it may use | Agent definitions (§3); the allow-list is enforced in code, a refused call is logged | Proposed |
-| Lifecycle events per agent (`selected / started / completed / failed`, tagged with the agent's id) | The live agent timeline and the audit log (§9, §11) | Proposed |
+| Each agent is a small definition with a list of the only tools it may use | Agent definitions (§3); the allow-list is enforced in code, a refused call is logged | **Built** — `workbench/tools.py`, `tool_gate_test.py` 16/16 |
+| Lifecycle events per agent (`selected / started / completed / failed`, tagged with the agent's id) | The live agent timeline and the audit log (§9, §11) | **Built** for started / completed / failed, in `logs/agents.jsonl` and the event stream; not yet drawn in the interface |
 | An approval step on every tool call | The Sentinel's approval gate; connectors wait for it (§14 H) | Proposed |
 | Packaged skills checked against acceptance criteria | The model qualification test (§3) | Built in part |
 

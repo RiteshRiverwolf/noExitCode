@@ -45,10 +45,13 @@ beats:
     title: The same report with a damaged digit
     caption: >-
       The last digit of CML-03 is blurred. The column prints two decimals and this
-      cell reads one, so the run stops for a person instead of guessing.
-    agents: [Document Reader, Evidence Builder, Person]
+      cell reads one, so the run pauses for a person instead of guessing. In Review,
+      an engineer enters the value from the original report and the run resumes
+      from exactly that step.
+    agents: [Document Reader, Evidence Builder, Engineer (Review tab)]
     doc_id: insp_1002_damaged
     image: [bench/stage1/partial/insp_1002_p1_blurred.png]
+    pause_for_review: true
 
   - id: code
     kind: code

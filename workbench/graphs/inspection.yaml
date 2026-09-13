@@ -16,7 +16,8 @@
 # passes the validation set AND an engineer approves it (Management of Change).
 
 graph: inspection
-version: 2      # v2: each stage runs as a defined agent (agent_id), held to that agent's tools
+version: 3      # v3: a doubtful value goes to review_values, where a person enters it and the run resumes
+                # v2: each stage runs as a defined agent (agent_id), held to that agent's tools
 description: Scanned inspection report -> checked evidence -> rules -> draft approval note
 start: read_document
 step_budget: 20
@@ -30,6 +31,10 @@ nodes:
   write_summary:  {kind: stage, agent: Report Writer (model),     agent_id: report_writer,    max_attempts: 1}
   render_note:    {kind: stage, agent: Report Writer (template),  agent_id: report_writer,    max_attempts: 3}
   qa_check:       {kind: check, agent: QA Checker,                agent_id: qa_checker,       max_attempts: 1}
+  # kind review: where the service runs it, the run pauses here and waits for an
+  # engineer (workbench/graph_engine.py); where nobody can be asked (the command
+  # line), the stage records that and the run ends at needs_review.
+  review_values:  {kind: review, agent: Engineer (Review tab),    agent_id: reviewer,         max_attempts: 1}
   needs_review:   {kind: end,   agent: Person}
   done:           {kind: end,   agent: Person}
 
@@ -52,10 +57,24 @@ edges:
 
   - from: build_evidence
     relation: CONVERGES_TO
-    to: needs_review
+    to: review_values
     when: exhausted
-    condition: a critical value is still missing after re-reading
+    condition: a critical value is still missing or doubtful after re-reading
     guidance: show the reviewer the cell crop; never guess a digit
+
+  - from: review_values
+    relation: PROVIDES_INPUT_FOR
+    to: apply_rules
+    when: ok
+    condition: an engineer entered every doubtful value from the original report, and each entry passed its column's checks
+    guidance: record who entered each value and what the scan read; the rules run on the entered values
+    pitfalls: an entry that does not match the column's printed precision is refused, never rounded
+
+  - from: review_values
+    relation: CONVERGES_TO
+    to: needs_review
+    when: fail
+    condition: nobody could be asked, the engineer sent it for re-measurement, or no entry can resolve it
 
   - from: apply_rules
     relation: LEADS_TO

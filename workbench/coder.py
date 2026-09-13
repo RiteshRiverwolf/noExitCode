@@ -97,8 +97,9 @@ def extract_code(reply: str) -> str:
     return reply.strip() if reply.strip().startswith(("import ", "def ", "from ", "#")) else ""
 
 
-def ask_model(messages: list[dict], model: str) -> str:
-    r = agents.chat(model, messages, "coder")
+def ask_model(messages: list[dict], model: str, options: dict | None = None) -> str:
+    """`options` replaces the agent's own model options (agents.yaml) for this call."""
+    r = agents.chat(model, messages, "coder", **({"options": options} if options else {}))
     r.raise_for_status()
     return r.json()["message"]["content"].strip()
 
@@ -148,10 +149,12 @@ def _solve(task: CodingTask, model: str, force_subprocess: bool,
     messages = [{"role": "system", "content": SYSTEM},
                 {"role": "user", "content": task.brief}]
 
+    failed: dict[str, tuple[int, str]] = {}      # a program that failed -> (its attempt, what the model was told)
+    options = None                                # the agent's own options, until the model repeats itself
     for n in range(1, task.max_attempts + 1):
         send({"type": "attempt_start", "n": n, "max_attempts": task.max_attempts})
         try:
-            reply = ask_model(messages, model)
+            reply = ask_model(messages, model, options)
         except Exception as e:
             announce(Attempt(n, "", False, -1, "", f"{type(e).__name__}: {e}",
                                         0.0, "model unavailable"))
@@ -164,6 +167,20 @@ def _solve(task: CodingTask, model: str, force_subprocess: bool,
                                         0.0, "not run"))
             continue
 
+        if code in failed:
+            # The same failed program again (seen 2026-09-13: one program sent four times).
+            # Running it proves nothing new. Start a clean conversation that shows the
+            # program and its failure, with the options agents.yaml gives for this case.
+            first, report = failed[code]
+            announce(Attempt(n, code, False, -1, "",
+                             f"the same program as attempt {first}, which failed; not run again",
+                             0.0, "not run"))
+            messages = [{"role": "system", "content": SYSTEM},
+                        {"role": "user", "content": task.brief + "\n\n" + AGENT["messages"]["repeated"]
+                         .replace("{program}", code).replace("{report}", report)}]
+            options = AGENT["repeat_options"]
+            continue
+
         # The acceptance test is placed beside the program and is what runs.
         files = {task.entry: code, "acceptance_test.py": task.acceptance, **task.inputs}
         run = tools.call("sandbox", files=files, entry="acceptance_test.py", timeout=task.timeout,
@@ -174,9 +191,10 @@ def _solve(task: CodingTask, model: str, force_subprocess: bool,
         if run.ok:
             out.accepted, out.code = True, code
             break
+        report = failure_report(run)
+        failed[code] = (n, report)
         messages += [{"role": "assistant", "content": reply},
-                     {"role": "user", "content":
-                      AGENT["messages"]["failed_tests"].replace("{report}", failure_report(run))}]
+                     {"role": "user", "content": AGENT["messages"]["failed_tests"].replace("{report}", report)}]
 
     out.seconds = round(time.time() - t0, 1)
     return out
