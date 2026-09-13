@@ -36,11 +36,10 @@ import httpx
 import yaml
 
 from mcp_servers.audit import LOG_DIR, AuditLog
-from workbench import library, router
+from workbench import library, router, tools
 
 AGENTS = Path(__file__).resolve().parent / "agents.yaml"
 NAME = "librarian"
-TOOLS = {"search_library": library.search}      # every tool that exists; the agent's list says which it may use
 
 
 @lru_cache(maxsize=None)
@@ -58,17 +57,15 @@ def _log() -> AuditLog:
     return _LOG
 
 
-class ToolNotAllowed(PermissionError):
-    pass
+ToolNotAllowed = tools.ToolNotAllowed
 
 
 def call_tool(name: str, **kwargs):
-    """The only way this agent reaches a tool. A tool outside its list is refused, and the refusal logged."""
-    allowed = definition()["tools"]
-    if name not in allowed:
-        _log().write({"event": "tool_refused", "agent": NAME, "tool": name, "allowed": allowed})
-        raise ToolNotAllowed(f"{NAME} may not call {name}; allowed: {allowed}")
-    return TOOLS[name](**kwargs)
+    """The only way this agent reaches a tool: refused unless its list names it, and logged (workbench/tools.py)."""
+    if tools.current_agent() == NAME:
+        return tools.call(name, **kwargs)
+    with tools.acting(NAME):
+        return tools.call(name, **kwargs)
 
 
 @dataclass
@@ -205,6 +202,15 @@ def _finish(result: Answer, started: float) -> Answer:
 
 
 def answer(question: str, model: str | None = None, k: int | None = None) -> Answer:
+    """Answer as the Librarian (workbench/tools.py): its lifecycle is logged; search_library is its only tool."""
+    with tools.acting(NAME, question=question) as act:
+        result = _answer(question, model, k)
+        if result.outcome not in ("answered", "not in library"):
+            act.fail(result.outcome)
+        return result
+
+
+def _answer(question: str, model: str | None, k: int | None) -> Answer:
     d, msg = definition(), definition()["messages"]
     started = time.monotonic()
     if model:

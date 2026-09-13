@@ -27,6 +27,7 @@ such in the trace.
 from __future__ import annotations
 
 import argparse
+import importlib
 import json
 import threading
 from dataclasses import asdict, dataclass
@@ -34,13 +35,25 @@ from datetime import datetime
 from pathlib import Path
 from typing import Callable
 
+import yaml
+
 from mcp_servers.audit import LOG_DIR, AuditLog
 from workbench import evidence as evidence_mod
-from workbench import pagesource, prose, report_writer, router, rules, scan_reader
-from workbench.procedural_graph import Graph, StageResult, run
+from workbench import prose, router, rules, tools
+from workbench.procedural_graph import Graph, StageResult
 
 ROOT = Path(__file__).resolve().parent.parent
 GRAPH = Path(__file__).resolve().parent / "graphs" / "inspection.yaml"
+ORCHESTRATION = Path(__file__).resolve().parent / "orchestration.yaml"
+ENGINES = {"langgraph": "workbench.graph_engine", "procedural_graph": "workbench.procedural_graph"}
+
+
+def engine_run(name: str | None) -> tuple[str, Callable]:
+    """The runner named in orchestration.yaml, or `name` when given. Imported on use."""
+    name = name or yaml.safe_load(ORCHESTRATION.read_text(encoding="utf-8"))["engine"]
+    if name not in ENGINES:
+        raise ValueError(f"unknown engine {name!r}; known: {', '.join(ENGINES)}")
+    return name, importlib.import_module(ENGINES[name]).run
 
 _AUDIT: AuditLog | None = None
 _AUDIT_LOCK = threading.Lock()
@@ -65,6 +78,7 @@ class JobConfig:
     model: str | None = None             # overrides the Router, and is logged as an override
     no_model: bool = False
     inject_fault: str | None = None
+    engine: str | None = None            # the graph runner; None: the one orchestration.yaml names
 
 
 def _save(folder: Path, name: str, data) -> None:
@@ -134,14 +148,8 @@ def run_job(cfg: JobConfig, emit: Callable[[dict], None] | None = None) -> dict:
             return StageResult("ok", f"{len(pages)} page image(s); evidence comes from the "
                                      f"ground-truth stand-in, not from these")
         work = folder / "01_read_document" / "pages"
-        if cfg.image:
-            images = [Path(p) for p in cfg.image]
-            pages = (pagesource.open_document(images[0], work)
-                     if images[0].suffix.lower() == ".pdf"
-                     else pagesource.open_pages(images, work))
-        else:
-            quality = None if cfg.source == "pdf" else cfg.scan_quality
-            pages = scan_reader.corpus_pages(c["doc_id"], quality, work)
+        pages = tools.call("read_pages", work_dir=work, doc_id=c["doc_id"], files=cfg.image,
+                           quality=None if cfg.source == "pdf" else cfg.scan_quality)
         c["pages"] = pages
         _save(folder / "01_read_document", "pages.json",
               [{"page": p.number, "file": p.source_file, "read_by": p.read_by,
@@ -156,10 +164,10 @@ def run_job(cfg: JobConfig, emit: Callable[[dict], None] | None = None) -> dict:
     def build_evidence(c):
         """Evidence records, and the decision to stop when a critical value is doubtful."""
         if cfg.source == "stand-in":
-            ev = evidence_mod.from_ground_truth(c["doc_id"], cfg.scan_quality)
+            ev = tools.call("ground_truth_stand_in", doc_id=c["doc_id"], scan_quality=cfg.scan_quality)
         else:
-            ev = scan_reader.build_evidence(c["doc_id"], c["pages"],
-                                            crop_dir=folder / "02_build_evidence" / "crops")
+            ev = tools.call("build_evidence", doc_id=c["doc_id"], pages=c["pages"],
+                            crop_dir=folder / "02_build_evidence" / "crops")
         c["evidence"] = ev
         _save(folder / "02_build_evidence", "evidence.json", ev.to_json())
         if ev.problems:
@@ -184,7 +192,7 @@ def run_job(cfg: JobConfig, emit: Callable[[dict], None] | None = None) -> dict:
         return StageResult("ok", f"{len(ev.findings)} findings, {len(ev.readings)} readings{extra}")
 
     def apply_rules(c):
-        d = rules.evaluate(c["evidence"])
+        d = tools.call("apply_rules", ev=c["evidence"])
         c["decision"] = d
         _save(folder / "03_apply_rules", "decision.json", asdict(d))
         send({"type": "decision", "outcome": d.outcome, "ruleset": d.ruleset_version,
@@ -224,21 +232,33 @@ def run_job(cfg: JobConfig, emit: Callable[[dict], None] | None = None) -> dict:
 
     def render_note(c):
         corrupt = cfg.inject_fault == "render" and c["attempt"] == 1
-        report_writer.render(c["evidence"], c["decision"], c["summary"], run_info, note_path, corrupt=corrupt)
+        tools.call("write_note", ev=c["evidence"], decision=c["decision"], summary=c["summary"], run=run_info,
+                   out=note_path, corrupt=corrupt)
         return StageResult("ok", "written" + (" (INJECTED FAULT: wrong value on purpose)" if corrupt else ""))
 
     def qa_check(c):
-        results = report_writer.verify(note_path, c["evidence"], c["decision"])
+        results = tools.call("read_back_note", path=note_path, ev=c["evidence"], decision=c["decision"])
         failed = [n for n, ok, _ in results if not ok]
         _save(folder / "06_qa_check", "verification.json", results)
         if failed:
             return StageResult("fail", f"{len(failed)} check(s) failed: {failed[0]}")
         # Stamp the passed checks into the note itself, then read it back once more.
-        report_writer.render(c["evidence"], c["decision"], c["summary"], run_info, note_path, qa_results=results)
-        again = report_writer.verify(note_path, c["evidence"], c["decision"])
+        tools.call("stamp_note", ev=c["evidence"], decision=c["decision"], summary=c["summary"], run=run_info,
+                   out=note_path, qa_results=results)
+        again = tools.call("read_back_note", path=note_path, ev=c["evidence"], decision=c["decision"])
         if not all(ok for _, ok, _ in again):
             return StageResult("fail", "final file failed its read-back")
         return StageResult("ok", f"all {len(results)} read-back checks passed")
+
+    def as_agent(agent_id: str, node: str, stage: Callable[[dict], StageResult]) -> Callable[[dict], StageResult]:
+        """A stage runs as the agent the graph names for it: only that agent's tools, its lifecycle logged."""
+        def handler(c: dict) -> StageResult:
+            with tools.acting(agent_id, send, run_id=job, node=node, attempt=c["attempt"]) as act:
+                outcome = stage(c)
+                if outcome.status != "ok":
+                    act.fail(outcome.note)
+                return outcome
+        return handler
 
     def on_enter(node: str, agent: str, attempt: int) -> None:
         send({"type": "stage_enter", "run_id": job, "node": node, "agent": agent, "attempt": attempt})
@@ -248,16 +268,18 @@ def run_job(cfg: JobConfig, emit: Callable[[dict], None] | None = None) -> dict:
         audit.write({"event": "stage", "run_id": job, **asdict(step)})
         send({"type": "stage", "run_id": job, **asdict(step)})
 
+    engine, run = engine_run(cfg.engine)
     model_label = "none (--no-model)" if cfg.no_model else (cfg.model or "chosen by the Router")
     send({"type": "run_start", "run_id": job, "doc_id": cfg.doc_id,
-          "graph": f"{graph.name} v{graph.version}", "source": cfg.source,
+          "graph": f"{graph.name} v{graph.version}", "engine": engine, "source": cfg.source,
           "scan_quality": cfg.scan_quality, "image": [str(p) for p in cfg.image or []],
           "model": model_label, "inject_fault": cfg.inject_fault,
           "folder": folder.relative_to(ROOT).as_posix()})
-    audit.write({"event": "run_start", "run_id": job, "doc_id": cfg.doc_id,
+    audit.write({"event": "run_start", "run_id": job, "doc_id": cfg.doc_id, "engine": engine,
                  "model": model_label, "inject_fault": cfg.inject_fault})
-    handlers = {"read_document": read_document, "build_evidence": build_evidence, "apply_rules": apply_rules,
-                "write_summary": write_summary, "render_note": render_note, "qa_check": qa_check}
+    stages = {"read_document": read_document, "build_evidence": build_evidence, "apply_rules": apply_rules,
+              "write_summary": write_summary, "render_note": render_note, "qa_check": qa_check}
+    handlers = {node: as_agent(graph.nodes[node]["agent_id"], node, fn) for node, fn in stages.items()}
     result = run(graph, handlers, ctx, on_step, on_enter)
 
     _save(folder, "trace.json", [asdict(s) for s in result.trace])
@@ -298,11 +320,13 @@ def main() -> int:
                          "born-digital PDF's own text; stand-in: the old ground-truth "
                          "shortcut, kept only for comparison")
     ap.add_argument("--inject-fault", choices=["render"], default=None)
+    ap.add_argument("--engine", choices=sorted(ENGINES), default=None,
+                    help="the graph runner (default: the one workbench/orchestration.yaml names)")
     args = ap.parse_args()
 
     cfg = JobConfig(doc_id=args.doc_id, source=args.source, scan_quality=args.scan_quality,
                     image=args.image, model=args.model, no_model=args.no_model,
-                    inject_fault=args.inject_fault)
+                    inject_fault=args.inject_fault, engine=args.engine)
     outcome = run_job(cfg, emit=_console)
     print(f"\nended at: {outcome['end']}")
     if outcome["note"]:

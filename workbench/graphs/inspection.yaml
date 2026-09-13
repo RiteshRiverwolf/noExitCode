@@ -16,18 +16,20 @@
 # passes the validation set AND an engineer approves it (Management of Change).
 
 graph: inspection
-version: 1
+version: 2      # v2: each stage runs as a defined agent (agent_id), held to that agent's tools
 description: Scanned inspection report -> checked evidence -> rules -> draft approval note
 start: read_document
 step_budget: 20
 
+# agent: the name people see. agent_id: the agent in workbench/agents.yaml the
+# stage runs as -- it can reach only that agent's tools (workbench/tools.py).
 nodes:
-  read_document:  {kind: stage, agent: Document Reader,           max_attempts: 2}
-  build_evidence: {kind: stage, agent: Evidence Builder,          max_attempts: 2}
-  apply_rules:    {kind: stage, agent: Rules Engine (code),       max_attempts: 1}
-  write_summary:  {kind: stage, agent: Report Writer (model),     max_attempts: 1}
-  render_note:    {kind: stage, agent: Report Writer (template),  max_attempts: 3}
-  qa_check:       {kind: check, agent: QA Checker,                max_attempts: 1}
+  read_document:  {kind: stage, agent: Document Reader,           agent_id: document_reader,  max_attempts: 2}
+  build_evidence: {kind: stage, agent: Evidence Builder,          agent_id: evidence_builder, max_attempts: 2}
+  apply_rules:    {kind: stage, agent: Rules Engine (code),       agent_id: rules_engine,     max_attempts: 1}
+  write_summary:  {kind: stage, agent: Report Writer (model),     agent_id: report_writer,    max_attempts: 1}
+  render_note:    {kind: stage, agent: Report Writer (template),  agent_id: report_writer,    max_attempts: 3}
+  qa_check:       {kind: check, agent: QA Checker,                agent_id: qa_checker,       max_attempts: 1}
   needs_review:   {kind: end,   agent: Person}
   done:           {kind: end,   agent: Person}
 

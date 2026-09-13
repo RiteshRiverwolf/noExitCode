@@ -8,6 +8,34 @@
 # This file is procedural memory (§7d): no agent edits it while it runs. A change
 # is reviewed and versioned like any procedure revision.
 
+# Stage agents of the inspection graph that are code, not models. They are agents
+# all the same: each reaches only the tools listed here (workbench/tools.py).
+
+document_reader:
+  purpose: >
+    Reads a document's pages: a PDF's own text where it has one, OCR where it
+    does not. Every piece of text keeps its page and box.
+  tools: [read_pages]
+
+evidence_builder:
+  purpose: >
+    Places each value in its table cell and builds evidence records with page,
+    box and crop. Stops the run when a critical value is doubtful.
+  tools: [build_evidence, ground_truth_stand_in]
+
+rules_engine:
+  purpose: >
+    Applies the escalation rules to the evidence, in code. No model, and nothing
+    a model writes can change its outcome.
+  tools: [apply_rules]
+
+qa_checker:
+  purpose: >
+    Reads the finished note back and checks every value against its evidence
+    record. It cannot write a note; it can only stamp checks that all passed.
+  tools: [read_back_note, stamp_note]
+
+
 librarian:
   purpose: >
     Answers questions from the reference library. Every sentence cites the
@@ -78,7 +106,7 @@ report_writer:
     already in hand. Code checks every number and forbids approval language;
     after failed checks, code writes the summary instead.
   router_task: write_summary
-  tools: []                        # it writes text; the template, the file and the checks are code
+  tools: [write_note]              # the summary is model text checked by code; the note file comes from the template
   max_attempts: 2
   max_words: 120                   # a summary longer than max_words + tolerance is a style problem
   tolerance_words: 10

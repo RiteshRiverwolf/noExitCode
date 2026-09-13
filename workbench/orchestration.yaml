@@ -1,0 +1,8 @@
+# How missions are orchestrated (docs/WHOLE_PICTURE.md §10, §10a).
+#
+# engine: which runner executes a procedural graph file (workbench/graphs/*.yaml).
+#   langgraph         workbench/graph_engine.py -- the graph compiled into LangGraph
+#   procedural_graph  workbench/procedural_graph.py -- the original runner, kept
+#                     until LangGraph has replaced it in every check
+# Both produce identical traces on bench/stage3/engine_parity_test.py.
+engine: langgraph

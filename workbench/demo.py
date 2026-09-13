@@ -30,7 +30,7 @@ from typing import Callable
 
 import yaml
 
-from workbench import coder, coding_tasks, library, router, sandbox
+from workbench import coder, coding_tasks, router, sandbox, tools
 from workbench.run_inspection import JobConfig, run_job
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -66,7 +66,8 @@ def _inspection(beat: dict, emit: Emit) -> str:
 
 
 def _library(beat: dict, emit: Emit) -> str:
-    hits = library.search(beat["question"], k=beat.get("k"))
+    with tools.acting("librarian", emit, beat=beat["id"]):     # search only: its written answers are not qualified
+        hits = tools.call("search_library", query=beat["question"], k=beat.get("k"))
     emit({"type": "library", "question": beat["question"],
           "hits": [{"citation": h.citation(), "doc_id": h.doc_id, "title": h.title, "heading": h.heading,
                     "origin": h.origin, "pages": list(h.pages), "text": h.text, "score": h.score,

@@ -37,7 +37,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Callable
 
-from workbench import agents, sandbox
+from workbench import agents, sandbox, tools
 
 ROOT = Path(__file__).resolve().parent.parent
 CODE_FENCE = re.compile(r"```(?:python)?\s*(.*?)```", re.S)
@@ -80,10 +80,11 @@ class CodingResult:
     code: str | None = None                 # the accepted program
     isolation: str = ""
     seconds: float = 0.0
+    max_attempts: int = 0                   # the attempts the task allowed
 
     def summary(self) -> str:
         if self.accepted:
-            return (f"accepted on attempt {len(self.attempts)} of {self.attempts[-1].n} "
+            return (f"accepted on attempt {self.attempts[-1].n} of {self.max_attempts} "
                     f"({self.seconds:.1f}s)")
         return f"not accepted after {len(self.attempts)} attempt(s) -- handed to a person"
 
@@ -119,9 +120,20 @@ def solve(task: CodingTask, model: str,
           force_subprocess: bool = False,
           emit: Callable[[dict], None] | None = None) -> CodingResult:
     """`emit`, if given, receives attempt_start before each model call and attempt
-    after each result -- the live view of the loop. A broken viewer cannot break it."""
+    after each result -- the live view of the loop. A broken viewer cannot break it.
+
+    The work is done as the Coder (workbench/tools.py): the sandbox is the only tool it can reach."""
+    with tools.acting("coder", emit, task_id=task.task_id, model=model) as act:
+        out = _solve(task, model, force_subprocess, emit)
+        if not out.accepted:
+            act.fail(out.summary())
+        return out
+
+
+def _solve(task: CodingTask, model: str, force_subprocess: bool,
+           emit: Callable[[dict], None] | None) -> CodingResult:
     t0 = time.time()
-    out = CodingResult(task_id=task.task_id, accepted=False, model=model)
+    out = CodingResult(task_id=task.task_id, accepted=False, model=model, max_attempts=task.max_attempts)
 
     def send(event: dict) -> None:
         if emit is not None:
@@ -154,8 +166,8 @@ def solve(task: CodingTask, model: str,
 
         # The acceptance test is placed beside the program and is what runs.
         files = {task.entry: code, "acceptance_test.py": task.acceptance, **task.inputs}
-        run = sandbox.run(files, entry="acceptance_test.py", timeout=task.timeout,
-                          force_subprocess=force_subprocess)
+        run = tools.call("sandbox", files=files, entry="acceptance_test.py", timeout=task.timeout,
+                         force_subprocess=force_subprocess)
         out.isolation = run.isolation
         announce(Attempt(n, code, run.ok, run.exit_code, run.stdout, run.stderr,
                                     run.seconds, run.isolation))
