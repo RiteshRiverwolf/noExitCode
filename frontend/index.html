@@ -4,57 +4,38 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Workbench — Offline Inspection Assistant</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          base: {
-            950: '#0a0a0d',
-            900: '#121216',
-            850: '#17171d',
-            800: '#1e1e25',
-            700: '#2b2b34',
-            600: '#3f3f4a',
-          },
-          ink: {
-            100: '#f4f4f6',
-            300: '#c9c9d2',
-            500: '#8d8d9a',
-            600: '#6c6c78',
-          },
-          signal: {
-            ok: '#34d399',
-            warn: '#fbbf24',
-            danger: '#fb7185',
-          }
-        },
-        fontFamily: {
-          sans: ['-apple-system','BlinkMacSystemFont','Segoe UI','Inter','sans-serif'],
-          mono: ['ui-monospace','SFMono-Regular','Menlo','Consolas','monospace'],
-        }
-      }
-    }
-  }
-</script>
 <style>
-  * { scrollbar-width: thin; scrollbar-color: #2b2b34 transparent; }
+  /* Reset + scrollbars */
+  * { box-sizing: border-box; scrollbar-width: thin; scrollbar-color: #2b2b34 transparent; }
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-thumb { background: #2b2b34; border-radius: 3px; }
   ::-webkit-scrollbar-track { background: transparent; }
+  html, body { height: 100%; margin: 0; }
+  body { -webkit-font-smoothing: antialiased; }
 
-  html, body { height: 100%; }
+  /* Palette (hand-vendored so no CDN/build step is needed — everything below
+     runs from this one static file, offline) */
+  :root {
+    --base-950:#0a0a0d; --base-900:#121216; --base-850:#17171d; --base-800:#1e1e25; --base-700:#2b2b34; --base-600:#3f3f4a;
+    --ink-100:#f4f4f6; --ink-200:#dcdce2; --ink-300:#c9c9d2; --ink-500:#8d8d9a; --ink-600:#6c6c78; --ink-700:#525260;
+    --signal-ok:#34d399; --signal-warn:#fbbf24; --signal-danger:#fb7185;
+    --indigo-200:#c7d2fe; --indigo-300:#a5b4fc; --indigo-400:#818cf8;
+    --emerald-300:#6ee7b7; --emerald-400:#34d399;
+    --amber-400:#fbbf24;
+    --rose-300:#fda4af; --rose-400:#fb7185;
+  }
 
   body {
-    background-color: #0a0a0d;
+    background-color: var(--base-950);
     background-image:
       radial-gradient(760px circle at 8% -8%, rgba(129,140,248,0.16), transparent 60%),
       radial-gradient(680px circle at 96% 8%, rgba(251,113,133,0.10), transparent 55%),
       radial-gradient(900px circle at 50% 115%, rgba(52,211,153,0.10), transparent 55%);
     background-attachment: fixed;
+    color: var(--ink-100);
   }
 
+  /* ---------- Component / animation classes ---------- */
   .reveal {
     opacity: 0;
     transform: translateY(8px);
@@ -110,13 +91,208 @@
 
   .card-shadow { box-shadow: 0 1px 0 rgba(255,255,255,.02) inset, 0 8px 24px -12px rgba(0,0,0,.5); }
 
-  .drop-active {
-    border-color: #818cf8 !important;
-    background-color: rgba(129,140,248,0.06);
-  }
+  .drop-overlay { animation: fadeSwap .18s ease-out; }
 
-  .drop-overlay {
-    animation: fadeSwap .18s ease-out;
+  /* ---------- Utility layer (hand-written, mirrors the classes used below) ---------- */
+  /* Positioning */
+  .relative { position: relative; }
+  .absolute { position: absolute; }
+  .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+  .z-10 { z-index: 10; }
+
+  /* Display */
+  .grid { display: grid; }
+  .inline-flex { display: inline-flex; }
+  .flex { display: flex; }
+  .flex-col { flex-direction: column; }
+  .flex-wrap { flex-wrap: wrap; }
+  .block { display: block; }
+  .hidden { display: none; } /* kept last among display rules so it always wins when toggled against flex/grid/block */
+
+  /* Flex / grid item behavior */
+  .flex-1 { flex: 1 1 0%; }
+  .shrink-0 { flex-shrink: 0; }
+  .items-center { align-items: center; }
+  .items-start { align-items: flex-start; }
+  .items-end { align-items: flex-end; }
+  .justify-center { justify-content: center; }
+  .justify-between { justify-content: space-between; }
+  .grid-cols-1 { grid-template-columns: repeat(1, minmax(0,1fr)); }
+  .grid-cols-4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
+
+  /* Gaps / stacked spacing */
+  .gap-1\.5 { gap: .375rem; }
+  .gap-2 { gap: .5rem; }
+  .gap-3 { gap: .75rem; }
+  .gap-4 { gap: 1rem; }
+  .gap-px { gap: 1px; }
+  .space-y-1 > * + * { margin-top: .25rem; }
+  .space-y-2 > * + * { margin-top: .5rem; }
+  .space-y-4 > * + * { margin-top: 1rem; }
+
+  /* Margin / padding */
+  .m-3 { margin: .75rem; }
+  .mx-auto { margin-left: auto; margin-right: auto; }
+  .mt-0\.5 { margin-top: .125rem; }
+  .mt-1 { margin-top: .25rem; }
+  .mt-2 { margin-top: .5rem; }
+  .mt-4 { margin-top: 1rem; }
+  .mb-1 { margin-bottom: .25rem; }
+  .mb-2 { margin-bottom: .5rem; }
+  .mr-1\.5 { margin-right: .375rem; }
+  .my-1 { margin-top: .25rem; margin-bottom: .25rem; }
+  .p-3 { padding: .75rem; }
+  .px-2 { padding-left: .5rem; padding-right: .5rem; }
+  .px-2\.5 { padding-left: .625rem; padding-right: .625rem; }
+  .px-3 { padding-left: .75rem; padding-right: .75rem; }
+  .px-4 { padding-left: 1rem; padding-right: 1rem; }
+  .px-5 { padding-left: 1.25rem; padding-right: 1.25rem; }
+  .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .py-1 { padding-top: .25rem; padding-bottom: .25rem; }
+  .py-1\.5 { padding-top: .375rem; padding-bottom: .375rem; }
+  .py-2 { padding-top: .5rem; padding-bottom: .5rem; }
+  .py-2\.5 { padding-top: .625rem; padding-bottom: .625rem; }
+  .py-3 { padding-top: .75rem; padding-bottom: .75rem; }
+  .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+  .pb-2 { padding-bottom: .5rem; }
+  .pb-3 { padding-bottom: .75rem; }
+  .pb-6 { padding-bottom: 1.5rem; }
+  .pt-2 { padding-top: .5rem; }
+  .pl-2 { padding-left: .5rem; }
+  .pr-1 { padding-right: .25rem; }
+
+  /* Sizing */
+  .w-1\.5 { width: .375rem; }
+  .w-2\.5 { width: .625rem; }
+  .w-4 { width: 1rem; }
+  .w-6 { width: 1.5rem; }
+  .w-7 { width: 1.75rem; }
+  .w-8 { width: 2rem; }
+  .w-56 { width: 14rem; }
+  .w-full { width: 100%; }
+  .w-px { width: 1px; }
+  .h-1\.5 { height: .375rem; }
+  .h-2\.5 { height: .625rem; }
+  .h-4 { height: 1rem; }
+  .h-6 { height: 1.5rem; }
+  .h-7 { height: 1.75rem; }
+  .h-8 { height: 2rem; }
+  .h-screen { height: 100vh; }
+  .h-\[2px\] { height: 2px; }
+  .min-h-\[260px\] { min-height: 260px; }
+  .min-h-\[320px\] { min-height: 320px; }
+  .max-w-\[110px\] { max-width: 110px; }
+  .max-h-32 { max-height: 8rem; }
+
+  /* Typography */
+  .font-sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif; }
+  .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .font-medium { font-weight: 500; }
+  .font-semibold { font-weight: 600; }
+  .text-sm { font-size: .875rem; line-height: 1.25rem; }
+  .text-\[11px\] { font-size: 11px; }
+  .text-\[12px\] { font-size: 12px; }
+  .text-\[12\.5px\] { font-size: 12.5px; }
+  .text-\[13px\] { font-size: 13px; }
+  .text-\[16px\] { font-size: 16px; }
+  .tracking-tight { letter-spacing: -0.025em; }
+  .tracking-wide { letter-spacing: 0.025em; }
+  .uppercase { text-transform: uppercase; }
+  .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .leading-none { line-height: 1; }
+  .leading-relaxed { line-height: 1.625; }
+  .text-left { text-align: left; }
+  .text-center { text-align: center; }
+
+  /* Solid colors */
+  .bg-base-700 { background-color: var(--base-700); }
+  .bg-base-800 { background-color: var(--base-800); }
+  .bg-base-850 { background-color: var(--base-850); }
+  .bg-base-900 { background-color: var(--base-900); }
+  .bg-amber-400 { background-color: var(--amber-400); }
+  .bg-emerald-400 { background-color: var(--emerald-400); }
+  .bg-indigo-400 { background-color: var(--indigo-400); }
+  .bg-rose-400 { background-color: var(--rose-400); }
+  .bg-signal-ok { background-color: var(--signal-ok); }
+  .bg-signal-warn { background-color: var(--signal-warn); }
+  .bg-transparent { background-color: transparent; }
+  .border-base-600 { border-color: var(--base-600); }
+  .border-base-700 { border-color: var(--base-700); }
+  .border-base-800 { border-color: var(--base-800); }
+  .border-indigo-400 { border-color: var(--indigo-400); }
+  .text-ink-100 { color: var(--ink-100); }
+  .text-ink-200 { color: var(--ink-200); }
+  .text-ink-300 { color: var(--ink-300); }
+  .text-ink-500 { color: var(--ink-500); }
+  .text-ink-600 { color: var(--ink-600); }
+  .text-ink-700 { color: var(--ink-700); }
+  .text-emerald-300 { color: var(--emerald-300); }
+  .text-indigo-200 { color: var(--indigo-200); }
+  .text-indigo-300 { color: var(--indigo-300); }
+  .text-rose-300 { color: var(--rose-300); }
+  .text-signal-ok { color: var(--signal-ok); }
+  .text-signal-warn { color: var(--signal-warn); }
+  .text-signal-danger { color: var(--signal-danger); }
+  .text-white { color: #fff; }
+
+  /* Opacity-variant colors (named literally, same values Tailwind would emit) */
+  .bg-emerald-400\/\[0\.06\] { background-color: rgba(52,211,153,.06); }
+  .bg-indigo-400\/\[0\.06\] { background-color: rgba(129,140,248,.06); }
+  .bg-indigo-400\/\[0\.08\] { background-color: rgba(129,140,248,.08); }
+  .bg-indigo-400\/10 { background-color: rgba(129,140,248,.10); }
+  .bg-rose-400\/10 { background-color: rgba(251,113,133,.10); }
+  .bg-rose-400\/15 { background-color: rgba(251,113,133,.15); }
+  .bg-base-950\/85 { background-color: rgba(10,10,13,.85); }
+  .bg-signal-ok\/40 { background-color: rgba(52,211,153,.4); }
+  .border-emerald-400\/25 { border-color: rgba(52,211,153,.25); }
+  .border-indigo-400\/25 { border-color: rgba(129,140,248,.25); }
+  .border-rose-400\/30 { border-color: rgba(251,113,133,.30); }
+  .text-indigo-400\/60 { color: rgba(129,140,248,.60); }
+  .ring-1.ring-inset.ring-rose-400\/40 { box-shadow: inset 0 0 0 1px rgba(251,113,133,.40); }
+
+  /* Borders / radius */
+  .border { border-width: 1px; border-style: solid; }
+  .border-2 { border-width: 2px; border-style: solid; }
+  .border-b { border-bottom-width: 1px; border-bottom-style: solid; }
+  .border-t { border-top-width: 1px; border-top-style: solid; }
+  .border-r { border-right-width: 1px; border-right-style: solid; }
+  .border-dashed { border-style: dashed; }
+  .rounded { border-radius: .25rem; }
+  .rounded-md { border-radius: .375rem; }
+  .rounded-lg { border-radius: .5rem; }
+  .rounded-full { border-radius: 9999px; }
+  .rounded-none { border-radius: 0; }
+  .rounded-tl-sm { border-top-left-radius: .125rem; } /* after rounded-lg on purpose: overrides just that corner */
+
+  /* Effects */
+  .backdrop-blur-sm { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+  .transition-colors { transition-property: color, background-color, border-color; transition-duration: .15s; transition-timing-function: ease; }
+  .transition-transform { transition-property: transform; transition-duration: .15s; transition-timing-function: ease; }
+  .outline-none { outline: none; }
+  .resize-none { resize: none; }
+
+  /* Pseudo-classes */
+  .hover\:bg-base-900:hover { background-color: var(--base-900); }
+  .hover\:bg-indigo-400\/10:hover { background-color: rgba(129,140,248,.10); }
+  .hover\:bg-indigo-400\/30:hover { background-color: rgba(129,140,248,.30); }
+  .hover\:border-indigo-400\/40:hover { border-color: rgba(129,140,248,.40); }
+  .hover\:text-indigo-200:hover { color: var(--indigo-200); }
+  .hover\:text-indigo-300:hover { color: var(--indigo-300); }
+  .hover\:text-ink-300:hover { color: var(--ink-300); }
+  .hover\:text-white:hover { color: #fff; }
+  .focus-within\:border-indigo-400\/50:focus-within { border-color: rgba(129,140,248,.50); }
+  .placeholder\:text-ink-600::placeholder { color: var(--ink-600); }
+
+  /* Responsive (matches Tailwind's default md/lg breakpoints) */
+  @media (min-width: 768px) {
+    .md\:flex { display: flex; }
+  }
+  @media (min-width: 1024px) {
+    .lg\:grid-cols-10 { grid-template-columns: repeat(10, minmax(0,1fr)); }
+    .lg\:col-span-3 { grid-column: span 3 / span 3; }
+    .lg\:col-span-4 { grid-column: span 4 / span 4; }
+    .lg\:border-b-0 { border-bottom-width: 0; }
+    .lg\:border-r { border-right-width: 1px; border-right-style: solid; }
   }
 </style>
 </head>
