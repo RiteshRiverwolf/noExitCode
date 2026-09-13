@@ -90,7 +90,7 @@ human-in-the-loop gates, and the Sentinel proving nothing left the machine.
 | Agent | What it does | Powers | Status |
 |---|---|---|---|
 | **Planner** | Breaks a request into a plan, picks the mission type and the agents, re-plans when a step fails | delegates only | Proposed |
-| **Router** | Picks the model per step from task type and measured qualification results, logs the reason (R2) | model registry | Proposed |
+| **Router** | Picks the model per step from task type and measured qualification results, logs the reason (R2) | model registry | **Built** — wired into the pipeline and the Coder |
 | **Reader** | Scans, PDFs, drawings, photos → evidence records with page, box and crop (R5) | OCR, vision, file read | **Proven** (§4) |
 | **Librarian** | Searches manuals, SOPs, past correspondence; answers with citations or says it doesn't know | knowledge base, file read | Proposed (§7) |
 | **Analyst** | Engineering calculations with steps shown — **and writes throwaway code to compute an answer when that is the right tool** | sandbox, spreadsheet, evidence store | Proposed (§6) |
@@ -134,6 +134,7 @@ Measured by `bench/stage2/reader_score.py` against ground truth:
 | insp_1002 clean scan (OCR) | 30 / 30 | 0 | 0.1 s |
 | insp_1002 medium scan (OCR) | 30 / 30 | 0 | 0.1 s |
 | insp_1002 heavy scan (OCR) | 29 right, 1 flagged | 0 | 0.1 s |
+| **all 12 medium scans (OCR)** | **393 right, 2 flagged** | **0** | 0.1 s each |
 
 "Accepted wrong" — a wrong value nothing flagged, which would reach a signed
 note — is the only number that matters. It is zero everywhere. The whole-page
@@ -363,7 +364,7 @@ is never blocked on the migration.
 
 | Req | Where it stands | What we say |
 |---|---|---|
-| R2 model routing | Designed, not built | The Router applies measured qualification results; the test is what admits a model. See the correction below. |
+| R2 model routing | **Built** — granite for summaries, tools and code; qwen for second readings; nothing for photographs, because nothing is tested; wired into the pipeline and the Coder | The Router applies measured qualification results; a safety gate shuts out the two models that wrote false approvals. See the correction below. |
 | R4 sandbox | **Done** — sealed sandbox, three tasks, one of them repairing itself after the time limit killed it | The model does not mark its own homework: our held-out tests decide. §6 makes it a daily tool rather than a demo trick. |
 | R5 multimodal | Reader built and measured | Done for printed scans and tables. Engineering drawings stay a stretch goal, never described as finished. |
 | R6 network proof | Container-level proof done; panel hard-coded | The capture is real evidence; the panel must read from it. Connectors (§8) are the strongest test of it. |

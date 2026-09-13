@@ -24,7 +24,7 @@ from pathlib import Path
 
 from mcp_servers.audit import LOG_DIR, AuditLog
 from workbench import evidence as evidence_mod
-from workbench import pagesource, prose, report_writer, rules, scan_reader
+from workbench import pagesource, prose, report_writer, router, rules, scan_reader
 from workbench.procedural_graph import Graph, StageResult, run
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -40,7 +40,8 @@ def _save(folder: Path, name: str, data) -> None:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("doc_id")
-    ap.add_argument("--model", default=prose.DEFAULT_MODEL)
+    ap.add_argument("--model", default=None,
+                    help="override the Router's choice for the summary (recorded as an override)")
     ap.add_argument("--no-model", action="store_true", help="write the summary with code only")
     ap.add_argument("--scan-quality", default="medium", choices=["clean", "light", "medium", "heavy"])
     ap.add_argument("--image", nargs="+", type=Path, default=None,
@@ -108,6 +109,12 @@ def main() -> int:
         doubtful = [r.cml_id for r in ev.readings if r.review_status == "needs review"]
         if doubtful:
             return StageResult("fail", f"thickness values need a person: {', '.join(doubtful)}")
+        # An unread grade is not a Minor one: a "Major" that OCR left empty would
+        # silently drop an escalation (insp_1010's medium scan, 2026-09-13).
+        ungraded = [f.finding_id for f in ev.findings if f.severity not in rules.GRADES]
+        if ungraded:
+            return StageResult("fail", f"severity not readable, which could hide an escalation: "
+                                       f"{', '.join(ungraded)}")
         if not ev.readings or not ev.findings:
             return StageResult("fail", "the findings or thickness table was not read")
         extra = f" ({len(ev.problems)} problem(s) recorded)" if ev.problems else ""
@@ -121,17 +128,29 @@ def main() -> int:
         return StageResult("ok", f"{d.outcome}; triggered: {fired}")
 
     def write_summary(c):
-        s = prose.write_summary(c["evidence"], c["decision"], None if args.no_model else args.model,
-                                guidance=c["guidance"])
+        # The Router picks the model from measured results and logs why; --model
+        # overrides it, and the override is recorded as one.
+        model, routed = None, "no model: --no-model"
+        if not args.no_model:
+            if args.model:
+                model, routed = args.model, f"{args.model}, set by hand (Router overridden)"
+            else:
+                d = router.route("write_summary", {"run_id": job, "stage": "write_summary"})
+                model = d.chosen
+                routed = (f"Router chose {d.chosen}" if d.chosen
+                          else f"Router found no qualified model ({d.reason}); code writes it")
+            c["routing"] = {"task": "write_summary", "model": model, "decision": routed}
+            _save(folder / "04_write_summary", "routing.json", c["routing"])
+        s = prose.write_summary(c["evidence"], c["decision"], model, guidance=c["guidance"])
         c["summary"] = s
         _save(folder / "04_write_summary", "summary.json", asdict(s))
         tries = len(s.attempts)
         if s.written_by.startswith("code (fallback"):
-            return StageResult("ok", f"model failed checks {tries}x; code summary used")
+            return StageResult("ok", f"{routed}; model failed checks {tries}x; code summary used")
         if s.attempts and s.attempts[-1].get("accepted_with_style_issue"):
-            return StageResult("ok", f"{s.written_by}; accurate, accepted on attempt {tries} "
+            return StageResult("ok", f"{routed}; accurate, accepted on attempt {tries} "
                                      f"despite style: {s.attempts[-1]['accepted_with_style_issue'][0]}")
-        return StageResult("ok", f"{s.written_by}; passed checks on attempt {max(tries, 1)}")
+        return StageResult("ok", f"{routed}; {s.written_by} passed checks on attempt {max(tries, 1)}")
 
     def render_note(c):
         corrupt = args.inject_fault == "render" and c["attempt"] == 1
@@ -159,7 +178,8 @@ def main() -> int:
 
     print(f"run {job}  (graph {graph.name} v{graph.version})")
     audit.write({"event": "run_start", "run_id": job, "doc_id": args.doc_id,
-                 "model": None if args.no_model else args.model, "inject_fault": args.inject_fault})
+                 "model": "none (--no-model)" if args.no_model else (args.model or "chosen by the Router"),
+                 "inject_fault": args.inject_fault})
     handlers = {"read_document": read_document, "build_evidence": build_evidence, "apply_rules": apply_rules,
                 "write_summary": write_summary, "render_note": render_note, "qa_check": qa_check}
     result = run(graph, handlers, ctx, on_step)

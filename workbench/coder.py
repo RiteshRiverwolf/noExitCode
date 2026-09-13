@@ -175,7 +175,8 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("task_id", nargs="?")
     ap.add_argument("--list", action="store_true")
-    ap.add_argument("--model", default=DEFAULT_MODEL)
+    ap.add_argument("--model", default=None,
+                    help="override the Router's choice (recorded as an override)")
     ap.add_argument("--out", type=Path, default=None, help="write the full record as JSON")
     ap.add_argument("--force-subprocess", action="store_true",
                     help="run without Docker -- NOT isolated, for development only")
@@ -196,8 +197,18 @@ def main() -> int:
               "`python -m workbench.sandbox --self-test` to see why.")
         return 2
 
-    print(f"task: {task.task_id}   model: {args.model}")
-    result = solve(task, args.model, args.force_subprocess)
+    if args.model:
+        model, why = args.model, "set by hand (Router overridden)"
+    else:
+        from workbench import router
+        decision = router.route("code", {"coding_task": task.task_id})
+        if decision.chosen is None:
+            print(f"No model is qualified to write code: {decision.reason}")
+            return 2
+        model, why = decision.chosen, f"chosen by the Router: {decision.reason}"
+
+    print(f"task: {task.task_id}   model: {model}  ({why})")
+    result = solve(task, model, args.force_subprocess)
     for a in result.attempts:
         mark = "PASS" if a.passed else "fail"
         first = (a.stderr.strip() or a.stdout.strip() or "").splitlines()

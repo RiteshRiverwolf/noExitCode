@@ -1,0 +1,179 @@
+# Model registry: which model may do which job, and the measurement that says so.
+#
+# Read by workbench/router.py. The rule this file exists to enforce:
+#
+#   A model is eligible for a task only if it has PASSED a qualification test
+#   for that task on our own harness. Untested is not qualified. Bigger is not
+#   qualified. A vendor benchmark is not qualified.
+#
+# Every result below names the file it came from, so a judge can open the
+# evidence behind any routing decision. Adding a model = adding an entry and
+# running the qualification tests; nothing else in the system changes.
+#
+# Figures are copied from those files on 2026-09-13. Where a result is thin
+# (one document, one run per task) the `limits` line says so, and the router
+# puts it in the decision log.
+
+hardware:
+  gpu: NVIDIA GeForce RTX 4070
+  vram_gb: 12.0
+
+servers:
+  ollama: http://127.0.0.1:11434
+  llama-server: http://127.0.0.1:8082
+
+# --- what each task needs to be qualified -------------------------------------
+# `gate` fields must hold for a model to be eligible at all -- safety first.
+# `rank` fields order the eligible ones: first key most important; a leading
+# "-" means larger is better.
+
+tasks:
+  write_summary:
+    description: the summary paragraph of an approval note, written from evidence records
+    needs: [text]
+    gate: {unsafe_accepted: 0}          # a summary that reached a note failed the checker
+    rank: [fallbacks, safety_problems_caught, median_seconds]
+
+  tool_agent:
+    description: a multi-step job chaining tools (search the documents, then write the file)
+    needs: [text, tools]
+    gate: {wrong_outputs: 0}            # a wrong approval note written, even once
+    rank: ["-pass_rate", median_seconds]
+
+  code:
+    description: write a program that passes held-out acceptance tests in the sandbox
+    needs: [text]
+    gate: {accepted_rate: 1.0}
+    rank: [mean_attempts, median_seconds]
+
+  second_read:
+    description: an independent vision reading of a scanned page, compared with the OCR reading
+    needs: [vision]
+    gate: {critical_wrong_rate_max: 0.01}
+    rank: [critical_wrong_rate_max, median_seconds]
+
+  describe_image:
+    description: understanding a photograph or drawing that has no table to read
+    needs: [vision]
+    gate: {qualified: true}
+    rank: [median_seconds]
+
+  embed:
+    description: embeddings for the reference library
+    needs: [embeddings]
+    gate: {retrieval_passed: true}
+    rank: [size_gb]
+
+# --- the models -----------------------------------------------------------------
+
+models:
+  granite4.1:8b:
+    served_by: ollama
+    licence: Apache 2.0
+    size_gb: 5.0
+    capabilities: [text, tools]
+    results:
+      tool_agent:
+        pass_rate: 1.0                  # 9/9 correct notes, twice
+        wrong_outputs: 0
+        median_seconds: 25
+        evidence: [results/stage0/probe_chaining_granite4.1-8b_20260911-143747.json,
+                   results/stage0/probe_chaining_granite4.1-8b_20260911-175741.json]
+        limits: one document, 9 runs per model, online
+      write_summary:
+        clean_first_try: 28/36
+        fallbacks: 0
+        safety_problems_caught: 4
+        unsafe_accepted: 0
+        median_seconds: 2.6
+        evidence: [results/stage1/data/summary_writer/granite4.1-8b.json]
+        limits: the checker was developed against this model's mistakes, which may favour it
+      code:
+        accepted_rate: 1.0              # 3 of 3 tasks
+        mean_attempts: 1.33             # 1, 1, 2
+        median_seconds: 7.2
+        evidence: [results/stage2/coder_cml_report.json,
+                   results/stage2/coder_remaining_life.json,
+                   results/stage2/coder_next_due_date.json]
+        limits: three tasks, one run each
+
+  qwen3.5:9b:
+    served_by: ollama
+    licence: Apache 2.0
+    size_gb: 6.1
+    capabilities: [text, tools, vision]
+    results:
+      tool_agent:
+        pass_rate: 0.67                 # 6/9; the 3 misses answered in chat instead of writing the file
+        wrong_outputs: 0
+        median_seconds: 90
+        evidence: [results/stage0/probe_chaining_qwen3.5-9b_20260911-143403.json]
+        limits: one document, 9 runs
+      second_read:
+        critical_wrong_rate_max: 0.0088 # worst quality: 4/456 on heavy scans; 0/456 light and medium
+        median_seconds: 23
+        evidence: [results/stage1/data/qwen_scan_reads/]
+        limits: >
+          NEVER TRUSTED ALONE. With a digit smudged or erased it wrote a plausible
+          number in 16 of 18 reads and never said "unreadable"
+          (results/stage1/data/partial_digit/). A disagreement with the OCR reading
+          sends the cell to review; an agreement proves nothing.
+      describe_image:
+        qualified: false
+        limits: no test of photographs or drawings has been run
+
+  sarvam-30b:
+    served_by: llama-server
+    licence: Apache 2.0
+    size_gb: 19.6                       # GGUF on disk, 6 shards
+    vram_gb: 8.8                        # measured with --n-cpu-moe 12
+    capabilities: [text]
+    results:
+      write_summary:
+        clean_first_try: 26/36
+        fallbacks: 3
+        safety_problems_caught: 13
+        unsafe_accepted: 0
+        median_seconds: 49
+        evidence: [results/stage1/data/summary_writer/sarvam-30b-gpu-thinking.json]
+        limits: >
+          English corpus only -- its strength, 22 Indian languages, was never
+          exercised. Thinking cannot be switched off.
+
+  llama3.1:8b:
+    served_by: ollama
+    licence: Llama Community
+    size_gb: 4.6
+    capabilities: [text, tools]
+    results:
+      tool_agent:
+        pass_rate: 0.0
+        wrong_outputs: 7                # seven confident false approvals
+        median_seconds: 7
+        evidence: [results/stage0/probe_chaining_20260911-135316.json]
+        limits: makes exactly one tool call per request, then stops
+
+  lfm2.5:8b:
+    served_by: ollama
+    licence: LFM Open (free only under $10M revenue)
+    size_gb: 4.8
+    capabilities: [text, tools]
+    results:
+      tool_agent:
+        pass_rate: 0.0
+        wrong_outputs: 2                # one false approval, one self-contradicting CML-03 line
+        median_seconds: 30
+        evidence: [results/stage0/probe_chaining_lfm2.5-8b_20260911-144239.json]
+        limits: licence restricts use above $10M revenue -- MRPL is far above it
+
+  nomic-embed-text:latest:
+    served_by: ollama
+    licence: Apache 2.0
+    size_gb: 0.3
+    capabilities: [embeddings]
+    results:
+      embed:
+        retrieval_passed: true          # stage 0 Test C: trap question answered with its source
+        size_gb: 0.3
+        evidence: [results/stage0/NOTES.md]
+        limits: one retrieval question; a proper hit@k test set is not built yet

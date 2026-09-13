@@ -39,6 +39,7 @@ RULES = {
     },
 }
 ESCALATING_SEVERITIES = {"Major", "Critical"}
+GRADES = {"Critical", "Major", "Minor", "Observation"}
 
 
 @dataclass
@@ -87,6 +88,14 @@ def evaluate(ev: EvidenceSet) -> Decision:
             ))
 
     for f in ev.findings:
+        if f.severity not in GRADES:
+            # An unread grade is not a Minor one. Skipped silently, a "Major" that
+            # OCR left empty is a missed escalation -- and on a report with no
+            # other trigger the outcome becomes NO TRIGGER. Found 2026-09-13 on
+            # insp_1010's medium scan (bench/stage2/unreadable_severity_test.py).
+            review.append(Trigger("EVD-01", f.evidence_id, f.finding_id,
+                                  f"{f.finding_id}: severity unreadable ({f.severity!r})"))
+            continue
         if f.severity in ESCALATING_SEVERITIES:
             triggers.append(Trigger(
                 "SEV-01", f.evidence_id, f.finding_id,

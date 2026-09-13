@@ -169,7 +169,119 @@ inspection report says which readings across a whole set are worst, and that is
 miserable for a language model to work out in its head. Ten lines of Python,
 run in the sandbox, produce the answer and can be shown, re-run and checked.
 
-## 8. Left to do
+## 8. All 12 medium scans, through OCR
+
+Added 2026-09-13, once the background OCR run had read every medium page.
+
+**Reader** (`results/stage2/reader_scan_medium.json`):
+
+| | Right | Caught | Accepted wrong |
+|---|---|---|---|
+| Critical fields | 393 | 2 | **0** |
+| Other fields | 200 | 83 | 150 |
+
+Both catches were checked to be flagged *on the field itself*, not merely
+somewhere in the report (the damaged-cell test once passed for exactly that
+wrong reason): insp_1010's F-03 severity came out empty, and insp_1011's CML-01
+current thickness was split into "12.62" and "." at confidence 0.196.
+
+The 150 wrong non-critical fields, broken down:
+
+- **111 are only lost spaces or dashes** — "Shell course 2-180°" for
+  "Shell course 2 — 180°".
+- **39 are real misreads.** 28 are clause references with "Cl." read as "CI."
+  or "C1." ("OISD-STD-118CI.6.5"); 6 plant names drop a Roman numeral
+  ("Phase II" → "Phase"); 5 are descriptions. The clause errors will matter
+  when the Librarian looks clauses up — "CI. 6.5" will not match a clause.
+  They are not repaired: values are never repaired, and the PDF path reads
+  them exactly.
+
+**Through the whole pipeline** (`--no-model`): 9 of 12 reach a verified note;
+3 stop at `build_evidence` and go to a person.
+
+| Report | Stopped for | Right to stop? |
+|---|---|---|
+| insp_1010 | F-03 severity unreadable | Yes — it was "Major" |
+| insp_1011 | CML-01 current thickness unreadable | Yes |
+| insp_1003 | CML-05 current thickness at OCR confidence 0.894, under the 0.90 limit | **No** — 13.49 was read correctly |
+
+The one false alarm came from the confidence threshold, not from the
+column-precision check, which flagged nothing wrongly on any medium scan. A
+false stop costs a person a look at a correct value; that is the threshold's
+intended trade-off, and it is not being tuned on one example.
+
+## 9. A safety hole, found by scoring and closed
+
+insp_1010 was the first stop in the table above only *after* this fix. Before
+it, that scan ran all the way to `done`.
+
+- The reader flagged F-03's empty severity, but nothing acted on the flag: the
+  pipeline stopped only for doubtful *thickness* values.
+- The rules treated an empty grade as simply "not Major or Critical" and moved
+  on, with no review item.
+- insp_1010 still escalated, but only because a thickness reading also
+  breached. **On a report whose only trigger is a Major finding, the same
+  misread gives NO TRIGGER and a finished note.**
+
+`bench/stage2/unreadable_severity_test.py` was run against the unfixed rules
+first, and failed as it should:
+
+| Check (insp_1000, which escalates on severity alone) | Unfixed rules | Fixed |
+|---|---|---|
+| every escalating grade blanked | **NO TRIGGER** | NEEDS REVIEW |
+| a garbled grade, "Majr" | **NO TRIGGER** | NEEDS REVIEW |
+| one of two Major grades blanked | ESCALATE, blank one not listed | ESCALATE, blank one listed for review |
+
+Closed in two layers, so neither can be lost to a later change on its own:
+
+1. **Rules** (`workbench/rules.py`): a grade that is not one of Critical,
+   Major, Minor or Observation is an EVD-01 review item. The outcome can no
+   longer be NO TRIGGER while a grade is missing.
+2. **Pipeline** (`workbench/run_inspection.py`): `build_evidence` stops the run
+   before the rules are reached.
+
+After the fix: the test passes, all 12 PDFs still reach `done`, and the audit
+log's hash chain verifies intact over 955 entries.
+
+The general lesson: a check that *flags* is not a check that *stops*. Every flag
+the reader raises on a value a decision depends on has to be wired to
+something that halts the run, and tested end to end.
+
+## 10. The Router (R2)
+
+`workbench/router.py` and `workbench/models.yaml`. A model may do a task only if
+it has passed a qualification test on our harness; every result names its
+evidence file (all 12 paths checked to exist). A safety **gate** decides who is
+allowed at all; a **rank** orders the rest. The model must also be running and
+fit the GPU. Every decision goes to a hash-chained log with every candidate and
+the reason each was or was not chosen.
+
+Decisions on this machine, 2026-09-13:
+
+| Task | Chosen | Why the others were not |
+|---|---|---|
+| `write_summary` | granite4.1:8b | sarvam-30b qualified but not running; others never tested |
+| `tool_agent` | granite4.1:8b | qwen3.5 eligible, ranked second (6/9); **llama3.1 and lfm2.5 fail the safety gate** — 7 and 2 false approval notes |
+| `code` | granite4.1:8b | no other model tested |
+| `second_read` | qwen3.5:9b | the only vision model — and its record says it is never trusted alone |
+| `describe_image` | **nothing** | no model has been tested on photographs or drawings |
+| `embed` | nomic-embed-text | the only embedding model |
+
+Different models across task types, which is what R2 asks for — and a refusal
+where nothing is qualified, which is what a judge should hear instead of a
+guess.
+
+Requests are classified into tasks by plain rules, so the classification is as
+auditable as the choice. One rule was wrong on first test: "find last year's
+vendor correspondence and summarise it" went to the approval-note summary
+writer, which writes from evidence already in hand and would have had nothing
+to write from. Summaries now route there only for an approval note; anything
+that has to search first is a `tool_agent` job.
+
+The pipeline and the Coder both ask the Router now. `--model` still works, and
+is logged as an override.
+
+## 11. Left to do
 
 - The corpus has one two-page report. The reader is built for any length and
   joins rows across pages by CML id, but nothing has tested a table split over
