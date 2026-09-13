@@ -1,0 +1,61 @@
+# The pitch demo: one mission, several agents, every beat a real run.
+#
+# This file is the ONE place a scenario is fixed -- the user allowed hard-coding
+# the demo scenario and nothing else. What each beat does is ordinary workbench
+# code (workbench/demo.py calls the same functions the service and the command
+# line use); only the choice of report, question and task is made here.
+
+title: "R-2247 reactor: scanned inspection report to draft approval note"
+request: >-
+  Read the scanned inspection report for reactor R-2247, check it against our
+  procedures, and draft the approval note. Then tell me when the next inspection is due.
+plan_note: >-
+  The Planner is not built yet. This plan is the demo scenario, written in
+  workbench/demo.yaml -- not a plan the system made.
+
+# Shown in "Why this model": the Router's choice and reasons for each task this mission touches.
+router_tasks: [write_summary, embed, answer_from_library, code, second_read]
+
+beats:
+  - id: inspect
+    kind: inspection
+    title: Read the scanned report and draft the note
+    caption: >-
+      The scan is read by OCR and every value keeps its cell. Rules decide in code,
+      a model writes only the summary, and a wrong number is injected on purpose so
+      the QA Checker can catch it and send the note back.
+    agents: [Document Reader, Evidence Builder, Rules Engine, Router, Report Writer, QA Checker]
+    doc_id: insp_1002
+    source: scan
+    scan_quality: medium
+    inject_fault: render
+
+  - id: library
+    kind: library
+    title: Find the procedure behind the escalation
+    caption: >-
+      The library search returns the procedure section and page. Every passage is
+      cited, and a section it refers to is pulled in with it.
+    agents: [Librarian (search)]
+    question: When must an inspection report be escalated for engineering review?
+    k: 3
+
+  - id: damaged
+    kind: inspection
+    title: The same report with a damaged digit
+    caption: >-
+      The last digit of CML-03 is blurred. The column prints two decimals and this
+      cell reads one, so the run stops for a person instead of guessing.
+    agents: [Document Reader, Evidence Builder, Person]
+    doc_id: insp_1002_damaged
+    image: [bench/stage1/partial/insp_1002_p1_blurred.png]
+
+  - id: code
+    kind: code
+    title: When is the next inspection due?
+    caption: >-
+      No document says, so the Coder writes a program and runs it in the sealed
+      sandbox against tests it never sees. When it fails, it reads the failure and
+      fixes it.
+    agents: [Router, Coder, Sandbox]
+    task_id: next_due_date

@@ -176,17 +176,17 @@ One workbench, several missions, one visible agent timeline.
 
 | # | What the judge sees | Status |
 |---|---|---|
-| 1 | **The machine is sealed.** Live panel: outbound attempts blocked, packet capture as evidence (R6) | Proven at container level; panel hard-coded |
-| 2 | **"Read this inspection report and draft the approval note."** The Planner lays out steps; agents light up as they work | Graph and trace Built; live streaming Proposed |
+| 1 | **The machine is sealed.** Live panel: outbound attempts blocked, packet capture as evidence (R6) | Proven at container level; **panel live** (connection snapshot + audit-log chains, 2026-09-13) |
+| 2 | **"Read this inspection report and draft the approval note."** The Planner lays out steps; agents light up as they work | Graph, trace and **live streaming Built** — the frontend shows every stage event; the plan shown is the demo scenario (Planner not built) |
 | 3 | **Reader** extracts every finding and reading, each shown with the crop of its cell | **Built** |
-| 4 | **One cell is flagged** — the damaged digit. The run *pauses*; the engineer sees the crop and decides | Detection Proven; the pause is Proposed (§10) |
+| 4 | **One cell is flagged** — the damaged digit. The run *pauses*; the engineer sees the crop and decides | Detection Proven; the run **stops** and the Review tab shows the cell crop (Built); resuming from the engineer's decision is Proposed (§10) |
 | 5 | **Rules fire in code** and say why: severity, or a reading below minimum | **Built** |
 | 6 | **Author** writes the Word note; **Verifier** reads the finished file back and checks every number | **Built** |
 | 7 | **We break it on purpose.** A wrong number is injected; the Verifier catches it; the work is sent back and repaired | **Built** — our best 30 seconds |
-| 8 | **"Which clause covers external corrosion?"** The Librarian answers with the clause cited and its page — and refuses when it isn't in the library | Not built (§7) |
-| 9 | **"Which readings are worst across all these reports?"** No single report says, so the **Coder writes the code on the spot**, runs it sealed, and answers from the result | **Built** — passes first try, 7 s |
+| 8 | **"Which clause covers external corrosion?"** The Librarian answers with the clause cited and its page — and refuses when it isn't in the library | **Search with citations Built** (22/22 retrieval); written answers built but **not qualified** — the demo shows the cited passages only |
+| 9 | **"Which readings are worst across all these reports?"** No single report says, so the **Coder writes the code on the spot**, runs it sealed, and answers from the result | **Partly built** — the sandboxed Coder passes a *predefined* version of this task, checked by held-out tests. Answering an *arbitrary* question this way needs the evidence store to query and a different kind of check, since an ad-hoc question has no pre-written tests |
 | 10 | **"When is the next inspection due?"** The first program hangs; the sandbox kills it at the time limit; the model reads that and fixes it (R4) | **Built** — fails then passes, 50 s |
-| 11 | **"Why this model?"** The Router shows the model per step and the reason, logged (R2) | Not built |
+| 11 | **"Why this model?"** The Router shows the model per step and the reason, logged (R2) | **Built** — "Why this model" tab: every task's choice and every candidate's reason |
 | 12 | **"Tell the approvals channel it's ready."** A Teams/Slack notification goes out with *no confidential content* — the Sentinel shows exactly what left (§8) | Not built |
 
 Rows 1–7 and 9–10 are real today: document in, checked deliverable out, with the
@@ -261,8 +261,12 @@ prose of old reports.
   provenance contract the Reader produces, so a retrieved passage is shown on
   the page it came from. **The Reader is what fills this.**
 - **Embeddings:** `nomic-embed-text`, already in Ollama, runs offline.
-- **Store:** LanceDB (already running offline inside AnythingLLM) or our own
-  SQLite index — decided by which lets us show the citation.
+- **Store: our own SQLite index — Built (2026-09-13).** Chosen over LanceDB
+  inside AnythingLLM because each chunk keeps its document, section, page and
+  box for the citation, and BM25 keyword search and vectors share one file with
+  no new dependency. `workbench/library.py`, settings in `library.yaml`.
+- **GraphRAG later, when needed** — the recorded graph first
+  (HARNESS_AND_ROADMAP §5), not a graph over everything.
 - **Retrieval: hybrid keyword + vector.** Clause identifiers like
   "OISD-STD-118 Cl. 6.2" are exactly what embeddings are worst at and exact
   keyword matching is best at. Vector search alone will miss them.
@@ -276,6 +280,35 @@ passage that should be found (hit@k), **plus questions whose honest answer is
 "not in these documents"**, so we measure refusal and not just recall. A
 knowledge base that always answers is one that will invent a clause number on
 stage.
+
+### 7d. Three kinds of memory — what the agents remember, and who may change it
+
+The two stores above are one kind of memory. Agents need three, plus the
+scratchpad of the task in hand. The split is from **CoALA**, *Cognitive
+Architectures for Language Agents* (Sumers, Yao, Narasimhan, Griffiths; TMLR
+2024), and LangGraph's own memory docs use the same three names.
+
+| Memory | What it is (CoALA) | Ours | Status |
+|---|---|---|---|
+| **Working** | What the current step needs: inputs, retrieved knowledge, active goals | The mission's LangGraph state, checkpointed so a paused mission resumes where it stopped | Pause and resume tested 30/30, in memory only |
+| **Semantic** — facts | The agent's knowledge about the world | Evidence store (§7a, exact numbers); reference library (§7b, wording and citations); recorded knowledge graph (HARNESS_AND_ROADMAP §5.1) | Evidence store **Built**; library **Built**, first score 16/17; graph Proposed |
+| **Episodic** — what happened | Experience from earlier runs | Run folders `runs/<job-id>/<stage>/`, the hash-chained audit log, every reviewer decision on a flagged cell. Recalled as "last time": the previous reading for *thickness grew*, a correction an engineer made, a plan that worked, shown to the Planner as an example | Records **Built**; recall Proposed |
+| **Procedural** — how the work is done | Model weights plus the agent's code and instructions | The procedural graph (steps, guidance, pitfalls), agent definitions with tool allow-lists, rules in code, the models in `models.yaml` | Graph and rules **Built**; agent definitions Proposed |
+
+**Rules:**
+
+- **A finished mission may write semantic and episodic memory**: evidence
+  ingested, the run recorded. Anything recalled from them is still evidence with
+  its source attached, never something the model "remembers".
+- **No agent writes procedural memory while it runs.** CoALA says writing to
+  it is "riskier than writing to episodic or semantic memory, as it can easily
+  introduce bugs or allow an agent to subvert its designers' intentions." Ours
+  changes only through the refiner, the validation set and an engineer's
+  approval (HARNESS_AND_ROADMAP §4.2), with every version kept.
+- **All of it stays on the machine.** The installed LangGraph (checkpoint
+  4.2.0) keeps its checkpointer and store in memory only; no SQLite backend is
+  installed. Long-term memory goes in our own SQLite files, or a vendored SQLite
+  backend tested with the network off, the same way LangGraph itself was.
 
 ---
 
@@ -349,6 +382,50 @@ retries, trace, hash-chained log. It works and produced the self-healing demo.
 network physically off — a test, not an assumption. Stage handlers stay plain
 functions with no framework imports, so the engine can be swapped and the demo
 is never blocked on the migration.
+
+### 10a. What the move must keep
+
+LangGraph is the engine, not the design. Three ideas from earlier in the project
+carry over. None of them may be lost in the migration.
+
+**1. The procedural graph stays the source of truth.** From *Procedural Graphs*
+(arXiv 2609.09153; ARCHITECTURE §3.3, HARNESS_AND_ROADMAP §4). The YAML file is
+compiled into a LangGraph graph rather than rewritten by hand:
+
+- stages become nodes, and the `when: ok / fail / exhausted` edges become
+  conditional edges;
+- `max_attempts` and `step_budget` stay enforced counters;
+- guidance and pitfalls are still inserted into each stage's instructions.
+
+The **self-healing loop** (a failed check sends the work back to the stage that
+caused it; out of budget, the job goes to a person) must pass
+`run_inspection --inject-fault render` unchanged on the new engine before the
+old runner is retired. Self-evolution stays **Proposed**, with an engineer's
+approval gate (§7d: procedural memory).
+
+**2. ICM: each stage sees only what it needs.** From the *Interpretable Context
+Methodology* (arXiv 2603.16021; ARCHITECTURE §3.2): 2,000–8,000 focused tokens
+per stage instead of 40,000+ at once, which matters on 12 GB. Per-job run
+folders are **Built**. The per-stage `CONTEXT.md` contracts were **never
+built**; the agent definitions (§3) are where they now go: inputs, output
+contract, and the context that stage is given.
+
+**3. Ideas from the GitHub Copilot SDK** (MIT; discussed 2026-09-11, recorded
+here for the first time):
+
+| Idea | Where it lands | Status |
+|---|---|---|
+| Each agent is a small definition with a list of the only tools it may use | Agent definitions (§3); the allow-list is enforced in code, a refused call is logged | Proposed |
+| Lifecycle events per agent (`selected / started / completed / failed`, tagged with the agent's id) | The live agent timeline and the audit log (§9, §11) | Proposed |
+| An approval step on every tool call | The Sentinel's approval gate; connectors wait for it (§14 H) | Proposed |
+| Packaged skills checked against acceptance criteria | The model qualification test (§3) | Built in part |
+
+**Not copied:** Copilot hands work to an agent by matching the request to
+agent descriptions, so the model decides who works next. That is acceptable for
+open missions and never for regulated ones, which stay on the graph. Its
+built-in shell and file-editing tools would be switched off. **Running the SDK
+itself is not planned:** the licence of the Copilot CLI it bundles, and whether
+its offline switch works through the SDK, were never checked.
 
 ---
 
@@ -435,5 +512,11 @@ critical path and the F002 caution applies only if a judge raises it.
   [Smart India Hackathon](https://sih.gov.in/)
 - Parser benchmark — [PaddleOCR-VL-1.6](https://arxiv.org/html/2606.03264v1),
   [OmniDocBench](https://github.com/opendatalab/OmniDocBench)
+- Memory — Sumers, Yao, Narasimhan, Griffiths, [Cognitive Architectures for Language Agents](https://arxiv.org/abs/2309.02427) (TMLR 2024), §4.1;
+  [LangGraph memory concepts](https://docs.langchain.com/oss/python/concepts/memory)
+- Orchestration ideas — [Interpretable Context Methodology](https://arxiv.org/abs/2603.16021),
+  [Procedural Graphs](https://arxiv.org/abs/2609.09153),
+  [GitHub Copilot SDK](https://github.com/github/copilot-sdk) and its
+  [custom agents docs](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/custom-agents)
 - Observability — [Langfuse self-hosting](https://langfuse.com/self-hosting),
   [Langfuse vs LangSmith comparison](https://www.kosmoy.com/resources/blog/langsmith-vs-langfuse/)

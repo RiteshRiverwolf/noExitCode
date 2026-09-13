@@ -16,13 +16,13 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 
-import httpx
-
+from workbench import agents
 from workbench.evidence import EvidenceSet
 from workbench.rules import Decision, allowed_numbers
 
-OLLAMA_CHAT = "http://127.0.0.1:11434/api/chat"
-DEFAULT_MODEL = "granite4.1:8b"
+# The Report Writer's instructions, budgets and settings: workbench/agents.yaml.
+# The model comes from the caller (the Router, in run_inspection).
+AGENT = agents.definition("report_writer")
 HYPHENS = re.compile("[‐‑‒–—―−]")
 # A sentence claims a thickness breach when shortfall wording sits close to a
 # minimum or required value. On 2026-09-11 granite used "below the minimum",
@@ -38,16 +38,9 @@ VERDICT = re.compile(
     r"|\bfit for (?:service|purpose)\b|\bsafe to (?:operate|continue)\b|\bsigned[- ]off\b",
     re.IGNORECASE)
 
-SYSTEM = (
-    "You write the summary paragraph of a DRAFT inspection approval note that engineers will "
-    "review. Use only the facts given. Do not invent numbers, names or dates, and do not round "
-    "numbers. Never say the equipment is approved, safe or fit for service: people decide that. "
-    "Say what the rules engine concluded and why, mention the key findings, and say what needs "
-    "engineering attention. Use the words Critical, Major, Minor and Observation only as the "
-    "report's grades. Write 3 to 5 plain sentences, under 110 words: no headings, no lists, no sign-off."
-)
-MAX_WORDS = 120
-STYLE_ONLY = ("longer than",)  # style problems: repaired if possible, never a reason to discard
+SYSTEM = AGENT["instructions"].replace("{target_words}", str(AGENT["target_words"]))
+MAX_WORDS = AGENT["max_words"]
+STYLE_ONLY = tuple(AGENT["style_only"])  # style problems: repaired if possible, never a reason to discard
 
 
 @dataclass
@@ -169,8 +162,8 @@ def check(text: str, ev: EvidenceSet, decision: Decision) -> list[str]:
         elif not named and not breached:
             problems.append("claims a thickness breach that the rules did not find")
     words = len(plain.split())
-    if words > MAX_WORDS + 10:
-        problems.append(f"longer than {MAX_WORDS} words ({words}); cut it to under 110")
+    if words > MAX_WORDS + AGENT["tolerance_words"]:
+        problems.append(f"longer than {MAX_WORDS} words ({words}); cut it to under {AGENT['target_words']}")
     if not plain.strip():
         problems.append("empty")
     return problems
@@ -208,18 +201,18 @@ def code_summary(ev: EvidenceSet, decision: Decision) -> str:
     return " ".join(parts)
 
 
-def write_summary(ev: EvidenceSet, decision: Decision, model: str | None = DEFAULT_MODEL,
-                  guidance: str = "", max_attempts: int = 2) -> Summary:
+def write_summary(ev: EvidenceSet, decision: Decision, model: str | None,
+                  guidance: str = "", max_attempts: int | None = None) -> Summary:
+    """`model` None means no model: code writes the summary."""
     if not model:
         return Summary(code_summary(ev, decision), "code (no model requested)")
+    max_attempts = max_attempts or AGENT["max_attempts"]
     messages = [{"role": "system", "content": SYSTEM},
                 {"role": "user", "content": facts_for_model(ev, decision, guidance)}]
     attempts: list[dict] = []
     for i in range(1, max_attempts + 1):
         try:
-            r = httpx.post(OLLAMA_CHAT, timeout=300, json={
-                "model": model, "messages": messages, "stream": False,
-                "options": {"temperature": 0.2, "num_ctx": 4096}})
+            r = agents.chat(model, messages, "report_writer")
             r.raise_for_status()
             text = r.json()["message"]["content"].strip()
         except Exception as e:
@@ -235,6 +228,5 @@ def write_summary(ev: EvidenceSet, decision: Decision, model: str | None = DEFAU
             attempts[-1]["accepted_with_style_issue"] = problems
             return Summary(text, model, attempts)
         messages += [{"role": "assistant", "content": text},
-                     {"role": "user", "content": "Your summary has these problems: "
-                      + "; ".join(problems) + ". Rewrite it, fixing them, using only the facts given."}]
+                     {"role": "user", "content": AGENT["retry_instructions"].replace("{problems}", "; ".join(problems))}]
     return Summary(code_summary(ev, decision), f"code (fallback after {model} failed the checks)", attempts)

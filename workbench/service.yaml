@@ -1,0 +1,13 @@
+# The local service (workbench/server.py): its settings.
+#
+# The address is not here on purpose: the service listens on loopback only and
+# has no authentication, so there is no setting that could expose it.
+
+port: 8770
+max_upload_bytes: 52428800            # 50 MB
+upload_suffixes: [.pdf, .png, .jpg, .jpeg, .tif, .tiff]
+max_jobs_kept: 50
+
+# Processes whose connections the network panel shows, besides the service
+# itself: the model servers named in models.yaml.
+watched_processes: [ollama.exe, ollama_llama_server.exe, llama-server.exe]

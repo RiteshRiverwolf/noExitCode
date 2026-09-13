@@ -29,6 +29,7 @@ import argparse
 import hashlib
 import json
 import re
+import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
@@ -231,6 +232,38 @@ def route(task: str, context: dict | None = None) -> Decision:
     decision = choose(task)
     log_decision(decision, context)
     return decision
+
+
+def endpoint(model: str, registry: dict | None = None) -> str:
+    """The base URL of the server that serves `model`, from models.yaml -- the one place an address is kept."""
+    registry = registry or load_registry()[0]
+    return registry["servers"][registry["models"][model]["served_by"]].rstrip("/")
+
+
+def fresh(model: str, registry: dict | None = None) -> bool:
+    """Unload `model`, confirm it is gone, and load it again with nothing cached.
+
+    So no earlier call -- and no earlier wrong answer -- can shape the next one,
+    even through the server's prompt cache. The load happens here, not inside the
+    next timed call. True when the server confirmed the unload.
+    """
+    registry = registry or load_registry()[0]
+    if registry["models"][model]["served_by"] != "ollama":
+        return False
+    t = registry["model_lifecycle"]
+    base = endpoint(model, registry)
+    httpx.post(f"{base}/api/generate", json={"model": model, "keep_alive": 0},
+               timeout=t["request_seconds"]).raise_for_status()
+    # Unloading finishes after the request returns: wait until the server no longer lists the model.
+    gone, deadline = False, time.monotonic() + t["unload_wait_seconds"]
+    while not gone and time.monotonic() < deadline:
+        loaded = httpx.get(f"{base}/api/ps", timeout=t["request_seconds"]).json().get("models", [])
+        gone = all(model not in (m.get("name"), m.get("model")) for m in loaded)
+        if not gone:
+            time.sleep(t["poll_seconds"])
+    httpx.post(f"{base}/api/generate", json={"model": model},        # an empty prompt loads, and generates nothing
+               timeout=t["load_seconds"]).raise_for_status()
+    return gone
 
 
 def main() -> int:

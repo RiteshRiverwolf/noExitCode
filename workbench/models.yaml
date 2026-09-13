@@ -22,6 +22,14 @@ servers:
   ollama: http://127.0.0.1:11434
   llama-server: http://127.0.0.1:8082
 
+# Unloading and reloading a model for a clean start (router.fresh), used by the
+# qualification tests so no earlier call can shape the next one.
+model_lifecycle:
+  request_seconds: 120
+  unload_wait_seconds: 30         # how long to wait for the server to stop listing the model
+  poll_seconds: 0.5
+  load_seconds: 600
+
 # --- what each task needs to be qualified -------------------------------------
 # `gate` fields must hold for a model to be eligible at all -- safety first.
 # `rank` fields order the eligible ones: first key most important; a leading
@@ -57,6 +65,12 @@ tasks:
     needs: [vision]
     gate: {qualified: true}
     rank: [median_seconds]
+
+  answer_from_library:
+    description: answer a question only from reference-library passages, citing each sentence, or say the library does not contain the answer
+    needs: [text]
+    gate: {accepted_wrong: 0, unanswerable_answered: 0}   # an accepted wrong answer, or an invented one, even once
+    rank: ["-correct_rate", median_seconds]
 
   embed:
     description: embeddings for the reference library
@@ -171,9 +185,16 @@ models:
     licence: Apache 2.0
     size_gb: 0.3
     capabilities: [embeddings]
+    prefixes:                           # required by the model card: one for stored text, one for questions
+      document: "search_document: "
+      query: "search_query: "
     results:
       embed:
-        retrieval_passed: true          # stage 0 Test C: trap question answered with its source
+        retrieval_passed: true          # found in top 5: 17/17 answerable questions; every hop of 3/3 multi-document ones
         size_gb: 0.3
-        evidence: [results/stage0/NOTES.md]
-        limits: one retrieval question; a proper hit@k test set is not built yet
+        evidence: [results/stage3/library_retrieval.json, results/stage0/NOTES.md]
+        limits: >
+          22 questions (17 answerable, 5 not) over 12 documents, measured with hybrid
+          search (keyword + vector + identifier), not the vectors alone. One of the three
+          multi-document questions needs its second document by following a reference.
+          Top-passage similarity does not separate answerable from unanswerable questions.

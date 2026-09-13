@@ -1,0 +1,1830 @@
+{
+  "k": 5,
+  "found": 22,
+  "answerable": 22,
+  "hops": [
+    4,
+    4
+  ],
+  "questions": [
+    {
+      "id": "Q01",
+      "question": "Which procedure applies OISD-STD-118 Cl. 6.2?",
+      "top": [
+        {
+          "citation": "SOP-REG-001, section 2, p. 1",
+          "score": 0.06667,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "identifier": [
+              "oisdstd118cl62"
+            ],
+            "cosine": 0.712
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 5, p. 1",
+          "score": 0.04946,
+          "why": {
+            "keyword": 2,
+            "identifier": [
+              "oisdstd118cl62"
+            ],
+            "cosine": 0.611
+          }
+        },
+        {
+          "citation": "SOP-INSP-008, document header, p. 1",
+          "score": 0.02854,
+          "why": {
+            "keyword": 16,
+            "vector": 5,
+            "cosine": 0.647
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 2, p. 1",
+          "score": 0.02765,
+          "why": {
+            "keyword": 6,
+            "vector": 20,
+            "cosine": 0.631
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.3.4, p. 107",
+          "score": 0.02736,
+          "why": {
+            "keyword": 29,
+            "vector": 2,
+            "cosine": 0.655
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 3, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-REG-001, section 2, p. 1"
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 4, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-REG-001, section 2, p. 1"
+          }
+        },
+        {
+          "citation": "SOP-INSP-008, section 2, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-REG-001, section 2, p. 1"
+          }
+        }
+      ],
+      "found_at": 1
+    },
+    {
+      "id": "Q02",
+      "question": "What grade is damaged insulation cladding when there is no metal loss?",
+      "top": [
+        {
+          "citation": "SOP-INSP-004, section 5, p. 1",
+          "score": 0.03333,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "cosine": 0.827
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 4, p. 1",
+          "score": 0.03279,
+          "why": {
+            "keyword": 1,
+            "vector": 1,
+            "cosine": 0.741
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 2, p. 1",
+          "score": 0.032,
+          "why": {
+            "keyword": 3,
+            "vector": 2,
+            "cosine": 0.718
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 3, p. 1",
+          "score": 0.03175,
+          "why": {
+            "keyword": 2,
+            "vector": 4,
+            "cosine": 0.682
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.2.1, pp. 97-98",
+          "score": 0.03031,
+          "why": {
+            "keyword": 5,
+            "vector": 7,
+            "cosine": 0.669
+          }
+        },
+        {
+          "citation": "SOP-INSP-003, section 3, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-INSP-004, section 4, p. 1"
+          }
+        }
+      ],
+      "found_at": 1
+    },
+    {
+      "id": "Q03",
+      "question": "How often must the ultrasonic thickness gauge be calibrated during a survey?",
+      "top": [
+        {
+          "citation": "SOP-INSP-003, section 2, p. 1",
+          "score": 0.03333,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "cosine": 0.902
+          }
+        },
+        {
+          "citation": "MEMO-2025-014, section 1, p. 1",
+          "score": 0.03279,
+          "why": {
+            "keyword": 1,
+            "vector": 1,
+            "cosine": 0.883
+          }
+        },
+        {
+          "citation": "SOP-INSP-003, document header, p. 1",
+          "score": 0.03151,
+          "why": {
+            "keyword": 2,
+            "vector": 5,
+            "cosine": 0.755
+          }
+        },
+        {
+          "citation": "SOP-INSP-003, section 1, p. 1",
+          "score": 0.03058,
+          "why": {
+            "keyword": 3,
+            "vector": 8,
+            "cosine": 0.746
+          }
+        },
+        {
+          "citation": "MEMO-2025-014, document header, p. 1",
+          "score": 0.03055,
+          "why": {
+            "keyword": 4,
+            "vector": 7,
+            "cosine": 0.748
+          }
+        }
+      ],
+      "found_at": 1
+    },
+    {
+      "id": "Q04",
+      "question": "Why was the calibration interval for thickness gauges shortened?",
+      "top": [
+        {
+          "citation": "MEMO-2025-014, section 1, p. 1",
+          "score": 0.03333,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "cosine": 0.801
+          }
+        },
+        {
+          "citation": "SOP-INSP-003, section 2, p. 1",
+          "score": 0.03279,
+          "why": {
+            "keyword": 1,
+            "vector": 1,
+            "cosine": 0.787
+          }
+        },
+        {
+          "citation": "MEMO-2025-014, document header, p. 1",
+          "score": 0.03175,
+          "why": {
+            "keyword": 2,
+            "vector": 4,
+            "cosine": 0.693
+          }
+        },
+        {
+          "citation": "SOP-INSP-002, section 5, p. 1",
+          "score": 0.03016,
+          "why": {
+            "keyword": 3,
+            "vector": 10,
+            "cosine": 0.655
+          }
+        },
+        {
+          "citation": "SOP-INSP-003, section 5, p. 1",
+          "score": 0.02878,
+          "why": {
+            "keyword": 10,
+            "vector": 9,
+            "cosine": 0.657
+          }
+        }
+      ],
+      "found_at": 1
+    },
+    {
+      "id": "Q05",
+      "question": "How is the interval to the next inspection worked out from the remaining life?",
+      "top": [
+        {
+          "citation": "SOP-INSP-002, section 3, p. 1",
+          "score": 0.03333,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "cosine": 0.866
+          }
+        },
+        {
+          "citation": "SOP-INSP-002, section 2, p. 1",
+          "score": 0.03252,
+          "why": {
+            "keyword": 1,
+            "vector": 2,
+            "cosine": 0.754
+          }
+        },
+        {
+          "citation": "SOP-INSP-002, section 4, p. 1",
+          "score": 0.03227,
+          "why": {
+            "keyword": 3,
+            "vector": 1,
+            "cosine": 0.801
+          }
+        },
+        {
+          "citation": "SOP-INSP-001, section 3, p. 1",
+          "score": 0.03031,
+          "why": {
+            "keyword": 5,
+            "vector": 7,
+            "cosine": 0.703
+          }
+        },
+        {
+          "citation": "SOP-INSP-003, section 5, p. 1",
+          "score": 0.03012,
+          "why": {
+            "keyword": 4,
+            "vector": 9,
+            "cosine": 0.693
+          }
+        },
+        {
+          "citation": "SOP-INSP-005, section 5, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-INSP-002, section 4, p. 1"
+          }
+        }
+      ],
+      "found_at": 1
+    },
+    {
+      "id": "Q06",
+      "question": "What is the longest test interval for a pressure safety valve in hydrocarbon service?",
+      "top": [
+        {
+          "citation": "SOP-INSP-007, section 2, p. 1",
+          "score": 0.03333,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "cosine": 0.878
+          }
+        },
+        {
+          "citation": "SOP-INSP-007, section 3, p. 1",
+          "score": 0.03252,
+          "why": {
+            "keyword": 1,
+            "vector": 2,
+            "cosine": 0.71
+          }
+        },
+        {
+          "citation": "SOP-INSP-007, section 4, p. 1",
+          "score": 0.032,
+          "why": {
+            "keyword": 2,
+            "vector": 3,
+            "cosine": 0.661
+          }
+        },
+        {
+          "citation": "SOP-INSP-002, section 3, p. 1",
+          "score": 0.02964,
+          "why": {
+            "keyword": 6,
+            "vector": 9,
+            "cosine": 0.648
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.1.6, pp. 88-89",
+          "score": 0.02942,
+          "why": {
+            "keyword": 9,
+            "vector": 7,
+            "cosine": 0.648
+          }
+        },
+        {
+          "citation": "SOP-INSP-003, section 5, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-INSP-002, section 3, p. 1"
+          }
+        }
+      ],
+      "found_at": 1
+    },
+    {
+      "id": "Q07",
+      "question": "What should happen if a thickness reading is higher than at the previous survey?",
+      "top": [
+        {
+          "citation": "SOP-INSP-003, section 6, p. 1",
+          "score": 0.03306,
+          "why": {
+            "keyword": 0,
+            "vector": 1,
+            "cosine": 0.757
+          }
+        },
+        {
+          "citation": "SOP-INSP-003, section 4, p. 1",
+          "score": 0.03254,
+          "why": {
+            "keyword": 3,
+            "vector": 0,
+            "cosine": 0.784
+          }
+        },
+        {
+          "citation": "SOP-INSP-003, section 5, p. 1",
+          "score": 0.03202,
+          "why": {
+            "keyword": 1,
+            "vector": 4,
+            "cosine": 0.733
+          }
+        },
+        {
+          "citation": "MEMO-2025-014, section 1, p. 1",
+          "score": 0.03105,
+          "why": {
+            "keyword": 2,
+            "vector": 7,
+            "cosine": 0.702
+          }
+        },
+        {
+          "citation": "SOP-INSP-003, section 2, p. 1",
+          "score": 0.02749,
+          "why": {
+            "keyword": 28,
+            "vector": 2,
+            "cosine": 0.749
+          }
+        },
+        {
+          "citation": "SOP-INSP-001, section 4, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-INSP-003, section 4, p. 1"
+          }
+        }
+      ],
+      "found_at": 3
+    },
+    {
+      "id": "Q08",
+      "question": "At what pit depth does pitting become a Major finding?",
+      "top": [
+        {
+          "citation": "SOP-INSP-005, section 2, p. 1",
+          "score": 0.03333,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "cosine": 0.784
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 1.4.1, p. 15",
+          "score": 0.02565,
+          "why": {
+            "keyword": 17,
+            "vector": 19,
+            "cosine": 0.615
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 4.2, pp. 51-52",
+          "score": 0.02482,
+          "why": {
+            "keyword": 46,
+            "vector": 5,
+            "cosine": 0.627
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 1.4.2, pp. 20-21",
+          "score": 0.02481,
+          "why": {
+            "keyword": 8,
+            "vector": 39,
+            "cosine": 0.608
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 4.1, pp. 44-45",
+          "score": 0.02462,
+          "why": {
+            "keyword": 14,
+            "vector": 30,
+            "cosine": 0.611
+          }
+        }
+      ],
+      "found_at": 1
+    },
+    {
+      "id": "Q09",
+      "question": "Who could sign an approval note for a Major finding on 10 February 2026?",
+      "top": [
+        {
+          "citation": "MEMO-2026-003, section 1, p. 1",
+          "score": 0.03333,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "cosine": 0.764
+          }
+        },
+        {
+          "citation": "SOP-INSP-006, section 2, p. 1",
+          "score": 0.03226,
+          "why": {
+            "keyword": 2,
+            "vector": 2,
+            "cosine": 0.679
+          }
+        },
+        {
+          "citation": "SOP-INSP-006, section 3, p. 1",
+          "score": 0.03178,
+          "why": {
+            "keyword": 5,
+            "vector": 1,
+            "cosine": 0.695
+          }
+        },
+        {
+          "citation": "SOP-INSP-001, section 5, p. 1",
+          "score": 0.03058,
+          "why": {
+            "keyword": 3,
+            "vector": 8,
+            "cosine": 0.65
+          }
+        },
+        {
+          "citation": "MEMO-2026-003, document header, p. 1",
+          "score": 0.03055,
+          "why": {
+            "keyword": 7,
+            "vector": 4,
+            "cosine": 0.676
+          }
+        },
+        {
+          "citation": "SOP-INSP-001, section 2, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "MEMO-2026-003, section 1, p. 1"
+          }
+        }
+      ],
+      "found_at": 1,
+      "all_hops": true,
+      "all_hops_by_search": false
+    },
+    {
+      "id": "Q10",
+      "question": "Can a draft approval note say the equipment is fit for service?",
+      "top": [
+        {
+          "citation": "SOP-INSP-006, section 4, p. 1",
+          "score": 0.03333,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "cosine": 0.801
+          }
+        },
+        {
+          "citation": "SOP-INSP-006, section 3, p. 1",
+          "score": 0.03252,
+          "why": {
+            "keyword": 2,
+            "vector": 1,
+            "cosine": 0.73
+          }
+        },
+        {
+          "citation": "SOP-INSP-001, section 5, p. 1",
+          "score": 0.03151,
+          "why": {
+            "keyword": 5,
+            "vector": 2,
+            "cosine": 0.719
+          }
+        },
+        {
+          "citation": "SOP-INSP-001, section 4, p. 1",
+          "score": 0.03132,
+          "why": {
+            "keyword": 1,
+            "vector": 7,
+            "cosine": 0.679
+          }
+        },
+        {
+          "citation": "SOP-INSP-005, section 5, p. 1",
+          "score": 0.03125,
+          "why": {
+            "keyword": 4,
+            "vector": 4,
+            "cosine": 0.709
+          }
+        },
+        {
+          "citation": "SOP-INSP-001, section 2, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-INSP-006, section 4, p. 1"
+          }
+        },
+        {
+          "citation": "SOP-INSP-003, section 4, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-INSP-001, section 4, p. 1"
+          }
+        }
+      ],
+      "found_at": 1
+    },
+    {
+      "id": "Q11",
+      "question": "How much section loss on platform grating makes it a Major finding?",
+      "top": [
+        {
+          "citation": "SOP-INSP-008, section 3, p. 1",
+          "score": 0.03333,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "cosine": 0.755
+          }
+        },
+        {
+          "citation": "SOP-INSP-001, section 3, p. 1",
+          "score": 0.0308,
+          "why": {
+            "keyword": 7,
+            "vector": 3,
+            "cosine": 0.593
+          }
+        },
+        {
+          "citation": "SOP-INSP-005, section 2, p. 1",
+          "score": 0.03054,
+          "why": {
+            "keyword": 6,
+            "vector": 5,
+            "cosine": 0.59
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 4, p. 1",
+          "score": 0.03031,
+          "why": {
+            "keyword": 5,
+            "vector": 7,
+            "cosine": 0.586
+          }
+        },
+        {
+          "citation": "SOP-INSP-001, section 4, p. 1",
+          "score": 0.02929,
+          "why": {
+            "keyword": 2,
+            "vector": 16,
+            "cosine": 0.581
+          }
+        },
+        {
+          "citation": "SOP-INSP-003, section 3, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-INSP-004, section 4, p. 1"
+          }
+        },
+        {
+          "citation": "SOP-INSP-003, section 4, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-INSP-001, section 4, p. 1"
+          }
+        }
+      ],
+      "found_at": 1
+    },
+    {
+      "id": "Q12",
+      "question": "Where is API 510 Cl. 7.2 applied in our procedures, and what does it require us to do?",
+      "top": [
+        {
+          "citation": "SOP-REG-001, section 2, p. 1",
+          "score": 0.05,
+          "why": {
+            "keyword": 0,
+            "identifier": [
+              "api510cl72"
+            ],
+            "cosine": 0.622
+          }
+        },
+        {
+          "citation": "SOP-INSP-002, section 5, p. 1",
+          "score": 0.04921,
+          "why": {
+            "keyword": 3,
+            "identifier": [
+              "api510cl72"
+            ],
+            "cosine": 0.581
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.4.3, p. 113",
+          "score": 0.03159,
+          "why": {
+            "keyword": 7,
+            "vector": 0,
+            "cosine": 0.693
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.4.2, p. 112",
+          "score": 0.03128,
+          "why": {
+            "keyword": 6,
+            "vector": 2,
+            "cosine": 0.689
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.4.1, pp. 110-111",
+          "score": 0.0311,
+          "why": {
+            "keyword": 8,
+            "vector": 1,
+            "cosine": 0.692
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 2, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-REG-001, section 2, p. 1"
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 3, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-REG-001, section 2, p. 1"
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 4, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-REG-001, section 2, p. 1"
+          }
+        }
+      ],
+      "found_at": 1,
+      "all_hops": true,
+      "all_hops_by_search": true
+    },
+    {
+      "id": "Q13",
+      "question": "Who could sign an approval note for a Critical weld defect on 10 February 2026?",
+      "top": [
+        {
+          "citation": "MEMO-2026-003, section 1, p. 1",
+          "score": 0.03333,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "cosine": 0.757
+          }
+        },
+        {
+          "citation": "SOP-INSP-005, section 4, p. 1",
+          "score": 0.03279,
+          "why": {
+            "keyword": 1,
+            "vector": 1,
+            "cosine": 0.724
+          }
+        },
+        {
+          "citation": "SOP-INSP-006, section 3, p. 1",
+          "score": 0.03151,
+          "why": {
+            "keyword": 2,
+            "vector": 5,
+            "cosine": 0.682
+          }
+        },
+        {
+          "citation": "SOP-INSP-006, section 4, p. 1",
+          "score": 0.03083,
+          "why": {
+            "keyword": 8,
+            "vector": 2,
+            "cosine": 0.695
+          }
+        },
+        {
+          "citation": "MEMO-2026-003, document header, p. 1",
+          "score": 0.0308,
+          "why": {
+            "keyword": 7,
+            "vector": 3,
+            "cosine": 0.693
+          }
+        },
+        {
+          "citation": "SOP-INSP-001, section 2, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "MEMO-2026-003, section 1, p. 1"
+          }
+        },
+        {
+          "citation": "SOP-INSP-001, section 3, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-INSP-005, section 4, p. 1"
+          }
+        }
+      ],
+      "found_at": 1,
+      "all_hops": true,
+      "all_hops_by_search": true
+    },
+    {
+      "id": "C01",
+      "question": "How many people sought medical treatment after the Chevron Richmond pipe rupture?",
+      "top": [
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 1.1, pp. 11-12",
+          "score": 0.03333,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "cosine": 0.756
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 3.3, pp. 42-44",
+          "score": 0.03252,
+          "why": {
+            "keyword": 1,
+            "vector": 2,
+            "cosine": 0.731
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 6.5, pp. 130-131",
+          "score": 0.03126,
+          "why": {
+            "keyword": 5,
+            "vector": 3,
+            "cosine": 0.713
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.3, p. 102",
+          "score": 0.03062,
+          "why": {
+            "keyword": 2,
+            "vector": 9,
+            "cosine": 0.696
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.3.5, p. 110",
+          "score": 0.03008,
+          "why": {
+            "keyword": 7,
+            "vector": 6,
+            "cosine": 0.702
+          }
+        }
+      ],
+      "found_at": 1
+    },
+    {
+      "id": "C02",
+      "question": "Which piping specification requires a minimum silicon content, according to the CSB?",
+      "top": [
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 1.4.1, p. 16",
+          "score": 0.03333,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "cosine": 0.812
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 4.3, p. 53",
+          "score": 0.03175,
+          "why": {
+            "keyword": 3,
+            "vector": 3,
+            "cosine": 0.787
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 6.1, p. 122",
+          "score": 0.03151,
+          "why": {
+            "keyword": 5,
+            "vector": 2,
+            "cosine": 0.791
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 4.1, pp. 47-49",
+          "score": 0.03125,
+          "why": {
+            "keyword": 4,
+            "vector": 4,
+            "cosine": 0.784
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 1.4.1, pp. 16-17",
+          "score": 0.0311,
+          "why": {
+            "keyword": 8,
+            "vector": 1,
+            "cosine": 0.793
+          }
+        }
+      ],
+      "found_at": 1
+    },
+    {
+      "id": "C03",
+      "question": "What inspection of the 4-sidecut piping did Chevron recommend internally but not carry out?",
+      "top": [
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 1.4.2, p. 17",
+          "score": 0.03068,
+          "why": {
+            "keyword": 1,
+            "vector": 10,
+            "cosine": 0.788
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.1.2.1.1, pp. 71-72",
+          "score": 0.03037,
+          "why": {
+            "keyword": 9,
+            "vector": 3,
+            "cosine": 0.807
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.1.2.3, pp. 76-77",
+          "score": 0.02951,
+          "why": {
+            "keyword": 4,
+            "vector": 12,
+            "cosine": 0.784
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 4.2, pp. 52-53",
+          "score": 0.02903,
+          "why": {
+            "keyword": 3,
+            "vector": 16,
+            "cosine": 0.781
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.1.2.2.1, p. 75",
+          "score": 0.02901,
+          "why": {
+            "keyword": 21,
+            "vector": 0,
+            "cosine": 0.83
+          }
+        }
+      ],
+      "found_at": 1
+    },
+    {
+      "id": "C04",
+      "question": "Why does the silicon content of carbon steel piping matter for sulfidation corrosion?",
+      "top": [
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 4.1, pp. 45-46",
+          "score": 0.03306,
+          "why": {
+            "keyword": 0,
+            "vector": 1,
+            "cosine": 0.886
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 1.4.1, pp. 15-16",
+          "score": 0.03306,
+          "why": {
+            "keyword": 1,
+            "vector": 0,
+            "cosine": 0.887
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 4.1, pp. 46-47",
+          "score": 0.032,
+          "why": {
+            "keyword": 3,
+            "vector": 2,
+            "cosine": 0.884
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 1.4.1, pp. 16-17",
+          "score": 0.03175,
+          "why": {
+            "keyword": 2,
+            "vector": 4,
+            "cosine": 0.86
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 4.1, p. 47",
+          "score": 0.03012,
+          "why": {
+            "keyword": 4,
+            "vector": 9,
+            "cosine": 0.841
+          }
+        }
+      ],
+      "found_at": 2
+    },
+    {
+      "id": "U01",
+      "question": "What is the inspection interval for centrifugal compressors?",
+      "top": [
+        {
+          "citation": "SOP-INSP-002, section 6, p. 1",
+          "score": 0.03159,
+          "why": {
+            "keyword": 0,
+            "vector": 7,
+            "cosine": 0.698
+          }
+        },
+        {
+          "citation": "SOP-INSP-002, section 3, p. 1",
+          "score": 0.0311,
+          "why": {
+            "keyword": 1,
+            "vector": 8,
+            "cosine": 0.691
+          }
+        },
+        {
+          "citation": "SOP-INSP-007, section 2, p. 1",
+          "score": 0.03101,
+          "why": {
+            "keyword": 5,
+            "vector": 4,
+            "cosine": 0.707
+          }
+        },
+        {
+          "citation": "SOP-INSP-002, section 5, p. 1",
+          "score": 0.03054,
+          "why": {
+            "keyword": 6,
+            "vector": 5,
+            "cosine": 0.707
+          }
+        },
+        {
+          "citation": "SOP-INSP-002, section 2, p. 1",
+          "score": 0.02917,
+          "why": {
+            "keyword": 20,
+            "vector": 0,
+            "cosine": 0.754
+          }
+        },
+        {
+          "citation": "SOP-INSP-003, section 5, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-INSP-002, section 3, p. 1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "U02",
+      "question": "What does OISD-STD-116 Cl. 7.3 say, word for word?",
+      "top": [
+        {
+          "citation": "SOP-REG-001, section 2, p. 1",
+          "score": 0.06667,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "identifier": [
+              "oisdstd116cl73"
+            ],
+            "cosine": 0.639
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 2, p. 1",
+          "score": 0.06586,
+          "why": {
+            "keyword": 2,
+            "vector": 1,
+            "identifier": [
+              "oisdstd116cl73"
+            ],
+            "cosine": 0.597
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 3, p. 1",
+          "score": 0.06422,
+          "why": {
+            "keyword": 1,
+            "vector": 9,
+            "identifier": [
+              "oisdstd116cl73"
+            ],
+            "cosine": 0.575
+          }
+        },
+        {
+          "citation": "SOP-INSP-008, section 2, p. 1",
+          "score": 0.03101,
+          "why": {
+            "keyword": 4,
+            "vector": 5,
+            "cosine": 0.58
+          }
+        },
+        {
+          "citation": "SOP-INSP-006, section 4, p. 1",
+          "score": 0.03078,
+          "why": {
+            "keyword": 6,
+            "vector": 4,
+            "cosine": 0.58
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 4, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-REG-001, section 2, p. 1"
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 5, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-REG-001, section 2, p. 1"
+          }
+        },
+        {
+          "citation": "SOP-INSP-008, section 3, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-REG-001, section 2, p. 1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "U03",
+      "question": "What is the name of the Head of the Inspection Department?",
+      "top": [
+        {
+          "citation": "MEMO-2026-003, document header, p. 1",
+          "score": 0.03306,
+          "why": {
+            "keyword": 0,
+            "vector": 1,
+            "cosine": 0.66
+          }
+        },
+        {
+          "citation": "SOP-INSP-001, section 2, p. 1",
+          "score": 0.03254,
+          "why": {
+            "keyword": 3,
+            "vector": 0,
+            "cosine": 0.692
+          }
+        },
+        {
+          "citation": "SOP-INSP-002, section 6, p. 1",
+          "score": 0.03151,
+          "why": {
+            "keyword": 2,
+            "vector": 5,
+            "cosine": 0.633
+          }
+        },
+        {
+          "citation": "SOP-INSP-002, section 4, p. 1",
+          "score": 0.03151,
+          "why": {
+            "keyword": 5,
+            "vector": 2,
+            "cosine": 0.651
+          }
+        },
+        {
+          "citation": "SOP-INSP-005, section 5, p. 1",
+          "score": 0.03055,
+          "why": {
+            "keyword": 4,
+            "vector": 7,
+            "cosine": 0.621
+          }
+        },
+        {
+          "citation": "SOP-INSP-006, section 3, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-INSP-005, section 5, p. 1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "U04",
+      "question": "Which coating product is approved for surfaces prepared to St-3?",
+      "top": [
+        {
+          "citation": "SOP-INSP-004, section 2, p. 1",
+          "score": 0.03333,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "cosine": 0.679
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 1.4.2, p. 18",
+          "score": 0.02675,
+          "why": {
+            "keyword": 5,
+            "vector": 28,
+            "cosine": 0.61
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.1.1.1, pp. 65-66",
+          "score": 0.02613,
+          "why": {
+            "keyword": 11,
+            "vector": 23,
+            "cosine": 0.614
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 6.1, p. 123",
+          "score": 0.02582,
+          "why": {
+            "keyword": 19,
+            "vector": 16,
+            "cosine": 0.621
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.1.2.1.1, pp. 73-74",
+          "score": 0.02523,
+          "why": {
+            "keyword": 7,
+            "vector": 37,
+            "cosine": 0.605
+          }
+        }
+      ]
+    },
+    {
+      "id": "U05",
+      "question": "What minimum thickness does an API 579 Level 2 assessment require for a 20 mm shell?",
+      "top": [
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.1.5, pp. 86-87",
+          "score": 0.0328,
+          "why": {
+            "keyword": 2,
+            "vector": 0,
+            "cosine": 0.727
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, footnotes, p. 20",
+          "score": 0.03078,
+          "why": {
+            "keyword": 6,
+            "vector": 4,
+            "cosine": 0.693
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.1.5, p. 87",
+          "score": 0.03054,
+          "why": {
+            "keyword": 5,
+            "vector": 6,
+            "cosine": 0.683
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.1.5, pp. 85-86",
+          "score": 0.02976,
+          "why": {
+            "keyword": 12,
+            "vector": 3,
+            "cosine": 0.696
+          }
+        },
+        {
+          "citation": "SOP-INSP-003, section 4, p. 1",
+          "score": 0.02955,
+          "why": {
+            "keyword": 16,
+            "vector": 1,
+            "cosine": 0.713
+          }
+        },
+        {
+          "citation": "SOP-INSP-001, section 4, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-INSP-003, section 4, p. 1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "H01",
+      "question": "Which procedure section applies OISD-STD-116 Cl. 7.9?",
+      "top": [
+        {
+          "citation": "SOP-REG-001, section 2, p. 1",
+          "score": 0.06667,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "identifier": [
+              "oisdstd116cl79"
+            ],
+            "cosine": 0.712
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 4, p. 1",
+          "score": 0.04921,
+          "why": {
+            "keyword": 3,
+            "identifier": [
+              "oisdstd116cl79"
+            ],
+            "cosine": 0.587
+          }
+        },
+        {
+          "citation": "SOP-INSP-008, section 3, p. 1",
+          "score": 0.03008,
+          "why": {
+            "keyword": 7,
+            "vector": 6,
+            "cosine": 0.643
+          }
+        },
+        {
+          "citation": "SOP-INSP-008, document header, p. 1",
+          "score": 0.02853,
+          "why": {
+            "keyword": 19,
+            "vector": 3,
+            "cosine": 0.645
+          }
+        },
+        {
+          "citation": "SOP-INSP-006, document header, p. 1",
+          "score": 0.02583,
+          "why": {
+            "keyword": 15,
+            "vector": 20,
+            "cosine": 0.633
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 2, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-REG-001, section 2, p. 1"
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 3, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-REG-001, section 2, p. 1"
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 5, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-REG-001, section 2, p. 1"
+          }
+        }
+      ],
+      "found_at": 1
+    },
+    {
+      "id": "H02",
+      "question": "Quote the exact text of OISD-STD-132 Cl. 5.6.",
+      "top": [
+        {
+          "citation": "SOP-REG-001, section 2, p. 1",
+          "score": 0.06667,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "identifier": [
+              "oisdstd132cl56"
+            ],
+            "cosine": 0.689
+          }
+        },
+        {
+          "citation": "SOP-INSP-007, section 2, p. 1",
+          "score": 0.04973,
+          "why": {
+            "keyword": 1,
+            "identifier": [
+              "oisdstd132cl56"
+            ],
+            "cosine": 0.551
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 2, p. 1",
+          "score": 0.03101,
+          "why": {
+            "keyword": 4,
+            "vector": 5,
+            "cosine": 0.62
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 5, p. 1",
+          "score": 0.03009,
+          "why": {
+            "keyword": 5,
+            "vector": 8,
+            "cosine": 0.614
+          }
+        },
+        {
+          "citation": "SOP-INSP-008, section 3, p. 1",
+          "score": 0.02944,
+          "why": {
+            "keyword": 6,
+            "vector": 10,
+            "cosine": 0.613
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 3, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-REG-001, section 2, p. 1"
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 4, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-REG-001, section 2, p. 1"
+          }
+        },
+        {
+          "citation": "SOP-INSP-008, section 2, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-REG-001, section 2, p. 1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "H03",
+      "question": "Who could sign an approval note for a Minor finding on 20 January 2026?",
+      "top": [
+        {
+          "citation": "MEMO-2026-003, section 1, p. 1",
+          "score": 0.03333,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "cosine": 0.751
+          }
+        },
+        {
+          "citation": "SOP-INSP-006, section 2, p. 1",
+          "score": 0.03227,
+          "why": {
+            "keyword": 1,
+            "vector": 3,
+            "cosine": 0.675
+          }
+        },
+        {
+          "citation": "SOP-INSP-006, section 3, p. 1",
+          "score": 0.03202,
+          "why": {
+            "keyword": 4,
+            "vector": 1,
+            "cosine": 0.692
+          }
+        },
+        {
+          "citation": "SOP-INSP-006, section 4, p. 1",
+          "score": 0.03083,
+          "why": {
+            "keyword": 8,
+            "vector": 2,
+            "cosine": 0.681
+          }
+        },
+        {
+          "citation": "SOP-INSP-001, section 5, p. 1",
+          "score": 0.03058,
+          "why": {
+            "keyword": 3,
+            "vector": 8,
+            "cosine": 0.647
+          }
+        },
+        {
+          "citation": "SOP-INSP-001, section 2, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "MEMO-2026-003, section 1, p. 1"
+          }
+        }
+      ],
+      "found_at": 1,
+      "all_hops": true,
+      "all_hops_by_search": true
+    },
+    {
+      "id": "H04",
+      "question": "What is R. Sharma's inspector certificate number?",
+      "top": [
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.2.3, p. 100",
+          "score": 0.03254,
+          "why": {
+            "keyword": 3,
+            "vector": 0,
+            "cosine": 0.605
+          }
+        },
+        {
+          "citation": "SOP-INSP-001, section 5, p. 1",
+          "score": 0.02988,
+          "why": {
+            "keyword": 5,
+            "vector": 9,
+            "cosine": 0.587
+          }
+        },
+        {
+          "citation": "SOP-INSP-001, section 2, p. 1",
+          "score": 0.02982,
+          "why": {
+            "keyword": 0,
+            "vector": 16,
+            "cosine": 0.579
+          }
+        },
+        {
+          "citation": "SOP-INSP-007, section 4, p. 1",
+          "score": 0.0262,
+          "why": {
+            "keyword": 1,
+            "vector": 42,
+            "cosine": 0.547
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, footnotes, p. 131",
+          "score": 0.02613,
+          "why": {
+            "keyword": 11,
+            "vector": 23,
+            "cosine": 0.57
+          }
+        }
+      ]
+    },
+    {
+      "id": "H05",
+      "question": "Is a pressure safety valve in fouling or corrosive service tested every 12 months?",
+      "top": [
+        {
+          "citation": "SOP-INSP-007, section 2, p. 1",
+          "score": 0.03333,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "cosine": 0.84
+          }
+        },
+        {
+          "citation": "SOP-INSP-007, section 3, p. 1",
+          "score": 0.03227,
+          "why": {
+            "keyword": 1,
+            "vector": 3,
+            "cosine": 0.701
+          }
+        },
+        {
+          "citation": "SOP-INSP-002, section 2, p. 1",
+          "score": 0.03175,
+          "why": {
+            "keyword": 4,
+            "vector": 2,
+            "cosine": 0.704
+          }
+        },
+        {
+          "citation": "SOP-INSP-002, section 5, p. 1",
+          "score": 0.0315,
+          "why": {
+            "keyword": 3,
+            "vector": 4,
+            "cosine": 0.697
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.2.3, p. 100",
+          "score": 0.02758,
+          "why": {
+            "keyword": 19,
+            "vector": 7,
+            "cosine": 0.683
+          }
+        }
+      ],
+      "found_at": 1
+    },
+    {
+      "id": "H06",
+      "question": "To what torque value is a loose anchor bolt re-torqued?",
+      "top": [
+        {
+          "citation": "SOP-INSP-008, section 2, p. 1",
+          "score": 0.03333,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "cosine": 0.765
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 6.3, p. 125",
+          "score": 0.02881,
+          "why": {
+            "keyword": 7,
+            "vector": 12,
+            "cosine": 0.541
+          }
+        },
+        {
+          "citation": "SOP-INSP-001, section 4, p. 1",
+          "score": 0.02879,
+          "why": {
+            "keyword": 2,
+            "vector": 19,
+            "cosine": 0.532
+          }
+        },
+        {
+          "citation": "SOP-INSP-008, section 1, p. 1",
+          "score": 0.02789,
+          "why": {
+            "keyword": 1,
+            "vector": 27,
+            "cosine": 0.525
+          }
+        },
+        {
+          "citation": "SOP-REG-001, section 2, p. 1",
+          "score": 0.02742,
+          "why": {
+            "keyword": 11,
+            "vector": 15,
+            "cosine": 0.537
+          }
+        },
+        {
+          "citation": "SOP-INSP-003, section 4, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-INSP-001, section 4, p. 1"
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 2, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-REG-001, section 2, p. 1"
+          }
+        },
+        {
+          "citation": "SOP-INSP-004, section 3, p. 1",
+          "score": 0.0,
+          "why": {
+            "referenced_by": "SOP-REG-001, section 2, p. 1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "H07",
+      "question": "At what time was the shelter-in-place advisory lifted after the Chevron Richmond fire?",
+      "top": [
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 6.5, pp. 130-131",
+          "score": 0.03333,
+          "why": {
+            "keyword": 0,
+            "vector": 0,
+            "cosine": 0.811
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 1.1, pp. 11-12",
+          "score": 0.03279,
+          "why": {
+            "keyword": 1,
+            "vector": 1,
+            "cosine": 0.784
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 3.3, pp. 40-42",
+          "score": 0.03226,
+          "why": {
+            "keyword": 2,
+            "vector": 2,
+            "cosine": 0.756
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, footnotes, p. 11",
+          "score": 0.03175,
+          "why": {
+            "keyword": 3,
+            "vector": 3,
+            "cosine": 0.733
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 5.1.7, p. 92",
+          "score": 0.02963,
+          "why": {
+            "keyword": 8,
+            "vector": 7,
+            "cosine": 0.712
+          }
+        }
+      ],
+      "found_at": 2
+    },
+    {
+      "id": "H08",
+      "question": "According to the CSB, where did the figure for people who sought medical treatment come from?",
+      "top": [
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 3.3, pp. 42-44",
+          "score": 0.03306,
+          "why": {
+            "keyword": 1,
+            "vector": 0,
+            "cosine": 0.695
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 1.1, pp. 11-12",
+          "score": 0.03182,
+          "why": {
+            "keyword": 0,
+            "vector": 6,
+            "cosine": 0.638
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 3.3, pp. 40-42",
+          "score": 0.02688,
+          "why": {
+            "keyword": 2,
+            "vector": 33,
+            "cosine": 0.615
+          }
+        },
+        {
+          "citation": "SOP-INSP-006, section 3, p. 1",
+          "score": 0.02422,
+          "why": {
+            "keyword": 17,
+            "vector": 29,
+            "cosine": 0.617
+          }
+        },
+        {
+          "citation": "CSB-CHEVRON-RICHMOND, section 6.5, pp. 130-131",
+          "score": 0.02272,
+          "why": {
+            "keyword": 22,
+            "vector": 35,
+            "cosine": 0.614
+          }
+        }
+      ],
+      "found_at": 2
+    }
+  ]
+}

@@ -12,6 +12,12 @@ data/corpus/
 # you get the same file back (workbench/pagesource.py).
 data/cache/
 
+# Knowledge base, rebuilt from sources: the evidence store (workbench/evidence_store.py
+# ingest) and the reference library -- generated SOP PDFs and the search index
+# (bench/library/make_library.py, workbench/library.py).
+data/evidence/
+data/library/
+
 # External source documents stay out of version control.
 # The MRPL tender contains real employees' names, phone numbers and emails,
 # and several other sources restrict redistribution. See docs/DATASETS.md

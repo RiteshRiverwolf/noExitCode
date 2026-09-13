@@ -12,6 +12,9 @@
   ::-webkit-scrollbar-track { background: transparent; }
   html, body { height: 100%; margin: 0; }
   body { -webkit-font-smoothing: antialiased; }
+  /* Form controls start plain (as Tailwind's preflight made them); the classes below style them */
+  button, input, textarea { font: inherit; color: inherit; margin: 0; padding: 0; background-color: transparent; border: 0 solid; }
+  button { cursor: pointer; }
 
   /* Palette (hand-vendored so no CDN/build step is needed — everything below
      runs from this one static file, offline) */
@@ -108,6 +111,10 @@
   .flex-wrap { flex-wrap: wrap; }
   .block { display: block; }
   .hidden { display: none; } /* kept last among display rules so it always wins when toggled against flex/grid/block */
+
+  /* Overflow (used by the layout below; missing from the first hand-written layer) */
+  .overflow-hidden { overflow: hidden; }
+  .overflow-y-auto { overflow-y: auto; }
 
   /* Flex / grid item behavior */
   .flex-1 { flex: 1 1 0%; }
@@ -215,6 +222,7 @@
   .bg-rose-400 { background-color: var(--rose-400); }
   .bg-signal-ok { background-color: var(--signal-ok); }
   .bg-signal-warn { background-color: var(--signal-warn); }
+  .bg-signal-danger { background-color: var(--signal-danger); }
   .bg-transparent { background-color: transparent; }
   .border-base-600 { border-color: var(--base-600); }
   .border-base-700 { border-color: var(--base-700); }
@@ -294,6 +302,36 @@
     .lg\:border-b-0 { border-bottom-width: 0; }
     .lg\:border-r { border-right-width: 1px; border-right-style: solid; }
   }
+
+  /* ---------- Live wiring: tabs, evidence table, cards (added 2026-09-13) ---------- */
+  .tab { font: inherit; font-size: 12px; padding: .2rem .55rem; border-radius: .375rem; color: var(--ink-500); border: 1px solid transparent; background: transparent; cursor: pointer; }
+  .tab:hover { color: var(--ink-200); }
+  .tab.active { color: var(--ink-100); border-color: var(--base-700); background: var(--base-900); }
+  .badge { display: inline-block; min-width: 16px; padding: 0 4px; margin-left: 4px; border-radius: 9999px; font-size: 10px; line-height: 16px; text-align: center; background: rgba(251,113,133,.2); color: var(--rose-300); }
+  .badge.hidden { display: none; }
+  .card { border: 1px solid var(--base-800); border-radius: .5rem; background: var(--base-900); padding: .75rem; }
+  .pill { display: inline-block; font-size: 10.5px; line-height: 16px; padding: 0 .45rem; border-radius: 9999px; border: 1px solid var(--base-700); color: var(--ink-500); font-weight: 400; vertical-align: middle; }
+  .pill.ok { color: var(--emerald-300); border-color: rgba(52,211,153,.3); }
+  .pill.warn { color: var(--signal-warn); border-color: rgba(251,191,36,.35); }
+  .pill.bad { color: var(--rose-300); border-color: rgba(251,113,133,.35); }
+  .pill.info { color: var(--indigo-200); border-color: rgba(129,140,248,.35); }
+  .demo-btn { font: inherit; font-size: 11.5px; padding: .2rem .6rem; border-radius: .375rem; border: 1px solid rgba(129,140,248,.35); color: var(--indigo-200); background: rgba(129,140,248,.08); cursor: pointer; }
+  .demo-btn:hover { background: rgba(129,140,248,.18); }
+  .demo-btn:disabled { opacity: .45; cursor: not-allowed; }
+  .ev-table { width: 100%; border-collapse: collapse; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11px; }
+  .ev-table th { text-align: left; color: var(--ink-500); font-weight: 500; padding: .3rem .4rem; background: var(--base-850); }
+  .ev-table td { padding: .3rem .4rem; border-top: 1px solid var(--base-800); color: var(--ink-300); }
+  .ev-table tr.breach td { color: var(--rose-300); background: rgba(251,113,133,.10); }
+  .ev-table tr.doubt td { color: var(--signal-warn); background: rgba(251,191,36,.08); }
+  .crop { display: block; max-width: 100%; border: 1px solid var(--base-700); border-radius: .25rem; background: #fff; }
+  .code-block { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11px; white-space: pre; overflow: auto; background: var(--base-950); border: 1px solid var(--base-800); border-radius: .375rem; padding: .5rem; color: var(--ink-300); max-height: 16rem; margin: .5rem 0 0; }
+  .group-head { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--indigo-300); margin: .5rem 0 .35rem; }
+  .group-caption { font-size: 11.5px; color: var(--ink-600); margin: 0 0 .75rem; line-height: 1.45; }
+  .kv { display: flex; justify-content: space-between; gap: .75rem; font-size: 12px; }
+  .kv > span:first-child { color: var(--ink-600); }
+  .kv > span:last-child { color: var(--ink-300); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-align: right; }
+  .chat-link { color: var(--indigo-300); text-decoration: none; border-bottom: 1px solid rgba(165,180,252,.35); }
+  .chat-link:hover { color: var(--indigo-200); }
 </style>
 </head>
 <body class="text-ink-100 font-sans antialiased h-screen flex overflow-hidden">
@@ -322,18 +360,18 @@
       </div>
     </div>
 
-    <div class="flex items-center gap-2 text-[12px] px-3 py-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/[0.06]">
-      <span class="w-1.5 h-1.5 rounded-full bg-signal-ok pulse-dot"></span>
+    <div id="airPill" class="flex items-center gap-2 text-[12px] px-3 py-1.5 rounded-full border border-emerald-400/25 bg-emerald-400/[0.06]" title="A live snapshot of the connections held by the workbench's own processes (netstat), refreshed every few seconds. Not a packet capture.">
+      <span id="airDot" class="w-1.5 h-1.5 rounded-full bg-signal-ok pulse-dot"></span>
       <span class="text-emerald-300">Air-gapped</span>
       <span class="text-ink-600">·</span>
-      <span class="text-ink-500">0 external calls</span>
+      <span id="extLabel" class="text-ink-500">checking…</span>
     </div>
   </header>
 
   <main class="flex-1 grid grid-cols-1 lg:grid-cols-10 overflow-hidden">
 
     <!-- AGENT ACTIVITY -->
-    <section class="reveal lg:col-span-3 flex flex-col border-b lg:border-b-0 lg:border-r border-base-800 min-h-[320px]">
+    <section class="reveal lg:col-span-3 flex flex-col border-b lg:border-b-0 lg:border-r border-base-800 min-h-[320px] overflow-hidden">
       <div class="h-[2px] w-full shrink-0" style="background: linear-gradient(90deg, #fbbf24, transparent);"></div>
       <div class="px-4 py-3 border-b border-base-800 flex items-center justify-between shrink-0">
         <span class="text-[13px] font-medium text-ink-200 flex items-center gap-2">
@@ -344,24 +382,27 @@
       </div>
 
       <div id="stageList" class="flex-1 overflow-y-auto px-4 py-4">
-        <!-- stages injected by JS -->
+        <!-- live agent events rendered by JS -->
       </div>
     </section>
 
     <!-- PROMPT / CONVERSATION -->
-    <section id="requestPanel" class="relative reveal lg:col-span-4 flex flex-col border-b lg:border-b-0 lg:border-r border-base-800 min-h-[260px]">
+    <section id="requestPanel" class="relative reveal lg:col-span-4 flex flex-col border-b lg:border-b-0 lg:border-r border-base-800 min-h-[260px] overflow-hidden">
       <div class="h-[2px] w-full shrink-0" style="background: linear-gradient(90deg, #818cf8, transparent);"></div>
       <div class="px-4 py-3 border-b border-base-800 flex items-center justify-between shrink-0">
         <span class="text-[13px] font-medium text-ink-200 flex items-center gap-2">
           <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
           Request
         </span>
-        <button id="newChatBtn" title="New chat" class="w-6 h-6 rounded-md flex items-center justify-center text-ink-500 hover:text-indigo-300 hover:bg-indigo-400/10 transition-colors">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
-        </button>
+        <div class="flex items-center gap-2">
+          <button id="demoBtnHeader" class="demo-btn" title="Run the pitch demo: every step is a real run">Run demo</button>
+          <button id="newChatBtn" title="New chat" class="w-6 h-6 rounded-md flex items-center justify-center text-ink-500 hover:text-indigo-300 hover:bg-indigo-400/10 transition-colors">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+        </div>
       </div>
 
-      <div class="flex-1 overflow-y-auto relative">
+      <div id="chatScroll" class="flex-1 overflow-y-auto relative">
         <div id="emptyState" class="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
           <svg width="60" height="60" viewBox="0 0 100 100" fill="none">
             <defs>
@@ -375,6 +416,8 @@
           </svg>
           <div id="greetingText" class="text-[16px] font-medium text-ink-100 mt-4"></div>
           <div class="text-[12px] text-ink-600 mt-1">What should we look into today?</div>
+          <button id="demoBtnEmpty" class="demo-btn mt-4">Run the R-2247 demo mission</button>
+          <div id="healthLine" class="text-[11px] text-ink-700 mt-2"></div>
         </div>
         <div id="chatThread" class="px-4 py-4 space-y-4 text-[13px] leading-relaxed"></div>
       </div>
@@ -383,11 +426,11 @@
 
       <div class="p-3 border-t border-base-800 shrink-0">
         <div class="flex items-end gap-2 bg-base-900 border border-base-700 rounded-lg px-2 py-2 focus-within:border-indigo-400/50 transition-colors">
-          <input id="fileInput" type="file" multiple class="hidden" />
+          <input id="fileInput" type="file" multiple accept=".pdf,.png,.jpg,.jpeg,.tif,.tiff" class="hidden" />
           <button id="attachBtn" class="shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-ink-500 hover:text-indigo-300 hover:bg-indigo-400/10 transition-colors">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
           </button>
-          <textarea id="promptInput" rows="1" placeholder="Describe the task, or drop a file…" class="flex-1 bg-transparent resize-none outline-none text-[13px] text-ink-100 placeholder:text-ink-600 py-1"></textarea>
+          <textarea id="promptInput" rows="1" placeholder="Attach an inspection report, or run the demo…" class="flex-1 bg-transparent resize-none outline-none text-[13px] text-ink-100 placeholder:text-ink-600 py-1"></textarea>
           <button id="runBtn" class="btn-lift send-btn shrink-0 w-7 h-7 rounded-md text-white flex items-center justify-center">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
@@ -402,22 +445,22 @@
       </div>
     </section>
 
-    <!-- EVIDENCE VIEWER -->
-    <section class="reveal lg:col-span-3 flex flex-col min-h-[320px]">
+    <!-- EVIDENCE · WHY THIS MODEL · REVIEW -->
+    <section class="reveal lg:col-span-3 flex flex-col min-h-[320px] overflow-hidden">
       <div class="h-[2px] w-full shrink-0" style="background: linear-gradient(90deg, #fb7185, transparent);"></div>
       <div class="px-4 py-3 border-b border-base-800 flex items-center justify-between shrink-0">
-        <span class="text-[13px] font-medium text-ink-200 flex items-center gap-2">
-          <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
-          Evidence
-        </span>
+        <div class="flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-rose-400 mr-1.5"></span>
+          <button class="tab active" data-tab="evidence">Evidence</button>
+          <button class="tab" data-tab="router">Why this model</button>
+          <button class="tab" data-tab="review">Review<span id="reviewBadge" class="badge hidden">0</span></button>
+        </div>
         <span id="evidenceStatus" class="text-[11px] text-ink-600 font-mono">—</span>
       </div>
 
-      <div id="evidenceBody" class="flex-1 overflow-y-auto px-4 py-4 text-[13px]">
-        <div class="text-ink-600 text-[12px] leading-relaxed">
-          Evidence will appear here once a reading is extracted — every value shown is linked back to its exact source cell.
-        </div>
-      </div>
+      <div id="evidenceBody" class="flex-1 overflow-y-auto px-4 py-4 text-[13px]"></div>
+      <div id="routerBody" class="hidden flex-1 overflow-y-auto px-4 py-4 text-[13px]"></div>
+      <div id="reviewBody" class="hidden flex-1 overflow-y-auto px-4 py-4 text-[13px]"></div>
     </section>
   </main>
 
@@ -429,9 +472,9 @@
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
           Network
         </span>
-        <span class="text-ink-600">external calls <span class="text-signal-ok">0</span></span>
-        <span class="text-ink-600">local calls <span id="localCount" class="text-ink-300">0</span></span>
-        <span class="text-ink-600">blocked <span id="blockedCount" class="text-ink-300">0</span></span>
+        <span class="text-ink-600">external connections <span id="extCount" class="text-signal-ok">–</span></span>
+        <span class="text-ink-600">local connections <span id="localCount" class="text-ink-300">–</span></span>
+        <span class="text-ink-600">audit logs intact <span id="logsIntact" class="text-ink-300">–</span></span>
       </div>
       <svg id="netChevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="text-ink-500 transition-transform">
         <path d="M18 15l-6-6-6 6"/>
@@ -445,6 +488,20 @@
   document.querySelectorAll('.reveal').forEach((el, i) => {
     setTimeout(() => el.classList.add('in'), 80 + i * 90);
   });
+
+  // Everything below talks to the workbench service that serves this page
+  // (python -m workbench.server). Nothing is simulated: agents, evidence, model
+  // choices and network counts all come from the service's own events and endpoints.
+  const served = location.protocol === 'http:' || location.protocol === 'https:';
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  async function api(path, options) {
+    const r = await fetch(path, options);
+    let body = null;
+    try { body = await r.json(); } catch (e) { /* not JSON */ }
+    if (!r.ok) throw new Error((body && body.error) || `${r.status} ${r.statusText}`);
+    return body;
+  }
 
   // ---------- File upload ----------
   const fileInput = document.getElementById('fileInput');
@@ -462,7 +519,7 @@
 
   function fileIconPath(name) {
     const ext = name.split('.').pop().toLowerCase();
-    if (['png','jpg','jpeg','gif','webp'].includes(ext)) {
+    if (['png','jpg','jpeg','gif','webp','tif','tiff'].includes(ext)) {
       return '<circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/><rect x="3" y="3" width="18" height="18" rx="2"/>';
     }
     return '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>';
@@ -478,9 +535,9 @@
     stagedRow.innerHTML = stagedFiles.map((f, i) => `
       <div class="chip-in inline-flex items-center gap-1.5 text-[11px] text-indigo-200 border border-indigo-400/25 bg-indigo-400/[0.08] rounded-md pl-2 pr-1 py-1">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">${fileIconPath(f.name)}</svg>
-        <span class="max-w-[110px] truncate">${f.name}</span>
+        <span class="max-w-[110px] truncate">${esc(f.name)}</span>
         <span class="text-indigo-400/60">${formatBytes(f.size)}</span>
-        <button data-i="${i}" class="removeChip w-4 h-4 rounded flex items-center justify-center text-indigo-300/70 hover:text-white hover:bg-indigo-400/30">
+        <button data-i="${i}" class="removeChip w-4 h-4 rounded flex items-center justify-center text-indigo-300 hover:text-white hover:bg-indigo-400/30">
           <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
       </div>`).join('');
@@ -520,61 +577,95 @@
     if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
   });
 
-  // ---------- Agent stages ----------
-  const stages = [
-    { name: 'Document Reader',     detail: 'OCR scan → text and tables (PaddleOCR-VL)' },
-    { name: 'Evidence Builder',    detail: 'Table rows → checked evidence records' },
-    { name: 'Rules Engine',        detail: 'Deterministic check — code, no model' },
-    { name: 'Standards Researcher',detail: 'Governing clause lookup' },
-    { name: 'Report Writer',       detail: 'Drafting approval note (.docx)' },
-    { name: 'QA Checker',          detail: 'Structure, semantics, presentation checks' },
-  ];
-
+  // ---------- Agent activity (live events) ----------
   const stageList = document.getElementById('stageList');
+  let activity = [];   // groups (a mission step) and rows (one agent doing one thing)
 
-  function renderStages(activeIndex, doneUpTo) {
-    stageList.innerHTML = stages.map((s, i) => {
-      const isDone = i < doneUpTo;
-      const isActive = i === activeIndex;
-      const isLast = i === stages.length - 1;
-      let dotClass = 'bg-base-700 border border-base-600';
-      let textClass = 'text-ink-600';
-      if (isDone) { dotClass = 'bg-signal-ok'; textClass = 'text-ink-300'; }
-      if (isActive) { dotClass = 'bg-signal-warn stage-dot'; textClass = 'text-ink-100'; }
+  const DOT = {
+    active: 'bg-signal-warn stage-dot', ok: 'bg-signal-ok', fail: 'bg-signal-danger',
+    stop: 'bg-signal-warn', info: 'bg-indigo-400', idle: 'bg-base-700 border border-base-600',
+  };
 
+  function resetActivity() { activity = []; renderActivity(); }
+
+  function addGroup(title, caption) {
+    activity.push({ kind: 'group', key: 'group-' + activity.length, title, caption });
+    renderActivity();
+  }
+
+  function upsertRow(key, row) {
+    const i = activity.findIndex(a => a.key === key);
+    if (i >= 0) activity[i] = { ...activity[i], ...row };
+    else activity.push({ kind: 'row', key, status: 'info', ...row });
+    renderActivity();
+  }
+
+  function renderActivity() {
+    if (!activity.length) {
+      stageList.innerHTML = `<div class="text-[12px] text-ink-600 leading-relaxed">Agents appear here as they work. Every line is a real event from the workbench service — which agent, what it did, whether it passed, and when work was sent back.</div>`;
+      return;
+    }
+    stageList.innerHTML = activity.map((a, i) => {
+      if (a.kind === 'group') {
+        return `<div class="group-head">${esc(a.title)}</div>${a.caption ? `<div class="group-caption">${esc(a.caption)}</div>` : ''}`;
+      }
+      const next = activity[i + 1];
+      const joined = next && next.kind === 'row';
+      const textClass = a.status === 'active' ? 'text-ink-100' : 'text-ink-300';
       return `
-        <div class="flex gap-3 ${isActive ? 'stage-active' : ''}">
+        <div class="flex gap-3 ${a.status === 'active' ? 'stage-active' : ''}">
           <div class="flex flex-col items-center">
-            <div class="w-2.5 h-2.5 rounded-full ${dotClass} mt-1 shrink-0"></div>
-            ${!isLast ? `<div class="w-px flex-1 ${isDone ? 'bg-signal-ok/40' : 'bg-base-800'} my-1"></div>` : ''}
+            <div class="w-2.5 h-2.5 rounded-full ${DOT[a.status] || DOT.info} mt-1 shrink-0"></div>
+            ${joined ? `<div class="w-px flex-1 ${a.status === 'ok' ? 'bg-signal-ok/40' : 'bg-base-800'} my-1"></div>` : ''}
           </div>
-          <div class="pb-6">
-            <div class="text-[13px] font-medium ${textClass}">${s.name}</div>
-            <div class="text-[12px] text-ink-600 mt-0.5">${s.detail}</div>
+          <div class="pb-3" style="min-width:0">
+            <div class="text-[13px] font-medium ${textClass}">${esc(a.agent)}${a.tag ? ` <span class="pill ${a.tagClass || ''}">${esc(a.tag)}</span>` : ''}</div>
+            <div class="text-[12px] text-ink-600 mt-0.5" style="word-break:break-word">${esc(a.detail || '')}</div>
           </div>
         </div>`;
     }).join('');
+    stageList.scrollTop = stageList.scrollHeight;
   }
 
-  renderStages(-1, 0);
+  resetActivity();
 
-  // ---------- Network log ----------
+  // ---------- Network (live snapshot from the service) ----------
   const netLog = document.getElementById('netLog');
-  const localCountEl = document.getElementById('localCount');
-  const blockedCountEl = document.getElementById('blockedCount');
-  let localCount = 0, blockedCount = 0;
+  let lastNetSignature = '';
 
   function logNet(text, kind) {
     const t = new Date().toLocaleTimeString('en-GB', { hour12: false });
-    const color = kind === 'blocked' ? 'text-signal-danger' : 'text-signal-ok';
-    const tag = kind === 'blocked' ? 'BLOCKED' : 'LOCAL';
+    const color = kind === 'external' ? 'text-signal-danger' : 'text-signal-ok';
+    const tag = kind === 'external' ? 'EXTERNAL' : 'LOCAL';
     const line = document.createElement('div');
     line.className = 'log-line flex gap-2';
-    line.innerHTML = `<span class="text-ink-700">${t}</span><span class="${color}">${tag}</span><span class="text-ink-500">${text}</span>`;
+    line.innerHTML = `<span class="text-ink-700">${t}</span><span class="${color}">${tag}</span><span class="text-ink-500">${esc(text)}</span>`;
     netLog.appendChild(line);
     netLog.scrollTop = netLog.scrollHeight;
-    if (kind === 'blocked') { blockedCount++; blockedCountEl.textContent = blockedCount; }
-    else { localCount++; localCountEl.textContent = localCount; }
+  }
+
+  async function pollNetwork() {
+    if (!served) return;
+    try {
+      const n = await api('/api/network');
+      const ext = n.external_count, local = n.loopback_count + n.local_network_count;
+      const logs = n.audit_logs || [], intact = logs.filter(l => l.chain_intact).length;
+      const extEl = document.getElementById('extCount');
+      extEl.textContent = ext;
+      extEl.className = ext ? 'text-signal-danger' : 'text-signal-ok';
+      document.getElementById('localCount').textContent = local;
+      document.getElementById('logsIntact').textContent = `${intact}/${logs.length}`;
+      document.getElementById('extLabel').textContent = `${ext} external connection${ext === 1 ? '' : 's'}`;
+      document.getElementById('airDot').className = `w-1.5 h-1.5 rounded-full ${ext ? 'bg-signal-danger' : 'bg-signal-ok pulse-dot'}`;
+      const signature = `${ext}|${local}|${intact}/${logs.length}`;
+      if (signature !== lastNetSignature) {
+        lastNetSignature = signature;
+        logNet(`${local} local connection(s) held by ${(n.watched_processes || []).join(', ') || 'the workbench'} · audit logs intact ${intact}/${logs.length}`, 'local');
+        (n.external || []).forEach(c => logNet(`${c.process} → ${c.foreign}`, 'external'));
+      }
+    } catch (e) {
+      document.getElementById('extLabel').textContent = 'service not reachable';
+    }
   }
 
   document.getElementById('netToggle').addEventListener('click', () => {
@@ -583,63 +674,188 @@
       netLog.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
   });
 
-  // ---------- Evidence ----------
+  // ---------- Right panel: Evidence · Why this model · Review ----------
   const evidenceBody = document.getElementById('evidenceBody');
+  const routerBody = document.getElementById('routerBody');
+  const reviewBody = document.getElementById('reviewBody');
   const evidenceStatus = document.getElementById('evidenceStatus');
+  const reviewBadge = document.getElementById('reviewBadge');
 
-  function showEvidence() {
-    evidenceStatus.textContent = 'CML-014';
-    evidenceStatus.className = 'text-[11px] font-mono text-signal-danger';
-    evidenceBody.innerHTML = `
-      <div class="fade-swap space-y-4">
-        <div class="border border-base-800 rounded-lg bg-base-900 p-3 card-shadow">
-          <div class="text-[11px] text-ink-600 mb-2 font-mono">Table 3 · Row 7 · Column "Reading (mm)"</div>
-          <div class="grid grid-cols-4 gap-px bg-base-800 rounded overflow-hidden text-[11px] font-mono">
-            <div class="bg-base-850 px-2 py-1.5 text-ink-500">CML</div>
-            <div class="bg-base-850 px-2 py-1.5 text-ink-500">Prev.</div>
-            <div class="bg-base-850 px-2 py-1.5 text-ink-500">Reading</div>
-            <div class="bg-base-850 px-2 py-1.5 text-ink-500">Min.</div>
-            <div class="bg-base-900 px-2 py-1.5 text-ink-300">012</div>
-            <div class="bg-base-900 px-2 py-1.5 text-ink-300">5.1</div>
-            <div class="bg-base-900 px-2 py-1.5 text-ink-300">5.0</div>
-            <div class="bg-base-900 px-2 py-1.5 text-ink-300">4.5</div>
-            <div class="bg-base-900 px-2 py-1.5 text-ink-300">014</div>
-            <div class="bg-base-900 px-2 py-1.5 text-ink-300">4.9</div>
-            <div class="bg-rose-400/15 px-2 py-1.5 text-rose-300 font-semibold ring-1 ring-inset ring-rose-400/40">4.2</div>
-            <div class="bg-base-900 px-2 py-1.5 text-ink-300">4.5</div>
-          </div>
-        </div>
-
-        <div class="space-y-2 text-[12px]">
-          <div class="flex justify-between"><span class="text-ink-600">Document</span><span class="text-ink-300 font-mono">inspection_204B.pdf, p. 4</span></div>
-          <div class="flex justify-between"><span class="text-ink-600">Equipment</span><span class="text-ink-300 font-mono">CML-014 · Line 204-B</span></div>
-          <div class="flex justify-between"><span class="text-ink-600">Parsed value</span><span class="text-ink-100 font-mono">4.2 mm</span></div>
-          <div class="flex justify-between"><span class="text-ink-600">Applicable minimum</span><span class="text-ink-100 font-mono">4.5 mm</span></div>
-          <div class="flex justify-between"><span class="text-ink-600">Source of minimum</span><span class="text-ink-300 font-mono">OISD-STD-116 §7.3</span></div>
-        </div>
-
-        <div class="border border-rose-400/30 bg-rose-400/10 rounded-lg px-3 py-2.5 flex items-start gap-2 card-shadow">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="text-rose-300 mt-0.5 shrink-0"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
-          <div class="text-[12px] text-ink-200"><span class="font-medium text-rose-300">Escalate</span> — reading below minimum thickness. Sent for engineer review.</div>
-        </div>
-      </div>`;
+  function showTab(name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    evidenceBody.classList.toggle('hidden', name !== 'evidence');
+    routerBody.classList.toggle('hidden', name !== 'router');
+    reviewBody.classList.toggle('hidden', name !== 'review');
   }
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab)));
 
   function resetEvidence() {
     evidenceStatus.textContent = '—';
     evidenceStatus.className = 'text-[11px] text-ink-600 font-mono';
+    evidenceBody.dataset.empty = 'yes';
     evidenceBody.innerHTML = `<div class="text-ink-600 text-[12px] leading-relaxed">Evidence will appear here once a reading is extracted — every value shown is linked back to its exact source cell.</div>`;
+    reviewBody.innerHTML = `<div class="text-ink-600 text-[12px] leading-relaxed">When a value cannot be read with certainty, the run stops and the cell is shown here for an engineer. Nothing is guessed.</div>`;
+    reviewBadge.classList.add('hidden');
+    showTab('evidence');
   }
 
-  // ---------- Run ----------
+  function addCard(html, id) {
+    if (evidenceBody.dataset.empty !== 'no') { evidenceBody.innerHTML = ''; evidenceBody.dataset.empty = 'no'; }
+    const existing = id && document.getElementById(id);
+    if (existing) { existing.innerHTML = html; return existing; }   // a re-read of the same run replaces its card
+    const div = document.createElement('div');
+    div.className = 'fade-swap card card-shadow mb-2';
+    if (id) div.id = id;
+    div.innerHTML = html;
+    evidenceBody.prepend(div);
+    evidenceBody.scrollTop = 0;
+    return div;
+  }
+
+  const kv = (k, v) => `<div class="kv"><span>${esc(k)}</span><span>${esc(v)}</span></div>`;
+
+  function renderEvidence(e, runId) {
+    const doubt = e.readings.filter(r => r.review_status === 'needs review');
+    const rows = e.readings.map(r => `
+      <tr data-cml="${esc(r.cml_id)}" class="${r.review_status === 'needs review' ? 'doubt' : ''}">
+        <td>${esc(r.cml_id)}</td><td>${esc(r.previous_mm ?? '—')}</td><td>${esc(r.current_mm ?? 'unread')}</td>
+        <td>${esc(r.min_required_mm ?? '—')}</td><td>${r.score != null ? Number(r.score).toFixed(2) : ''}</td>
+      </tr>`).join('');
+    const grades = e.findings.map(f => `${f.finding_id} ${f.severity || 'unread'}`).join(' · ');
+    const readBy = (e.readings[0] && e.readings[0].read_by) || e.extraction || '';
+    addCard(`
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-[12.5px] text-ink-100 font-medium">Thickness survey</span>
+        <span class="pill ${doubt.length ? 'warn' : 'info'}">${e.readings.length} readings · ${e.findings.length} findings</span>
+      </div>
+      <table class="ev-table"><thead><tr><th>CML</th><th>Prev.</th><th>Current</th><th>Min.</th><th>conf.</th></tr></thead><tbody>${rows}</tbody></table>
+      <div class="text-[11px] text-ink-600 mt-2">${esc(grades)}</div>
+      <div class="text-[11px] text-ink-700 mt-1">read by ${esc(readBy)} · values kept exactly as printed</div>
+      <div class="decision-slot mt-2"></div>
+      <div class="crop-slot mt-2 space-y-2"></div>
+      ${e.problems && e.problems.length ? `<div class="text-[11px] text-ink-600 mt-2">recorded: ${esc(e.problems.join('; '))}</div>` : ''}`,
+      `ev-${runId}`);
+    lastEvidence[runId] = e;
+    evidenceStatus.textContent = doubt.length ? `${doubt.length} to review` : `${e.readings.length} readings`;
+    evidenceStatus.className = `text-[11px] font-mono ${doubt.length ? 'text-signal-warn' : 'text-ink-500'}`;
+    if (doubt.length) renderReview(e, doubt);
+  }
+
+  function renderDecision(e, runId) {
+    const card = document.getElementById(`ev-${runId}`);
+    if (!card) return;
+    const subjects = new Set(e.triggers.map(t => t.subject));
+    card.querySelectorAll('tr[data-cml]').forEach(tr => { if (subjects.has(tr.dataset.cml)) tr.classList.add('breach'); });
+    const escalate = e.outcome === 'ESCALATE';
+    card.querySelector('.decision-slot').innerHTML = `
+      <div class="border ${escalate ? 'border-rose-400/30 bg-rose-400/10' : 'border-base-700 bg-base-850'} rounded-lg px-3 py-2 text-[12px] text-ink-200">
+        <span class="font-medium ${escalate ? 'text-rose-300' : 'text-ink-100'}">${esc(e.outcome)}</span> — decided by the rules engine, in code (${esc(e.ruleset)})
+        ${e.triggers.map(t => `<div class="text-[11.5px] text-ink-300 mt-1">${esc(t.rule_id)} · ${esc(t.subject)} · ${esc(t.detail)}</div>`).join('')}
+      </div>`;
+    const ev = lastEvidence[runId];
+    if (ev) {
+      const crops = ev.readings.filter(r => subjects.has(r.cml_id) && r.crop_url);
+      card.querySelector('.crop-slot').innerHTML = crops.map(r => `
+        <div><div class="text-[11px] text-ink-600 mb-1">${esc(r.cml_id)} as printed on page ${esc(r.page)} — the cell the value was read from</div>
+        <img class="crop" src="${esc(r.crop_url)}" alt="scan crop of ${esc(r.cml_id)}"></div>`).join('');
+    }
+  }
+
+  function renderReview(e, doubt) {
+    reviewBody.innerHTML = doubt.map(r => {
+      const why = (e.problems || []).filter(p => p.startsWith(`${r.cml_id}.current_mm`)).map(p => p.split(': ').slice(1).join(': '));
+      return `
+      <div class="card card-shadow mb-2 fade-swap">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-[13px] text-ink-100 font-medium">${esc(r.cml_id)} · current thickness</span>
+          <span class="pill warn">needs a person</span>
+        </div>
+        ${r.crop_url ? `<img class="crop" src="${esc(r.crop_url)}" alt="the cell as scanned">` : ''}
+        <div class="space-y-1 mt-2">
+          ${kv('Read as', r.current_mm ?? 'unread')}
+          ${kv('Minimum required', r.min_required_mm ?? '—')}
+          ${kv('Page · box', `${r.page} · ${(r.bbox || []).map(v => Math.round(v)).join(', ')}`)}
+          ${kv('Recogniser confidence', r.score != null ? Number(r.score).toFixed(3) : '—')}
+        </div>
+        ${why.length ? `<div class="text-[12px] text-signal-warn mt-2">${esc(why.join('; '))}</div>` : ''}
+        <div class="text-[12px] text-ink-300 mt-2">The run stopped here instead of guessing a digit. An engineer confirms the value or sends it for re-measurement.</div>
+        <div class="flex gap-2 mt-2">
+          <button class="demo-btn" disabled>Confirm value</button>
+          <button class="demo-btn" disabled>Re-measure</button>
+        </div>
+        <div class="text-[11px] text-ink-700 mt-1">Resuming the stopped run from this decision is planned (LangGraph interrupt), not built yet.</div>
+      </div>`;
+    }).join('');
+    reviewBadge.textContent = doubt.length;
+    reviewBadge.classList.remove('hidden');
+    showTab('review');
+  }
+
+  function renderRouter(tasks) {
+    routerBody.innerHTML = `<div class="text-[11.5px] text-ink-600 mb-2 leading-relaxed">The Router picks a model per task from measured qualification results. Untested is not qualified; a model that ever wrote a false approval is shut out.</div>` +
+      Object.entries(tasks).map(([task, d]) => {
+        const chosen = d.candidates.find(c => c.model === d.chosen);
+        return `
+        <div class="card card-shadow mb-2">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-[12.5px] text-ink-100 font-medium font-mono">${esc(task)}</span>
+            <span class="pill ${d.chosen ? 'ok' : 'warn'}">${esc(d.chosen || 'no model')}</span>
+          </div>
+          <div class="text-[11.5px] text-ink-600 mt-1">${esc(d.description)}</div>
+          <div class="text-[12px] text-ink-300 mt-2">${esc(d.reason)}</div>
+          <div class="mt-2 space-y-1">${d.candidates.map(c => `
+            <div class="flex gap-2 text-[11px] font-mono">
+              <span class="${c.eligible ? 'text-signal-ok' : 'text-ink-700'}">${c.eligible ? '+' : '−'}</span>
+              <span class="text-ink-300 shrink-0" style="width:10.5rem">${esc(c.model)}</span>
+              <span class="text-ink-600">${esc(c.reason)}</span>
+            </div>`).join('')}</div>
+          ${chosen && chosen.evidence && chosen.evidence.length ? `<div class="text-[11px] text-ink-700 mt-2" style="word-break:break-all">evidence: ${esc(chosen.evidence.join(', '))}</div>` : ''}
+        </div>`;
+      }).join('');
+  }
+
+  function renderLibrary(e) {
+    addCard(`
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-[12.5px] text-ink-100 font-medium">Reference library</span>
+        <span class="pill info">${e.hits.length} passages</span>
+      </div>
+      <div class="text-[12px] text-ink-300 mb-2">“${esc(e.question)}”</div>
+      ${e.hits.map(h => `
+        <div class="border-t border-base-800 pt-2 mt-2">
+          <div class="text-[11.5px] font-mono text-indigo-200">${esc(h.citation)}</div>
+          <div class="text-[11.5px] text-ink-500">${esc(h.title)}${h.heading ? ' · ' + esc(h.heading) : ''}</div>
+          <div class="text-[12px] text-ink-300 mt-1">${esc(h.text.length > 420 ? h.text.slice(0, 420) + '…' : h.text)}</div>
+          <div class="text-[10.5px] text-ink-700 mt-1 font-mono">${h.why.referenced_by ? 'pulled in: referenced by ' + esc(h.why.referenced_by)
+            : esc(Object.entries(h.why).map(([k, v]) => `${k} ${Array.isArray(v) ? v.join('/') : v}`).join(' · '))}</div>
+        </div>`).join('')}`);
+  }
+
+  function renderCode(e) {
+    addCard(`
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-[12.5px] text-ink-100 font-medium">Coder · ${esc(e.task_id)}</span>
+        <span class="pill ${e.accepted ? 'ok' : 'bad'}">${e.accepted ? 'accepted' : 'not accepted'}</span>
+      </div>
+      ${kv('Model', e.model)}
+      ${kv('Attempts', e.attempts)}
+      ${kv('Isolation', e.isolation)}
+      <div class="text-[11px] text-ink-600 mt-2">Accepted only because our held-out acceptance tests passed — the model never saw them.</div>
+      ${e.code ? `<pre class="code-block">${esc(e.code)}</pre>` : ''}`);
+  }
+
+  // ---------- Chat ----------
   const runBtn = document.getElementById('runBtn');
   const promptInput = document.getElementById('promptInput');
   const elapsedEl = document.getElementById('elapsed');
   const chatThread = document.getElementById('chatThread');
+  const chatScroll = document.getElementById('chatScroll');
   const emptyState = document.getElementById('emptyState');
   const greetingText = document.getElementById('greetingText');
   let running = false;
   let timer = null;
+  let lastEvidence = {};
+  let scenario = null;
 
   function setGreeting() {
     const h = new Date().getHours();
@@ -655,15 +871,16 @@
 
   // ---------- Chat history (persisted) ----------
   const CHATS_KEY = 'workbench_chats';
-  let chats = JSON.parse(localStorage.getItem(CHATS_KEY) || '[]');
+  let chats = [];
+  try { chats = JSON.parse(localStorage.getItem(CHATS_KEY) || '[]'); } catch (e) { chats = []; }
   let currentChatId = null;
   const historyList = document.getElementById('historyList');
 
-  function saveChats() { localStorage.setItem(CHATS_KEY, JSON.stringify(chats)); }
+  function saveChats() { try { localStorage.setItem(CHATS_KEY, JSON.stringify(chats)); } catch (e) { /* storage unavailable */ } }
 
   function renderHistory() {
     historyList.innerHTML = chats.slice().reverse().map(c => `
-      <button data-id="${c.id}" class="history-item block w-full text-left px-2.5 py-2 rounded-md text-[12.5px] truncate transition-colors ${c.id === currentChatId ? 'bg-indigo-400/10 text-indigo-200' : 'text-ink-500 hover:bg-base-900 hover:text-ink-300'}">${c.title}</button>
+      <button data-id="${esc(c.id)}" class="history-item block w-full text-left px-2.5 py-2 rounded-md text-[12.5px] truncate transition-colors ${c.id === currentChatId ? 'bg-indigo-400/10 text-indigo-200' : 'text-ink-500 hover:bg-base-900 hover:text-ink-300'}">${esc(c.title)}</button>
     `).join('') || `<div class="text-[11px] text-ink-700 px-2.5 py-2">No past chats yet</div>`;
     historyList.querySelectorAll('.history-item').forEach(btn => {
       btn.addEventListener('click', () => openChat(btn.dataset.id));
@@ -672,17 +889,16 @@
 
   function openChat(id) {
     const chat = chats.find(c => c.id === id);
-    if (!chat) return;
-    clearInterval(timer);
-    running = false;
+    if (!chat || running) return;
+    stopTimer();
     currentChatId = id;
     chatThread.innerHTML = '';
     chat.messages.forEach(m => {
       if (m.role === 'user') appendUserMessage(m.text, (m.files || []).map(name => ({ name })), false);
-      else appendReply(m.text, false);
+      else appendReply(m.html, false);
     });
     resetEvidence();
-    renderStages(-1, 0);
+    resetActivity();
     updateEmptyState();
     renderHistory();
   }
@@ -695,15 +911,15 @@
     const fileChips = files.map(f => `
       <div class="mt-2 inline-flex items-center gap-1.5 text-[11px] text-indigo-200 border border-indigo-400/25 bg-indigo-400/[0.06] rounded-md px-2 py-1 mr-1.5">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">${fileIconPath(f.name)}</svg>
-        ${f.name}
+        ${esc(f.name)}
       </div>`).join('');
     const shown = text || 'Analyse the attached file.';
     div.innerHTML = `
       <div class="text-ink-500 text-[11px] mb-1">You</div>
-      <div class="bg-base-900 border border-base-800 rounded-lg rounded-tl-sm px-3 py-2 text-ink-100 card-shadow">${shown}</div>
+      <div class="bg-base-900 border border-base-800 rounded-lg rounded-tl-sm px-3 py-2 text-ink-100 card-shadow">${esc(shown)}</div>
       ${fileChips}`;
     chatThread.appendChild(div);
-    chatThread.scrollTop = chatThread.scrollHeight;
+    chatScroll.scrollTop = chatScroll.scrollHeight;
     updateEmptyState();
 
     if (persist) {
@@ -717,78 +933,182 @@
     }
   }
 
-  function appendReply(text, persist = true) {
+  // `html` is built by this page from escaped values.
+  function appendReply(html, persist = true) {
     const div = document.createElement('div');
     div.className = 'msg-in';
     div.innerHTML = `
       <div class="text-ink-500 text-[11px] mb-1">Workbench</div>
-      <div class="bg-base-850 border border-base-800 rounded-lg rounded-tl-sm px-3 py-2 text-ink-300 card-shadow">${text}</div>`;
+      <div class="bg-base-850 border border-base-800 rounded-lg rounded-tl-sm px-3 py-2 text-ink-300 card-shadow">${html}</div>`;
     chatThread.appendChild(div);
-    chatThread.scrollTop = chatThread.scrollHeight;
+    chatScroll.scrollTop = chatScroll.scrollHeight;
+    updateEmptyState();
 
     if (persist && currentChatId) {
-      chats.find(c => c.id === currentChatId).messages.push({ role: 'assistant', text });
+      chats.find(c => c.id === currentChatId).messages.push({ role: 'assistant', html });
       saveChats();
     }
   }
 
+  // ---------- Running a mission ----------
+  function startTimer() {
+    const start = Date.now();
+    elapsedEl.classList.remove('text-ink-600', 'text-signal-ok');
+    elapsedEl.classList.add('text-signal-warn');
+    clearInterval(timer);
+    timer = setInterval(() => { elapsedEl.textContent = ((Date.now() - start) / 1000).toFixed(1) + 's'; }, 100);
+  }
+
+  function stopTimer() {
+    clearInterval(timer);
+    elapsedEl.classList.remove('text-signal-warn');
+    elapsedEl.classList.add('text-signal-ok');
+  }
+
+  function finish(message) {
+    running = false;
+    stopTimer();
+    setButtons();
+    if (message) appendReply(message);
+  }
+
+  function setButtons() {
+    ['demoBtnHeader', 'demoBtnEmpty'].forEach(id => { document.getElementById(id).disabled = running || !served; });
+  }
+
+  async function startJob(request) {
+    running = true;
+    setButtons();
+    resetActivity();
+    resetEvidence();
+    lastEvidence = {};
+    startTimer();
+    try {
+      const j = await request;
+      follow(j.job);
+    } catch (err) {
+      finish(`Could not start: ${esc(err.message)}`);
+    }
+  }
+
+  function follow(jobId) {
+    const source = new EventSource(`/api/jobs/${encodeURIComponent(jobId)}/events`);
+    const state = { beat: null, run: null };
+    source.onmessage = (message) => {
+      let e;
+      try { e = JSON.parse(message.data); } catch (err) { return; }
+      try { handle(e, state); } catch (err) { console.error(err, e); }
+      if (e.type === 'stream_end') { source.close(); finish(); }
+    };
+    source.onerror = () => { source.close(); if (running) finish('The connection to the service was lost.'); };
+  }
+
+  function handle(e, state) {
+    const b = state.beat === null ? 'x' : state.beat;
+    switch (e.type) {
+      case 'queued': upsertRow('queue', { agent: 'Workbench', detail: 'queued — missions run one at a time on this machine', status: 'idle' }); break;
+      case 'started': activity = activity.filter(a => a.key !== 'queue'); renderActivity(); break;
+      case 'notice': appendReply(esc(e.message)); break;
+      case 'error': appendReply(`<span class="text-signal-danger">Error:</span> ${esc(e.message)}`); break;
+
+      case 'demo_start':
+        appendReply(`<div class="text-ink-100 font-medium">${esc(e.title)}</div>
+          <div class="mt-1">Plan, ${e.beats.length} steps:</div>
+          ${e.beats.map((s, i) => `<div class="mt-1"><span class="text-indigo-300">${i + 1}.</span> ${esc(s.title)} <span class="text-ink-600">— ${esc(s.agents.join(', '))}</span></div>`).join('')}
+          <div class="text-[11.5px] text-ink-600 mt-2">${esc(e.plan_note)}</div>`);
+        break;
+      case 'router': renderRouter(e.tasks); break;
+      case 'beat_start': state.beat = e.index; addGroup(`${e.index + 1} · ${e.title}`, e.caption); break;
+      case 'beat_end': break;
+      case 'demo_end': appendReply(`Mission finished in ${esc(e.seconds)} s. Every step above was a real run on this machine; the run folders and hash-chained logs hold the same facts.`); break;
+
+      // inspection
+      case 'run_start': state.run = e.run_id; upsertRow(`${b}-run-${e.run_id}`, { agent: 'Procedural graph', detail: `${e.graph} · ${e.image && e.image.length ? 'uploaded / given file' : e.source + (e.source === 'scan' ? ' (' + e.scan_quality + ')' : '')}${e.inject_fault ? ' · fault injected on purpose' : ''}`, status: 'info' }); break;
+      case 'stage_enter': upsertRow(`${b}-${e.run_id}-${e.node}-${e.attempt}`, { agent: e.agent, detail: `${e.node} · attempt ${e.attempt}…`, status: 'active', tag: '', tagClass: '' }); break;
+      case 'stage': {
+        const stop = e.next === 'needs_review';
+        const sentBack = e.status !== 'ok' && !stop;
+        upsertRow(`${b}-${e.run_id}-${e.node}-${e.attempt}`, {
+          agent: e.agent, detail: `${e.note} · ${e.seconds}s`,
+          status: e.status === 'ok' ? 'ok' : stop ? 'stop' : 'fail',
+          tag: stop ? 'stopped for a person' : sentBack ? `sent back → ${e.next}` : (e.attempt > 1 ? `attempt ${e.attempt}` : (/\(code\)/.test(e.agent) ? 'no model' : '')),
+          tagClass: stop ? 'warn' : sentBack ? 'bad' : (e.attempt > 1 ? 'ok' : 'info'),
+        });
+        break;
+      }
+      case 'evidence': renderEvidence(e, state.run); break;
+      case 'decision': renderDecision(e, state.run); break;
+      case 'route': upsertRow(`${b}-route-${e.task}`, { agent: 'Router', detail: `${e.task} → ${e.chosen || 'no qualified model'} · ${e.decision}`, status: e.chosen ? 'ok' : 'stop', tag: e.chosen || 'none', tagClass: e.chosen ? 'info' : 'warn' }); break;
+      case 'summary': break;
+      case 'run_end': {
+        const stopped = e.end === 'needs_review';
+        appendReply(stopped
+          ? `<span class="text-signal-warn">Stopped for a person.</span> A value could not be read with certainty, so no note was drafted — see <b>Review</b>.`
+          : `<span class="text-signal-ok">Draft ready.</span> ${esc(e.summary_text || '')}
+             ${e.note_url ? `<div class="mt-2"><a class="chat-link" href="${esc(e.note_url)}" download>Download the draft approval note (.docx)</a> <span class="text-ink-600 text-[11.5px]">· summary by ${esc(e.written_by)}</span></div>` : ''}`);
+        break;
+      }
+
+      // library
+      case 'library': {
+        renderLibrary(e);
+        upsertRow(`${b}-library`, { agent: 'Librarian (search)', detail: `${e.hits.length} passages: ${e.hits.map(h => h.citation).join(' | ')}`, status: 'ok', tag: 'cited', tagClass: 'info' });
+        const top = e.hits[0];
+        appendReply(top
+          ? `The procedure behind the escalation: <span class="font-mono text-indigo-200">${esc(top.citation)}</span> — ${esc(top.heading)}. <span class="text-ink-600">Passages are shown in Evidence; the answer is the cited text itself.</span>`
+          : 'The library returned nothing for that question.');
+        break;
+      }
+
+      // coder
+      case 'task': upsertRow(`${b}-task`, { agent: 'Coder', detail: e.brief.split('\n')[0], status: 'info', tag: `up to ${e.max_attempts} attempts`, tagClass: '' }); break;
+      case 'attempt_start': upsertRow(`${b}-attempt-${e.n}`, { agent: 'Coder → Sandbox', detail: `attempt ${e.n}: writing the program and running our tests in the sealed sandbox…`, status: 'active' }); break;
+      case 'attempt': {
+        const last = (e.stderr || e.stdout || '').trim().split('\n').pop();
+        upsertRow(`${b}-attempt-${e.n}`, { agent: 'Coder → Sandbox', detail: `attempt ${e.n}: ${e.passed ? 'all acceptance tests passed' : (last || 'failed')} · ${e.seconds}s · ${e.isolation}`, status: e.passed ? 'ok' : 'fail', tag: e.passed ? 'passed' : 'failed — told why, trying again', tagClass: e.passed ? 'ok' : 'bad' });
+        break;
+      }
+      case 'code_result': renderCode(e); appendReply(`${e.accepted ? '<span class="text-signal-ok">Program accepted.</span>' : '<span class="text-signal-danger">Not accepted.</span>'} ${esc(e.summary)} — the code and its test results are in Evidence.`); break;
+    }
+  }
+
+  // ---------- Buttons ----------
+  function runDemo() {
+    if (running || !served) return;
+    appendUserMessage(scenario ? scenario.request : 'Run the demo mission.', []);
+    startJob(api('/api/demo', { method: 'POST' }));
+  }
+  document.getElementById('demoBtnHeader').addEventListener('click', runDemo);
+  document.getElementById('demoBtnEmpty').addEventListener('click', runDemo);
+
   runBtn.addEventListener('click', () => {
     if (running) return;
-    running = true;
-
     const text = promptInput.value.trim();
-    appendUserMessage(text, stagedFiles);
+    const files = stagedFiles.slice();
+    if (!text && !files.length) return;
+    appendUserMessage(text, files);
     promptInput.value = '';
     stagedFiles = [];
     renderStaged();
-
-    resetEvidence();
-    renderStages(-1, 0);
-    netLog.innerHTML = '';
-    localCount = 0; blockedCount = 0;
-    localCountEl.textContent = '0'; blockedCountEl.textContent = '0';
-
-    let start = Date.now();
-    elapsedEl.classList.remove('text-ink-600', 'text-signal-ok');
-    elapsedEl.classList.add('text-signal-warn');
-    timer = setInterval(() => {
-      elapsedEl.textContent = ((Date.now() - start) / 1000).toFixed(1) + 's';
-    }, 100);
-
-    const script = [
-      () => { renderStages(0, 0); logNet('llama.cpp :8080 — vision model warm start', 'local'); },
-      () => { logNet('PaddleOCR-VL :8090 — page 4 extracted', 'local'); },
-      () => { renderStages(1, 1); logNet('evidence-builder — 12 rows checked', 'local'); },
-      () => { renderStages(2, 2); logNet('rules-engine — deterministic check, no model', 'local'); },
-      () => { logNet('canary — outbound DNS attempt', 'blocked'); },
-      () => { renderStages(3, 3); logNet('library-lookup :9002 — OISD-STD-116 §7.3', 'local'); },
-      () => { renderStages(4, 4); logNet('docgen :9003 — approval_note_204B.docx', 'local'); },
-      () => { renderStages(5, 5); showEvidence(); },
-      () => {
-        renderStages(6, 6);
-        clearInterval(timer);
-        elapsedEl.classList.remove('text-signal-warn');
-        elapsedEl.classList.add('text-signal-ok');
-        appendReply('Draft ready — one reading (CML-014) is below minimum and has been sent for review. Every value in the draft links to its source.');
-        running = false;
-      },
-    ];
-
-    script.forEach((fn, i) => setTimeout(fn, 500 + i * 850));
+    if (!served) { appendReply(notServedMessage); return; }
+    if (!files.length) {
+      appendReply('Free-text missions need the Planner, which is not built yet. Attach an inspection report — a PDF or the page images of one report — to run it through the agents, or press <b>Run demo</b>.');
+      return;
+    }
+    const form = new FormData();
+    files.forEach(f => form.append('files', f));
+    startJob(api('/api/inspections', { method: 'POST', body: form }));
   });
 
   function startNewChat() {
-    clearInterval(timer);
-    running = false;
+    if (running) return;
+    stopTimer();
     currentChatId = null;
     chatThread.innerHTML = '';
     stagedFiles = [];
     renderStaged();
     resetEvidence();
-    renderStages(-1, 0);
-    netLog.innerHTML = '';
-    localCount = 0; blockedCount = 0;
-    localCountEl.textContent = '0'; blockedCountEl.textContent = '0';
+    resetActivity();
     elapsedEl.classList.remove('text-signal-warn', 'text-signal-ok');
     elapsedEl.classList.add('text-ink-600');
     elapsedEl.textContent = 'idle';
@@ -806,6 +1126,26 @@
       runBtn.click();
     }
   });
+
+  // ---------- Start-up ----------
+  const notServedMessage = 'This page is not connected to the workbench service. Start it with <span class="font-mono">python -m workbench.server</span> and open the address it prints.';
+  resetEvidence();
+  setButtons();
+  if (!served) {
+    document.getElementById('healthLine').innerHTML = notServedMessage;
+    document.getElementById('extLabel').textContent = 'service not connected';
+  } else {
+    api('/api/demo').then(s => { scenario = s; }).catch(() => {});
+    api('/api/router').then(r => renderRouter(r.tasks)).catch(() => {});
+    api('/api/health').then(h => {
+      const missing = [!h.ollama && 'Ollama', !h.docker && 'Docker', h.docker && !h.sandbox_image && 'sandbox image', !h.ocr_environment && 'OCR environment'].filter(Boolean);
+      document.getElementById('healthLine').textContent = missing.length
+        ? `Not ready: ${missing.join(', ')}`
+        : `Ready · models on this machine: ${h.models_available.join(', ')}`;
+    }).catch(() => { document.getElementById('healthLine').textContent = 'service not reachable'; });
+    pollNetwork();
+    setInterval(pollNetwork, 4000);
+  }
 </script>
 </body>
 </html>

@@ -1,0 +1,76 @@
+# The reference library: what it holds, how its documents are read, how it is searched.
+#
+# Read by workbench/library.py. Nothing about particular documents lives in the
+# code: a new source is an entry here, and a new way documents refer to each
+# other is a pattern here. The embedding model is not here either -- the Router
+# chooses it (workbench/models.yaml, task `embed`), and the index records which
+# model built it.
+
+index: data/library/index.sqlite
+work_dir: runs/_library              # page images and OCR output while reading
+
+# An explicit list: nothing is indexed by accident. The MRPL tender in
+# data/external is deliberately absent -- it contains real employees' names and
+# phone numbers (docs/DATASETS.md).
+sources:
+  - glob: data/library/pdf/*.pdf     # doc_id is the file name without its extension
+    origin: synthetic procedure written for SIH26117
+  - file: data/external/CSB_chevron_richmond_final_report.pdf
+    doc_id: CSB-CHEVRON-RICHMOND
+    origin: US Chemical Safety Board investigation report, 2015 (public domain)
+
+layout:
+  row_join_px: 8.0                   # pieces whose centres are this close vertically are one line...
+  row_join_share: 0.4                # ...or within this share of the piece's own height
+  body_line_min_chars: 40            # lines this long set the document's usual running-text height
+
+  # Page furniture: a line in the top or bottom margin that repeats on at least
+  # repeat_share of a document's pages, or of the library's documents. A line's
+  # own document id is ignored when comparing, so "SOP-INSP-001 page 1" and
+  # "MEMO-2026-003 page 1" are the same footer.
+  margin: 0.10
+  repeat_share: 0.5
+  repeat_min_count: 3
+
+  # Footnotes: a small bare number (under footnote_mark x the running text's
+  # height), after which nothing on the page reaches footnote_text x that height.
+  footnote_mark: 0.6
+  footnote_text: 0.96
+
+  # Headings: a numbered line in bold, read from the PDF's own fonts. Pages read
+  # by OCR have no fonts; there a heading must be heading_scale x taller than
+  # running text -- imprecise, since a line's box depends on its letters.
+  section_heading: '^(\d{1,2}(?:\.\d+){0,4})\.?\s+([A-Z][^.]{2,110})$'
+  heading_max_chars: 120
+  dot_leader: '\.{6,}'               # contents-page lines are not headings
+  bold_min_weight: 600
+  probe_offset_pt: 1.0               # where a line's first character is looked up in the PDF
+  probe_tolerance_pt: 3.0
+  heading_scale: 1.08
+
+  title_lines: 4                     # the title is the first line this near the top...
+  title_min_chars: 12                # ...this long, that is not the document's id
+
+chunking:
+  max_chars: 1400                    # a longer section is split between lines, never mid-line
+
+search:
+  k: 5
+  candidates: 50                     # taken from each of keyword and vector search before fusion
+  rrf_k: 60
+  identifier_bonus: 2.0              # x 1/rrf_k per exact identifier match: above first place in either list
+
+  # Identifiers are found by shape, not by name: an upper-case code with hyphens
+  # (ABC-DEF-123), or an upper-case name and a number, each optionally followed
+  # by a clause, section, part or division number.
+  identifier_patterns:
+    - '\b[A-Z]{2,}(?:-[A-Z0-9]+)+(?:\s+(?:Cl|Sec|Part|Div)\.?\s*[0-9IVX]+(?:\.\d+)*)*'
+    - '\b[A-Z]{2,}\s+\d+[A-Z]?(?:\s+(?:Cl|Sec|Part|Div)\.?\s*[0-9IVX]+(?:\.\d+)*)+'
+
+  references:
+    max_sections: 3                  # referenced sections added per search, one hop only
+    # How a passage points at a section of another document. {doc} is replaced
+    # by the ids of the documents in the index, so a new document is followed
+    # with no change here.
+    patterns:
+      - '{doc}\s+sections?\s+(?P<sections>\d+(?:\.\d+)*(?:\s*(?:,|and)\s*\d+(?:\.\d+)*)*)'

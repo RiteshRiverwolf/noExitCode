@@ -1,6 +1,6 @@
 """The local service behind the interface: runs missions and streams what the agents do.
 
-    .venv\\Scripts\\python -m workbench.server              # http://127.0.0.1:8770
+    .venv\\Scripts\\python -m workbench.server              # http://127.0.0.1:<port in workbench/service.yaml>
 
 Loopback only, and there is no option to change that: this service has no
 authentication, and stage 0 found the same gap in AnythingLLM's internal API
@@ -21,6 +21,8 @@ GET  /api/sandbox/self-test              code in the sandbox tries to get out; t
 POST /api/inspections                    start an inspection: JSON {doc_id, source, scan_quality,
                                          no_model, model, inject_fault}, or multipart with `files`
 POST /api/code                           start a coding task: JSON {task_id, model}
+GET  /api/demo                           the pitch demo's scenario (workbench/demo.yaml)
+POST /api/demo                           run the pitch demo: every beat a real run, events streamed
 GET  /api/code/tasks                     the coding tasks and their briefs
 GET  /api/code/tasks/{id}/acceptance     the held-out tests -- shown to people, never to the model
 GET  /api/jobs/{job}                     every event of a job so far
@@ -62,13 +64,14 @@ from pathlib import Path
 
 import anyio
 import httpx
+import yaml
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import FileResponse, JSONResponse, StreamingResponse
 from starlette.routing import Route
 
 from mcp_servers.audit import LOG_DIR, verify
-from workbench import coder, coding_tasks, pagesource, router, sandbox
+from workbench import coder, coding_tasks, demo, pagesource, router, sandbox
 from workbench.evidence import CORPUS
 from workbench.run_inspection import JobConfig, run_job
 
@@ -76,12 +79,16 @@ ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "runs"
 UPLOADS = RUNS / "_uploads"
 FRONTEND = ROOT / "frontend" / "index.html"
-PORT = 8770
-MAX_UPLOAD_BYTES = 50 * 1024 * 1024
-UPLOAD_SUFFIXES = {".pdf", ".png", ".jpg", ".jpeg", ".tif", ".tiff"}
-MAX_JOBS_KEPT = 50
 SERVED_ROOTS = (RUNS.resolve(), CORPUS.resolve())
-WATCHED_EXES = {"ollama.exe", "ollama_llama_server.exe", "llama-server.exe"}
+HOST = "127.0.0.1"          # loopback only, by design -- not a setting (see the module docstring)
+
+# Port, upload limits, jobs kept, watched processes: workbench/service.yaml.
+SETTINGS = yaml.safe_load((Path(__file__).resolve().parent / "service.yaml").read_text(encoding="utf-8"))
+PORT = SETTINGS["port"]
+MAX_UPLOAD_BYTES = SETTINGS["max_upload_bytes"]
+UPLOAD_SUFFIXES = set(SETTINGS["upload_suffixes"])
+MAX_JOBS_KEPT = SETTINGS["max_jobs_kept"]
+WATCHED_EXES = {p.lower() for p in SETTINGS["watched_processes"]}
 
 
 # --- replies ---------------------------------------------------------------------
@@ -293,6 +300,15 @@ async def start_code(request: Request) -> JSONResponse:
     return reply({"job": job.id, "events": f"/api/jobs/{job.id}/events"})
 
 
+async def demo_endpoint(request: Request) -> JSONResponse:
+    """GET: the scenario. POST: run it -- every beat a real run, as one job (workbench/demo.py)."""
+    if request.method == "GET":
+        return reply(demo.scenario())
+    job = Job("demo", demo.scenario()["title"])
+    _start(job, lambda job: demo.run(emit=lambda e: job.emit(_with_urls(e))))
+    return reply({"job": job.id, "events": f"/api/jobs/{job.id}/events"})
+
+
 async def job_snapshot(request: Request) -> JSONResponse:
     job = JOBS.get(request.path_params["job"])
     if job is None:
@@ -450,12 +466,12 @@ def network_snapshot() -> dict:
 # --- read-only views --------------------------------------------------------------
 
 def health() -> dict:
+    registry, sha = router.load_registry()
     try:
-        ollama = httpx.get("http://127.0.0.1:11434/api/tags", timeout=3).status_code == 200
+        ollama = httpx.get(f"{registry['servers']['ollama']}/api/tags", timeout=3).status_code == 200
     except Exception:
         ollama = False
     docker = sandbox.docker_available()
-    registry, sha = router.load_registry()
     running = router.running_models(registry)
     # "available": on the machine for Ollama (loaded on first use), answering for llama-server
     return {"ollama": ollama, "models_available": sorted(m for m, up in running.items() if up),
@@ -552,6 +568,7 @@ app = Starlette(routes=[
     Route("/api/code/tasks", code_tasks),
     Route("/api/code/tasks/{task_id}/acceptance", code_acceptance),
     Route("/api/code", start_code, methods=["POST"]),
+    Route("/api/demo", demo_endpoint, methods=["GET", "POST"]),
     Route("/api/jobs/{job}", job_snapshot),
     Route("/api/jobs/{job}/events", job_events),
     Route("/api/files/{path:path}", files),
@@ -564,9 +581,9 @@ def main() -> int:
     ap.add_argument("--port", type=int, default=PORT)
     args = ap.parse_args()
     import uvicorn
-    print(f"workbench service: http://127.0.0.1:{args.port}  (loopback only; no authentication)",
+    print(f"workbench service: http://{HOST}:{args.port}  (loopback only; no authentication)",
           flush=True)
-    uvicorn.run(app, host="127.0.0.1", port=args.port, log_level="warning")
+    uvicorn.run(app, host=HOST, port=args.port, log_level="warning")
     return 0
 
 

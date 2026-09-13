@@ -33,40 +33,22 @@ import time
 from decimal import Decimal
 from pathlib import Path
 
-import httpx
-
+from workbench import agents, router
 from workbench.evidence import (CORPUS, HEADER_FIELDS, ROOT, EvidenceSet, Finding, Reading,
                                 Source, sha256_file)
 
-OLLAMA_CHAT = "http://127.0.0.1:11434/api/chat"
-DEFAULT_READER = "qwen3.5:9b"
-OPTIONS = {"temperature": 0, "num_ctx": 16384}
+# The second reader's instructions and settings: workbench/agents.yaml. The model
+# is the caller's, or the Router's choice for its task.
+AGENT = agents.definition("second_reader")
+OPTIONS = AGENT["options"]
 SEVERITIES = {"Critical", "Major", "Minor", "Observation"}
 NUMERIC_HEADER = {"design_pressure_barg", "design_temp_c", "year_built",
                   "corrosion_rate_mm_yr", "remaining_life_yr"}
 # A printed number, optionally followed by its unit. "12.3?" or "l2.32" do not match.
 EXACT_NUMBER = re.compile(r"^\s*(-?\d+(?:\.\d+)?)\s*(?:mm(?:/yr)?|barg|°\s*C|years?)?\s*$")
 
-TEMPLATE = (
-    '{"report_no": "", "equipment_tag": "", "equipment_name": "", "unit": "", "plant": "", '
-    '"inspection_type": "", "inspection_date": "", "next_due_date": "", "inspector_name": "", '
-    '"inspector_cert": "", "design_pressure_barg": "", "design_temp_c": "", "service_fluid": "", '
-    '"year_built": "", "corrosion_rate_mm_yr": "", "remaining_life_yr": "", '
-    '"findings": [{"finding_id": "", "page": 1, "location": "", "description": "", "severity": "", '
-    '"ref_clause": "", "recommendation": ""}], '
-    '"readings": [{"cml_id": "", "page": 1, "location": "", "nominal_mm": "", "previous_mm": "", '
-    '"current_mm": "", "min_required_mm": "", "status": ""}]}'
-)
-PROMPT = (
-    "These are the page images of one scanned equipment inspection report, in order. "
-    "Transcribe it into JSON. Copy every value exactly as printed: do not round, convert, "
-    "correct or guess. Numbers: copy the digits as printed, without units (e.g. '15.6' for "
-    "'15.6 barg'). Findings come from section 2, with the recommendation for the same Ref "
-    "from section 4. Readings come from the ultrasonic thickness survey table, one per CML "
-    "row. 'page' is the 1-based number of the page image the row is printed on. "
-    "If a value is unreadable, use null. Reply with only a JSON object with exactly these "
-    "keys (no other keys, no markdown):\n" + TEMPLATE
-)
+TEMPLATE = AGENT["template"]
+PROMPT = AGENT["instructions"] + "\n" + TEMPLATE
 
 
 def parse_reply(text: str) -> dict:
@@ -100,18 +82,19 @@ def scan_pages(doc_id: str, quality: str) -> list[Path]:
     return [CORPUS / p for p in index[doc_id]["scans"][quality]]
 
 
-def read_pages(pages: list[Path], model: str = DEFAULT_READER) -> dict:
+def read_pages(pages: list[Path], model: str) -> dict:
     """One call to the vision model with every page; returns the parsed reply and its record."""
     t0 = time.time()
-    r = httpx.post(OLLAMA_CHAT, timeout=900, json={
-        "model": model, "stream": False, "think": False, "options": OPTIONS,
-        "messages": [{"role": "user", "content": PROMPT,
-                      "images": [base64.b64encode(p.read_bytes()).decode() for p in pages]}]})
+    r = agents.chat(model, [{"role": "user", "content": PROMPT,
+                             "images": [base64.b64encode(p.read_bytes()).decode() for p in pages]}],
+                    "second_reader", think=AGENT["think"])
     body = r.json()
     if "error" in body:
         raise RuntimeError(f"{model}: {body['error']}")
     raw = body["message"]["content"]
+    served_by = router.load_registry()[0]["models"][model]["served_by"]
     return {"data": parse_reply(raw), "raw_reply": raw, "model": model, "options": OPTIONS,
+            "think": AGENT["think"], "served_by": served_by,
             "seconds": round(time.time() - t0, 1), "prompt_tokens": body.get("prompt_eval_count"),
             "reply_tokens": body.get("eval_count")}
 
@@ -121,7 +104,8 @@ def build(doc_id: str, pages: list[Path], read: dict) -> EvidenceSet:
     data, model = read["data"], read["model"]
     rel = [p.relative_to(ROOT).as_posix() for p in pages]
     hashes = {f: sha256_file(p) for f, p in zip(rel, pages)}
-    method = f"read from the scan by {model} (Ollama, temperature 0, thinking off)"
+    method = (f"read from the scan by {model} ({read.get('served_by', 'server not recorded')}, "
+              f"temperature {read['options']['temperature']}, thinking {'on' if read.get('think') else 'off'})")
     problems: list[str] = []
 
     def src(table: str, row: str, item: dict) -> Source:
@@ -189,7 +173,13 @@ def build(doc_id: str, pages: list[Path], read: dict) -> EvidenceSet:
                        source_files=hashes, problems=problems)
 
 
-def from_scan(doc_id: str, quality: str = "medium", model: str = DEFAULT_READER) -> tuple[EvidenceSet, dict]:
+def from_scan(doc_id: str, quality: str = "medium", model: str | None = None) -> tuple[EvidenceSet, dict]:
+    """`model` None: the Router chooses for the second_read task, and logs why."""
+    if model is None:
+        decision = router.route(AGENT["router_task"], {"doc_id": doc_id, "scan_quality": quality})
+        if decision.chosen is None:
+            raise RuntimeError(f"no model is qualified to read scans: {decision.reason}")
+        model = decision.chosen
     pages = scan_pages(doc_id, quality)
     read = read_pages(pages, model)
     return build(doc_id, pages, read), read

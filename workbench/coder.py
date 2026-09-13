@@ -37,21 +37,15 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Callable
 
-import httpx
-
-from workbench import sandbox
+from workbench import agents, sandbox
 
 ROOT = Path(__file__).resolve().parent.parent
-OLLAMA_CHAT = "http://127.0.0.1:11434/api/chat"
-DEFAULT_MODEL = "granite4.1:8b"
 CODE_FENCE = re.compile(r"```(?:python)?\s*(.*?)```", re.S)
 
-SYSTEM = (
-    "You write small, correct Python programs for an offline engineering workbench. "
-    "Write ONE file. Use only the Python standard library -- there is no network and "
-    "nothing is installed. Do not read or write files other than those described. "
-    "Reply with a single ```python code block and nothing else."
-)
+# The Coder's instructions, messages and settings: workbench/agents.yaml.
+# The model comes from the caller (the Router, in main() and the service).
+AGENT = agents.definition("coder")
+SYSTEM = AGENT["instructions"]
 
 
 @dataclass
@@ -103,27 +97,25 @@ def extract_code(reply: str) -> str:
 
 
 def ask_model(messages: list[dict], model: str) -> str:
-    r = httpx.post(OLLAMA_CHAT, timeout=600, json={
-        "model": model, "messages": messages, "stream": False,
-        "options": {"temperature": 0.2, "num_ctx": 8192}})
+    r = agents.chat(model, messages, "coder")
     r.raise_for_status()
     return r.json()["message"]["content"].strip()
 
 
 def failure_report(result: sandbox.SandboxResult) -> str:
     """What the model is told after a failed run: the symptoms, never our test code."""
+    msg, tail = AGENT["messages"], AGENT["output_tail_chars"]
     if result.timed_out:
-        return ("Your program did not finish within the time limit. It is probably "
-                "waiting or looping forever.")
+        return msg["timed_out"]
     parts = []
     if result.stdout.strip():
-        parts.append(f"Output:\n{result.stdout.strip()[-2500:]}")
+        parts.append(f"Output:\n{result.stdout.strip()[-tail:]}")
     if result.stderr.strip():
-        parts.append(f"Errors:\n{result.stderr.strip()[-2500:]}")
-    return "\n\n".join(parts) or f"The program exited with code {result.exit_code} and said nothing."
+        parts.append(f"Errors:\n{result.stderr.strip()[-tail:]}")
+    return "\n\n".join(parts) or msg["silent_exit"].replace("{code}", str(result.exit_code))
 
 
-def solve(task: CodingTask, model: str = DEFAULT_MODEL,
+def solve(task: CodingTask, model: str,
           force_subprocess: bool = False,
           emit: Callable[[dict], None] | None = None) -> CodingResult:
     """`emit`, if given, receives attempt_start before each model call and attempt
@@ -155,7 +147,7 @@ def solve(task: CodingTask, model: str = DEFAULT_MODEL,
         code = extract_code(reply)
         if not code:
             messages += [{"role": "assistant", "content": reply},
-                         {"role": "user", "content": "Reply with a single ```python code block."}]
+                         {"role": "user", "content": AGENT["messages"]["no_code_block"]}]
             announce(Attempt(n, "", False, -1, "", "no code block in the reply",
                                         0.0, "not run"))
             continue
@@ -172,8 +164,7 @@ def solve(task: CodingTask, model: str = DEFAULT_MODEL,
             break
         messages += [{"role": "assistant", "content": reply},
                      {"role": "user", "content":
-                      "Your program failed the acceptance tests.\n\n" + failure_report(run) +
-                      "\n\nFix the program and reply with the complete corrected file."}]
+                      AGENT["messages"]["failed_tests"].replace("{report}", failure_report(run))}]
 
     out.seconds = round(time.time() - t0, 1)
     return out

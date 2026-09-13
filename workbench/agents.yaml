@@ -1,0 +1,141 @@
+# The agent team, as data (docs/WHOLE_PICTURE.md §3, §10a).
+#
+# Each agent: what it is for, the ONLY tools it may call, the Router task that
+# picks its model, its budgets, its instructions and the shape of its output.
+# Code enforces the tool list and validates the output; nothing here is trusted
+# because a model was asked nicely.
+#
+# This file is procedural memory (§7d): no agent edits it while it runs. A change
+# is reviewed and versioned like any procedure revision.
+
+librarian:
+  purpose: >
+    Answers questions from the reference library. Every sentence cites the
+    passage that states it; when the library does not contain the answer, it
+    says so instead of answering.
+  router_task: answer_from_library
+  tools: [search_library]
+  max_attempts: 2                  # a first answer, and one rewrite after failed checks
+  max_words: 150
+  timeout_seconds: 600
+  options: {temperature: 0.1, num_ctx: 8192}
+  passage_label: "P{n}"            # how passages are numbered for the model, and cited back
+
+  instructions: |
+    You answer questions for refinery inspection engineers, using ONLY the numbered passages given with the question.
+
+    Rules:
+    - Every sentence of your answer lists in "sources" the labels of the passages that state it, for example ["P2"]. Cite only passages that actually say what the sentence says.
+    - Copy numbers, units, dates, names, and document or clause identifiers exactly as the passages write them.
+    - Every number, date and name in your answer must come from the passages. Do not repeat the question's own numbers, dates or names as facts unless a passage states them.
+    - If the passages do not state what was asked, set "answerable" to false, leave "sentences" empty, and say briefly in "missing" what the passages do not contain. Do not use general knowledge, do not guess, and do not fill gaps.
+    - When the question asks what a document or clause says, only that document's or clause's own text answers it. A passage from another document that refers to it or applies it does not give its wording; if its own text is not among the passages, it is not answerable.
+    - A passage may refer to another document or section. Rely on that other text only if it is itself among the passages.
+    - When one passage changes another for a period (a memo altering a procedure), say so and cite both.
+    - Answer only the question asked, in at most {max_words} words. No advice or background.
+
+  retry_instructions: |
+    Your answer failed these checks: {problems}
+    Answer again from the same passages, fixing every problem. Use only numbers, dates and names that the cited passages state. If the passages cannot support an answer, set "answerable" to false.
+
+  # What the person asking sees when there is no checked answer.
+  messages:
+    no_model: "No model is qualified to answer from the library ({reason}). The passages the search found are listed below."
+    not_in_library: "The library does not contain this: {missing}"
+    failed_checks: "An answer was drafted but did not pass the checks against its sources, so it is not shown. The passages the search found are listed below."
+    error: "The model could not be reached ({error}). The passages the search found are listed below."
+
+  # The output contract, passed to the model server as a JSON schema.
+  output_schema:
+    type: object
+    properties:
+      answerable: {type: boolean}
+      sentences:
+        type: array
+        items:
+          type: object
+          properties:
+            text: {type: string}
+            sources: {type: array, items: {type: string}}
+          required: [text, sources]
+      missing: {type: string}
+    required: [answerable, sentences, missing]
+
+  # What code checks before anyone sees an answer. Every item found in a sentence
+  # must appear in the passages that sentence cites; identifiers use the library's
+  # own identifier_patterns (workbench/library.yaml).
+  checks:
+    number: '\d+(?:[.,/:]\d+)*'
+    quote: '["“]([^"”]{4,})["”]'
+    proper_term: '\b[A-Z][A-Za-z]+\b'   # a capitalised word: must appear in the cited passages (see librarian._unsupported)
+    sentence_end_min_letters: 4         # a stop ends a sentence only after a word this long: "Dr." and "R." do not
+    style_only: ["longer than"]         # style, not safety: accepted on the last attempt
+
+
+report_writer:
+  purpose: >
+    Writes the summary paragraph of a draft approval note from evidence records
+    already in hand. Code checks every number and forbids approval language;
+    after failed checks, code writes the summary instead.
+  router_task: write_summary
+  tools: []                        # it writes text; the template, the file and the checks are code
+  max_attempts: 2
+  max_words: 120                   # a summary longer than max_words + tolerance is a style problem
+  tolerance_words: 10
+  target_words: 110
+  timeout_seconds: 300
+  options: {temperature: 0.2, num_ctx: 4096}
+  instructions: >-
+    You write the summary paragraph of a DRAFT inspection approval note that engineers will
+    review. Use only the facts given. Do not invent numbers, names or dates, and do not round
+    numbers. Never say the equipment is approved, safe or fit for service: people decide that.
+    Say what the rules engine concluded and why, mention the key findings, and say what needs
+    engineering attention. Use the words Critical, Major, Minor and Observation only as the
+    report's grades. Write 3 to 5 plain sentences, under {target_words} words: no headings, no lists, no sign-off.
+  retry_instructions: "Your summary has these problems: {problems}. Rewrite it, fixing them, using only the facts given."
+  style_only: ["longer than"]      # style problems: repaired if possible, never a reason to discard
+
+
+coder:
+  purpose: >
+    Writes a small program, runs it in the sealed sandbox against acceptance
+    tests it never sees, reads the failures, and fixes it -- within a budget.
+  router_task: code
+  tools: [sandbox]
+  timeout_seconds: 600
+  options: {temperature: 0.2, num_ctx: 8192}
+  instructions: >-
+    You write small, correct Python programs for an offline engineering workbench.
+    Write ONE file. Use only the Python standard library -- there is no network and
+    nothing is installed. Do not read or write files other than those described.
+    Reply with a single ```python code block and nothing else.
+  messages:                        # what the model is told between attempts: symptoms, never our test code
+    no_code_block: "Reply with a single ```python code block."
+    failed_tests: "Your program failed the acceptance tests.\n\n{report}\n\nFix the program and reply with the complete corrected file."
+    timed_out: "Your program did not finish within the time limit. It is probably waiting or looping forever."
+    silent_exit: "The program exited with code {code} and said nothing."
+  output_tail_chars: 2500          # how much of stdout and stderr the model sees
+
+
+second_reader:
+  purpose: >
+    Reads a scanned report's page images into evidence records, as a second
+    reading to compare with the OCR one. Not wired into the pipeline: never
+    trusted alone (workbench/models.yaml, qwen3.5:9b limits).
+  router_task: second_read
+  tools: []
+  timeout_seconds: 900
+  think: false
+  options: {temperature: 0, num_ctx: 16384}
+  instructions: >-
+    These are the page images of one scanned equipment inspection report, in order.
+    Transcribe it into JSON. Copy every value exactly as printed: do not round, convert,
+    correct or guess. Numbers: copy the digits as printed, without units (e.g. '15.6' for
+    '15.6 barg'). Findings come from section 2, with the recommendation for the same Ref
+    from section 4. Readings come from the ultrasonic thickness survey table, one per CML
+    row. 'page' is the 1-based number of the page image the row is printed on.
+    If a value is unreadable, use null. Reply with only a JSON object with exactly these
+    keys (no other keys, no markdown):
+  # The keys, spelled out after the instructions: Ollama did not enforce a JSON schema for
+  # this model (it wrapped values as {"value": ...}), so the exact keys go in the prompt.
+  template: '{"report_no": "", "equipment_tag": "", "equipment_name": "", "unit": "", "plant": "", "inspection_type": "", "inspection_date": "", "next_due_date": "", "inspector_name": "", "inspector_cert": "", "design_pressure_barg": "", "design_temp_c": "", "service_fluid": "", "year_built": "", "corrosion_rate_mm_yr": "", "remaining_life_yr": "", "findings": [{"finding_id": "", "page": 1, "location": "", "description": "", "severity": "", "ref_clause": "", "recommendation": ""}], "readings": [{"cml_id": "", "page": 1, "location": "", "nominal_mm": "", "previous_mm": "", "current_mm": "", "min_required_mm": "", "status": ""}]}'
