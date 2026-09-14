@@ -3,7 +3,7 @@
 Updated 2026-09-14, morning. **The Planner is built and plans the demo; a Chat agent
 answers greetings and general questions; typed requests in the chat box run as
 missions; the Agent Activity panel draws agents and tool calls. Rehearsed in a real
-browser.** Nothing from this session is committed yet. Read this, then
+browser.** Everything is committed and pushed (`1d247ab`). Read this, then
 **`results/stage3/NOTES.md` §9** (what was measured) and `docs/DEMO_RUN_SHEET.md`.
 
 ---
@@ -22,7 +22,7 @@ a person rather than guessing. **SIH entry only.**
 |---|---|
 | User | Rudraansh Bhati — directs the project |
 | Team | Ritesh and Sanji (frontend authors); always `git fetch` first |
-| Repo | `github.com/RiteshRiverwolf/noExitCode`, branch `main` — last pushed `733458f`; **this session uncommitted** |
+| Repo | `github.com/RiteshRiverwolf/noExitCode`, branch `main` — this session pushed as `1d247ab` |
 | Local | `C:\SIH 2026` — Windows 11, RTX 4070 12 GB, 32 GB RAM |
 | Plan | `docs/WHOLE_PICTURE.md` |
 | Results | `results/stage3/NOTES.md` (§9 = this session) |
@@ -65,8 +65,11 @@ external connections, audit logs 8/8**. The Coder failed next_due_date 4/4 in th
 
 ## 4. Uncommitted work
 
-All of this session's changes (see `git status`). Not ours, leave alone:
-`results/stage0/tool_calls.jsonl` and four `results/stage0/*.log`.
+None of ours. Not ours, leave alone: `results/stage0/tool_calls.jsonl`, four
+`results/stage0/*.log`, and `docs/WHAT_SETS_US_APART.md` (not written in this session;
+ask the user). Uncommitted on purpose: `results/stage3/planner_granite4.1-8b.json`,
+`planner_granite4.1-8b_partial.json` and `chat_granite4.1-8b_partial.json` are the
+scorers' default output names, duplicating the named result files that were committed.
 
 ---
 
