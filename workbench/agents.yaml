@@ -44,6 +44,149 @@ reviewer:
   tools: []
 
 
+planner:
+  purpose: >
+    Turns a request into a plan: which kinds of work the workbench already does to
+    run, in what order, with what arguments -- or what cannot be done. It delegates
+    only: it calls no tool, and code checks every plan before a step runs. A
+    regulated request always runs the fixed inspection graph (workbench/planner.py).
+  router_task: plan
+  tools: []
+  max_attempts: 2                  # a plan, and one re-plan after failed checks
+  timeout_seconds: 300
+  think: false
+  options: {temperature: 0, num_ctx: 8192}
+
+  instructions: |
+    You plan work for an offline refinery inspection workbench. You do not do the work. First split the request into its parts, then choose the steps that do them.
+
+    Rules:
+    - parts: every thing the request asks for, in the request's own words, each with the step kind that does it, or "none" when no listed step kind can do it.
+    - A part is "none" when it needs a report that the request does not name or that is not in the Documents list, when it needs documents the Library list does not hold, or when it is an action no listed step kind performs.
+    - steps: the steps that do the parts, in the order the request asks. One step can do several parts; never list the same step twice. Fill in the arguments the step kind needs, and leave every other argument as an empty string.
+    - doc_id: a report from the Documents list whose equipment tag the request names. Never choose a report the request does not name.
+    - task_id: a coding task from the list, only when the request asks for what that task computes.
+    - question: one self-contained question in plain words, for the library.
+    - why: one short sentence saying which part of the request the step serves.
+    - Do not add a step that no part asks for.
+    - A request to read or review a report, or to draft an approval note, needs an inspection step for that report.
+    - A greeting, thanks, a question about what the workbench can do, or a general question that needs none of the organisation's reports or documents: a reply step, with the message as its question.
+    - not_possible: when a part gets no step, say briefly what cannot be done and why. Otherwise leave it empty. When no part can be done, return no steps.
+
+  # The user message: the request and the catalogue, nothing from any earlier plan.
+  request_template: |
+    Request: {request}
+
+    Step kinds:
+    {step_kinds}
+
+    Documents (inspection reports; doc_id: equipment tag):
+    {documents}
+
+    Coding tasks (task_id: what it computes):
+    {tasks}
+
+    Library (what the library step searches; document id: title):
+    {library}
+
+  # Earlier requests in the same chat, put before the request only when there are
+  # any -- a first message is planned from exactly the prompt above. Newest last.
+  # 0 = chat memory OFF (decided 2026-09-14): the Planner is qualified for single
+  # messages only. Held-out follow-ups failed the gate (G04, results/stage3/NOTES.md §9).
+  # Set to 3 again only after follow-ups pass a fresh held-out test.
+  history_turns: 0
+  history_template: |
+    Earlier in this conversation, oldest first -- use it to tell what words like "it", "that report" or "the same" refer to. A report named here counts as named by the request. What was planned earlier has already run: plan only what the new request asks.
+    {turns}
+
+  history_turn: "- The person asked: {request}\n  The workbench planned: {plan}"
+  history_nothing_planned: "nothing ({not_possible})"
+
+  retry_instructions: |
+    Your plan failed these checks: {problems}
+    Plan again for the same request, fixing every problem. A part that cannot be done gets no step, and not_possible says why.
+
+  messages:
+    planned: "Planned by the Planner ({model}) and checked in code: {n} step(s)."
+    partly: "Not in the plan, because no step can do it: {not_possible}"
+    not_possible: "Nothing was planned: {not_possible}"
+    failed_checks: "The Planner's plan did not pass its checks, so nothing was run: {problems}"
+    no_model: "No model is qualified to plan ({reason}), so nothing was planned."
+    error: "The planning model could not be reached ({error}), so nothing was planned."
+    help: "What this workbench can do, on this machine:"      # shown with the catalogue when nothing was planned
+
+  # The output contract, passed to the model server as a JSON schema. The only
+  # choices for the kinds, doc_id and task_id are filled in by workbench/planner.py
+  # from the catalogue; code checks every plan whether or not the server enforced
+  # them. `parts` comes first, so the request is split before any step is chosen;
+  # code then checks that parts and steps agree.
+  output_schema:
+    type: object
+    properties:
+      parts:
+        type: array
+        items:
+          type: object
+          properties:
+            text: {type: string}
+            kind: {type: string}
+          required: [text, kind]
+      steps:
+        type: array
+        items:
+          type: object
+          properties:
+            kind: {type: string}
+            doc_id: {type: string}
+            question: {type: string}
+            task_id: {type: string}
+            why: {type: string}
+          required: [kind, doc_id, question, task_id, why]
+      not_possible: {type: string}
+    required: [parts, steps, not_possible]
+
+
+chat:
+  purpose: >
+    Answers greetings, questions about what the workbench can do, and general
+    questions, in a few sentences. It calls no tool and has no access to the
+    organisation's reports or documents; code refuses a reply that gives a verdict,
+    names a report or document, or claims work was done (workbench/chat.py).
+  router_task: reply
+  tools: []
+  max_attempts: 2                  # a reply, and one rewrite after failed checks
+  max_words: 90
+  timeout_seconds: 120
+  think: false
+  options: {temperature: 0.3, num_ctx: 4096}
+
+  instructions: |
+    You are the chat agent of an offline workbench used by refinery inspection engineers. You answer greetings, questions about what the workbench can do, and general questions, in plain text of at most {max_words} words.
+
+    What the workbench can do when asked (other agents do this work, not you):
+    {capabilities}
+
+    Rules:
+    - Answer only the message. Be brief, friendly and plain. No headings or lists unless asked.
+    - You cannot see the organisation's reports, equipment data or documents. Do not name any report, equipment tag or document, and do not say what they contain. If asked about them, say the person can ask the workbench to read the report or search the library.
+    - Never say that equipment is approved, cleared, safe to operate or fit for service. People decide that.
+    - Do not say you have done any work such as reading, drafting, checking or sending. You only reply.
+    - For a general question, answer from general knowledge, briefly, and say so when you are not sure.
+
+  retry_instructions: "Your reply has these problems: {problems}. Write it again, fixing every problem."
+  style_only: ["longer than"]      # style, not safety: accepted on the last attempt
+
+  messages:
+    label: "General answer by {model}, not from your documents. Checked in code for verdicts, document claims and claims of work done."
+    failed_checks: "A reply was written but did not pass its checks, so it is not shown."
+    no_model: "No model is qualified to reply ({reason})."
+    error: "The model could not be reached ({error})."
+
+  checks:
+    # A claim that the chat agent did work. A reply does none: work is a planned step.
+    claims_done: "\\bI(?:'ve| have)\\s+(?:already\\s+)?(?:read|drafted|written|checked|reviewed|run|sent|emailed|approved|inspected|searched)\\b"
+
+
 librarian:
   purpose: >
     Answers questions from the reference library. Every sentence cites the

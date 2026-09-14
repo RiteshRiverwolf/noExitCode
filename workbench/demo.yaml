@@ -1,21 +1,45 @@
 # The pitch demo: one mission, several agents, every beat a real run.
 #
 # This file is the ONE place a scenario is fixed -- the user allowed hard-coding
-# the demo scenario and nothing else. What each beat does is ordinary workbench
-# code (workbench/demo.py calls the same functions the service and the command
-# line use); only the choice of report, question and task is made here.
+# the demo scenario and nothing else. The Planner plans `request`
+# (workbench/planner.py); this file supplies only what a plan cannot know, the
+# beats no plan would contain, and the beats run when no plan could be made.
+# What each beat does is ordinary workbench code (workbench/missions.py).
 
 title: "R-2247 reactor: scanned inspection report to draft approval note"
 request: >-
-  Read the scanned inspection report for reactor R-2247, check it against our
-  procedures, and draft the approval note. Then tell me when the next inspection is due.
-plan_note: >-
-  The Planner is not built yet. This plan is the demo scenario, written in
-  workbench/demo.yaml -- not a plan the system made.
+  Read the scanned inspection report for reactor R-2247 and draft the approval note.
+  Find the procedure section on which findings or readings trigger escalation of an
+  inspection report. Then tell me when the next inspection is due.
+
+# Shown with the plan. {plan}: what the Planner said. {reason}: why it did not plan.
+plan_notes:
+  planned: >-
+    {plan} Steps marked "from the demo scenario" are staged in workbench/demo.yaml, not planned.
+  scenario: >-
+    {reason} The steps below are the demo scenario, written in workbench/demo.yaml --
+    not a plan the system made.
 
 # Shown in "Why this model": the Router's choice and reasons for each task this mission touches.
-router_tasks: [write_summary, embed, answer_from_library, code, second_read]
+router_tasks: [plan, write_summary, embed, answer_from_library, code, second_read]
 
+# Settings for the Planner's steps, by kind of step: which scan of the report, and
+# the wrong value injected on purpose. A caption is shown after the Planner's reason.
+step_settings:
+  inspection:
+    source: scan
+    scan_quality: medium
+    by_doc_id:
+      insp_1002:
+        inject_fault: render
+        caption: >-
+          A wrong number is injected into the note on purpose, so the QA Checker can
+          catch it and send the note back.
+  library: {k: 3}
+
+# The scenario's own plan, run when the Planner does not plan (no qualified model,
+# failed checks). A beat marked `staged` also runs in a planned demo -- work no plan
+# would contain -- after the last planned step of the kind named in `after`.
 beats:
   - id: inspect
     kind: inspection
@@ -42,6 +66,8 @@ beats:
 
   - id: damaged
     kind: inspection
+    staged: true
+    after: library
     title: The same report with a damaged digit
     caption: >-
       The last digit of CML-03 is blurred. The column prints two decimals and this

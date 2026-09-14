@@ -1,0 +1,360 @@
+{
+  "summary": {
+    "model": "granite4.1:8b",
+    "runs": 1,
+    "clean_start": {
+      "model_unloaded_before_each_request": 6,
+      "requests": 6,
+      "first_attempt_messages": {
+        "2": 6
+      }
+    },
+    "all": {
+      "requests": 6,
+      "correct": 5,
+      "missing step": 0,
+      "extra step": 0,
+      "wrong not-possible note": 0,
+      "refused by checks": 0,
+      "WRONG REPORT": 1,
+      "WRONG TASK": 0,
+      "CLAIMED POSSIBLE": 0,
+      "error": 0,
+      "re_plans": 0,
+      "correct_rate": 0.833,
+      "wrong_accepted": 1,
+      "errors": 0,
+      "median_seconds": 5.1
+    },
+    "by_set": {
+      "dev-followup": {
+        "requests": 6,
+        "correct": 5,
+        "missing step": 0,
+        "extra step": 0,
+        "wrong not-possible note": 0,
+        "refused by checks": 0,
+        "WRONG REPORT": 1,
+        "WRONG TASK": 0,
+        "CLAIMED POSSIBLE": 0,
+        "error": 0,
+        "re_plans": 0,
+        "correct_rate": 0.833,
+        "wrong_accepted": 1,
+        "errors": 0,
+        "median_seconds": 5.1
+      }
+    }
+  },
+  "gate_passed": false,
+  "gate_problem": "wrong_accepted = 1 (needs 0)",
+  "requests": [
+    {
+      "run": 1,
+      "id": "F01",
+      "set": "dev-followup",
+      "request": "Now do the same for V-1668.",
+      "earlier_turns": 1,
+      "kind": "correct",
+      "outcome": "planned",
+      "planned": [
+        [
+          "inspection",
+          "insp_1001"
+        ]
+      ],
+      "expected": [
+        [
+          "inspection",
+          "insp_1001"
+        ]
+      ],
+      "not_possible": "",
+      "regulated_by": null,
+      "questions": [],
+      "attempts": 1,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "parts": [
+              {
+                "text": "Draft the approval note for exchanger V-1668.",
+                "kind": "inspection"
+              }
+            ],
+            "steps": [
+              {
+                "kind": "inspection",
+                "doc_id": "insp_1001",
+                "question": "",
+                "task_id": "",
+                "why": "Draft the approval note for exchanger V-1668 by reading its inspection report."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": []
+        }
+      ],
+      "seconds": 5.22,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "F02",
+      "set": "dev-followup",
+      "request": "And what does it say about coatings?",
+      "earlier_turns": 1,
+      "kind": "correct",
+      "outcome": "planned",
+      "planned": [
+        [
+          "library",
+          ""
+        ]
+      ],
+      "expected": [
+        [
+          "library"
+        ]
+      ],
+      "not_possible": "",
+      "regulated_by": null,
+      "questions": [
+        "Which clause of our procedures covers external corrosion under insulation? What does it say about coatings?"
+      ],
+      "attempts": 1,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "parts": [
+              {
+                "text": "Which clause of our procedures covers external corrosion under insulation?",
+                "kind": "library"
+              },
+              {
+                "text": "What does it say about coatings?",
+                "kind": "library"
+              }
+            ],
+            "steps": [
+              {
+                "kind": "library",
+                "doc_id": "",
+                "question": "Which clause of our procedures covers external corrosion under insulation? What does it say about coatings?",
+                "task_id": "",
+                "why": "Both parts ask for information from the library; the relevant document is SOP-INSP-004, which discusses external corrosion and coatings."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": []
+        }
+      ],
+      "seconds": 5.86,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "F03",
+      "set": "dev-followup",
+      "request": "When is its next inspection due?",
+      "earlier_turns": 1,
+      "kind": "WRONG REPORT",
+      "outcome": "planned",
+      "planned": [
+        [
+          "inspection",
+          "insp_1002"
+        ]
+      ],
+      "expected": [
+        [
+          "code",
+          "next_due_date"
+        ]
+      ],
+      "not_possible": "",
+      "regulated_by": null,
+      "questions": [],
+      "attempts": 1,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "parts": [
+              {
+                "text": "When is its next inspection due?",
+                "kind": "inspection"
+              }
+            ],
+            "steps": [
+              {
+                "kind": "inspection",
+                "doc_id": "insp_1002",
+                "question": "",
+                "task_id": "next_due_date",
+                "why": "Determine the next inspection date for report R-2247 using the remaining life calculation."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": []
+        }
+      ],
+      "seconds": 5.31,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "F04",
+      "set": "dev-followup",
+      "request": "Order new plates for it.",
+      "earlier_turns": 1,
+      "kind": "correct",
+      "outcome": "not possible",
+      "planned": [],
+      "expected": [],
+      "not_possible": "The request asks to order new plates, which is an action not covered by any listed step kind (inspection, library, code, or reply). The documents list only contains inspection reports and does not include procurement actions. Therefore, no step can fulfill this part of the request.",
+      "regulated_by": null,
+      "questions": [],
+      "attempts": 1,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "parts": [
+              {
+                "text": "Order new plates for it.",
+                "kind": "none"
+              }
+            ],
+            "steps": [],
+            "not_possible": "The request asks to order new plates, which is an action not covered by any listed step kind (inspection, library, code, or reply). The documents list only contains inspection reports and does not include procurement actions. Therefore, no step can fulfill this part of the request."
+          },
+          "problems": []
+        }
+      ],
+      "seconds": 4.64,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "F05",
+      "set": "dev-followup",
+      "request": "Who may sign approval notes for Minor findings?",
+      "earlier_turns": 1,
+      "kind": "correct",
+      "outcome": "planned",
+      "planned": [
+        [
+          "library",
+          ""
+        ]
+      ],
+      "expected": [
+        [
+          "library"
+        ]
+      ],
+      "not_possible": "",
+      "regulated_by": null,
+      "questions": [
+        "Who may sign approval notes for Minor findings?"
+      ],
+      "attempts": 1,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "parts": [
+              {
+                "text": "Who may sign approval notes for Minor findings?",
+                "kind": "library"
+              }
+            ],
+            "steps": [
+              {
+                "kind": "library",
+                "doc_id": "",
+                "question": "Who may sign approval notes for Minor findings?",
+                "task_id": "",
+                "why": "The request asks who is authorized to sign approval notes for minor findings, which requires information from the reference library."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": []
+        }
+      ],
+      "seconds": 4.78,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "F06",
+      "set": "dev-followup",
+      "request": "Hello, what can you do?",
+      "earlier_turns": 0,
+      "kind": "correct",
+      "outcome": "planned",
+      "planned": [
+        [
+          "reply",
+          ""
+        ]
+      ],
+      "expected": [
+        [
+          "reply"
+        ]
+      ],
+      "not_possible": "",
+      "regulated_by": null,
+      "questions": [
+        "Hello, what can you do?"
+      ],
+      "attempts": 1,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "parts": [
+              {
+                "text": "Hello, what can you do?",
+                "kind": "reply"
+              }
+            ],
+            "steps": [
+              {
+                "kind": "reply",
+                "doc_id": "",
+                "question": "Hello, what can you do?",
+                "task_id": "",
+                "why": "The request is a greeting asking about the capabilities of the workbench."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": []
+        }
+      ],
+      "seconds": 4.98,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    }
+  ]
+}

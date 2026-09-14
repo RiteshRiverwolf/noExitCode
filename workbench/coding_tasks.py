@@ -320,6 +320,7 @@ TASKS = {
         entry="solution.py",
         acceptance=CML_ACCEPTANCE,
         max_attempts=3,
+        purpose="which thickness readings, across many reports, are below their minimum, worst first",
     ),
     "remaining_life": CodingTask(
         task_id="remaining_life",
@@ -327,6 +328,7 @@ TASKS = {
         entry="solution.py",
         acceptance=RATE_ACCEPTANCE,
         max_attempts=3,
+        purpose="the corrosion rate and remaining life from two thickness readings and a minimum",
     ),
     "next_due_date": CodingTask(
         task_id="next_due_date",
@@ -334,5 +336,6 @@ TASKS = {
         entry="solution.py",
         acceptance=DUE_ACCEPTANCE,
         max_attempts=4,
+        purpose="when the next inspection is due, from the last inspection date and remaining life (half-life rule)",
     ),
 }

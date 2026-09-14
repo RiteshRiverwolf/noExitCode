@@ -7,6 +7,15 @@ port: 8770
 max_upload_bytes: 52428800            # 50 MB
 upload_suffixes: [.pdf, .png, .jpg, .jpeg, .tif, .tiff]
 max_jobs_kept: 50
+max_request_chars: 2000               # a plain-words request to POST /api/missions
+max_history_entries: 10               # earlier turns of the chat sent with it (the Planner uses fewer: agents.yaml)
+max_history_entry_chars: 4000
+
+# Settings for the steps of a planned mission (POST /api/missions), by kind of
+# step: what a plan cannot know. `by_<arg>: {value: {...}}` sets them for one
+# argument value, e.g. by_doc_id for one report.
+mission_step_settings:
+  inspection: {source: scan, scan_quality: medium, pause_for_review: true}
 
 # Processes whose connections the network panel shows, besides the service
 # itself: the model servers named in models.yaml.

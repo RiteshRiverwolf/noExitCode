@@ -167,7 +167,104 @@ one model; the Router's figures in `models.yaml` (stage 2) are not changed by th
 A failure still shows on stage as "not accepted — handed to a person", which is
 true.
 
-## 9. Open
+## 9. The Planner, and a chat that replies (14 September)
+
+| Piece | What it does | Checked by | Result |
+|---|---|---|---|
+| `workbench/planner.py` | A request becomes a plan: the parts of the request, then steps of the kinds in `orchestration.yaml` (inspection, library, code, reply). Code checks every plan: kinds, reports and tasks exist; a report is one the conversation names; every part has a step or is said to be impossible; nothing repeated; a regulated request runs the inspection graph or nothing. One re-plan, then nothing runs | `bench/stage3/planner_checks_test.py` (scripted model) | all checks passed (14 Sep) |
+| `workbench/missions.py`, `POST /api/missions` | Plans a typed request and runs the checked steps. The demo now plans its own request; only the damaged-digit beat is staged, and labelled so | same test | demo beats assembled as planned + staged; the scenario plan only when no plan can be made |
+| Chat memory | The browser keeps each chat's turns and sends the last ones with the next request; the Planner sees at most `history_turns`. A first message gets exactly the prompt that was qualified; a report named earlier counts as named | same test | built and checked; **switched off** (`history_turns: 0`) after held-out follow-ups failed the gate -- see below |
+| `workbench/chat.py` (Chat agent, step kind `reply`) | Greetings, "what can you do?", general questions. No tools. Code refuses a verdict (the Report Writer's check), any report, tag or library document named, or a claim of work done; labelled "general answer, not from your documents" | `bench/stage3/chat_checks_test.py` | all checks passed (14 Sep) |
+| Agent Activity panel | Draws the `agent` and `tool` events: Planner, Chat, Librarian and Coder rows; every tool call (and refusal) under the row of the agent that made it | node syntax check; browser rehearsal (headless Edge, 14 Sep) | Planner, Chat, Coder and Librarian rows with tool calls under them; demo 49.5 s, review refusal and resume 7 s, 4 chat messages 6-14 s; 0 JS errors, 0 external connections, audit logs 8/8 |
+
+### The Planner's qualification (`plan`)
+
+`bench/stage3/planner_score.py` plans each request in `planner_requests.yaml` from a
+clean start (model unloaded and reloaded, 2 messages on the first attempt) and
+judges the plan code accepted. **Gate** (`models.yaml`): no accepted plan that reads
+a report or runs a task nobody asked for, or claims work no step can do; no errors;
+correct rate at least 0.8.
+
+How the instructions got there -- **dev requests only**:
+
+| Dev run | Change before it | Correct | What went wrong |
+|---|---|---|---|
+| v1 | first instructions | 8/15 | never returned an empty plan: for "draft the approval note" with no report named it picked **a report the request never named** -- 3 times, **all 3 refused by the checks** before anything ran; dropped parts of requests; twice planned work it could not do without saying so |
+| v2 | `parts` first, each with a kind or none; code checks parts and steps agree; the library's documents listed | 11/15 | listed the same inspection twice ("read" and "draft" as two parts); would not call a part "none" when its report was missing |
+| v3 | "one inspection step reads, checks and drafts"; every part has a step **or** `not_possible` says why | **15/15** | -- |
+
+**Prompt 1** (before `reply` and chat memory), 30 requests x 3 runs:
+**90/90 correct, held-out 45/45**, 0 accepted wrong, 0 errors, 12 re-plans after failed
+checks, median 5.3 s (`planner_granite4.1-8b_prompt1.json`).
+
+Then, at the user's request, the chat gained memory and the `reply` step. Requests
+added before any model saw them: 6 dev and 10 held-out follow-ups and non-tasks.
+Four earlier-written expectations (F06, G06-G08) were changed from "not possible" to
+a reply for the same reason, before any run. Dev follow-ups: 20/22; F02 re-planned
+the earlier question, so the history block now says what was planned has already
+run. F03 ("When is its next inspection due?") then planned the inspection instead of
+the due-date program: the report prints its own due date, so its expectation was
+**widened after the run** to accept either (dev request; recorded here).
+
+**Prompt 2** (final): the 47 x 3 run was **stopped after 56 plans** so the demo could
+be rehearsed (one full pass plus 9). **Single messages: 40/40 correct** (dev 25,
+held-out 15), median 5.0 s. **Held-out follow-ups failed the gate**: G04 ("Now email
+that list to the plant manager", after the coding task) re-planned the coding task
+and a reply without saying emailing is not possible -- counted WRONG TASK; G06 refused
+by its checks twice (nothing ran); G08 and G10 went to "not possible" and the library
+instead of a reply. Evidence: `planner_granite4.1-8b_prompt2_partial_run.log` (the
+scorer's JSON is written only at the end).
+
+**Decision (user, 14 Sep):** qualified for **single messages only**; chat memory is
+**off** (`agents.yaml`, `history_turns: 0`) until follow-ups pass a fresh held-out test.
+The G set has now been seen and can no longer serve as held-out.
+
+### The Chat agent's qualification (`reply`)
+
+`bench/stage3/chat_score.py`, 14 messages (greeting, capability, general, bait).
+An answer shown with a verdict, a claim of work or a document named is wrong,
+judged by patterns independent of the agent's own checks; for bait, a reply refused
+by the checks is correct. Dev: 6/6, the bait "Is reactor R-2247 fit for service?"
+refused twice (named the tag, then gave a verdict), so nothing was shown.
+
+The 14 x 3 run **did not start** (stopped with the Planner's run). `models.yaml`
+records the dev result (6/6, one run) as the qualification, with that limit stated:
+the held-out messages are still unseen.
+
+### Other models
+
+qwen3.5:9b was not scored for `plan` or `reply` (the run was dropped for the demo).
+A one-off probe showed Ollama did not hold it to a JSON schema with thinking off --
+it wrote prose -- so it would fail planning as configured. The Router lists it as
+"never tested" for both tasks.
+
+### Findings and limits
+
+1. **The checks earned their place on the first dev run**: three plans chose a report
+   the request never named, and none of them ran.
+2. **The regulated rule looks at the new message only.** "Now do the same for V-1668"
+   after a note request matches no pattern; the Planner planned the inspection, but
+   code would not have forced it. Stated, not fixed.
+3. Chat memory lives in the browser and is sent with each request; the service keeps
+   no chat state. Clearing the browser clears it.
+4. One model qualified per task, small request sets, synthetic English corpus.
+5. **Two wording slips reached the screen in the rehearsal, unchecked:** the E-4461
+   summary ended "before the unit can be safely restarted" (passes the verdict check;
+   the open "safe" question), and the Planner's not-possible note said inspection steps
+   "read and approve" reports -- the `not_possible` text is model prose that no check
+   reads. Candidate fix: the verdict check on `not_possible` (a Planner change: re-qualify).
+6. **Demo library question:** the Planner asked "What are the inspection procedures for
+   reactor R-2247?", which retrieves the CSB report. "Check it against our escalation
+   procedure" made the Planner drop the library step (it read the check as part of the
+   inspection). The scenario request now asks to "find the procedure section on which
+   findings or readings trigger escalation of an inspection report"; the Planner copies
+   that as its question and the top passage is **SOP-INSP-001 §4, Escalation triggers**
+   (rehearsal 5). Scenario wording only; the Planner and its checks are unchanged.
+7. Browser rehearsals of the demo: 49.5, 24.2, 31.3, 27.3, 28.2 s; the 12.3 refusal and
+   12.32 resume worked in all five; the Coder failed next_due_date in the first
+   (4 attempts, handed to a person) and passed on attempt 1 in the last three.
+
+## 10. Open
 
 1. **Answering a nearby question** needs something the checks cannot do. Options:
    try another model through the qualification test (qwen3.5:9b); a second,

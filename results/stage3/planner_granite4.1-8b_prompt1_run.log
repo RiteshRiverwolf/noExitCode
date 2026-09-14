@@ -1,0 +1,157 @@
+run 1 D01  correct                     7.2 s  1 att.  [['inspection', 'insp_1002'], ['library', ''], ['code', 'next_due_date']]  
+run 1 D02  correct                     4.8 s  1 att.  [['inspection', 'insp_1000']]  
+run 1 D03  correct                     4.7 s  1 att.  [['library', '']]  
+run 1 D04  correct                     5.0 s  1 att.  [['code', 'cml_report']]  
+run 1 D05  correct                     5.2 s  1 att.  [['code', 'remaining_life']]  
+run 1 D06  correct                     4.8 s  1 att.  []  NOT POSSIBLE: The request to order replacement plates is not possible because none of the provided step kinds (inspection, library, or code) can perform an orderi
+run 1 D07  correct                     7.5 s  2 att.  []  NOT POSSIBLE: The request specifies drafting an approval note but does not provide a specific inspection report (doc_id) from which to generate the note. Since no
+run 1 D08  correct                     6.8 s  2 att.  []  NOT POSSIBLE: No inspection report with equipment tag R-9999 exists in the provided Documents list, so it is impossible to draft an approval note for reactor R-99
+run 1 D09  correct                     5.0 s  1 att.  [['library', '']]  
+run 1 D10  correct                     5.0 s  1 att.  [['inspection', 'insp_1003']]  
+run 1 D11  correct                     6.0 s  1 att.  [['library', ''], ['inspection', 'insp_1007']]  
+run 1 D12  correct                     4.6 s  1 att.  []  NOT POSSIBLE: The request asks to summarise vendor replies from last month, but no inspection report (doc_id) or library document (question) in the provided lists
+run 1 D13  correct                     5.6 s  1 att.  [['inspection', 'insp_1002'], ['inspection', 'insp_1001']]  
+run 1 D14  correct                     5.2 s  1 att.  [['library', '']]  
+run 1 D15  correct                     5.7 s  1 att.  [['inspection', 'insp_1001']]  NOT POSSIBLE: Posting on a Teams channel is not supported by any listed step kind.
+run 1 H01  correct                     5.8 s  1 att.  [['inspection', 'insp_1010']]  
+run 1 H02  correct                     5.0 s  1 att.  [['library', '']]  
+run 1 H03  correct                     4.8 s  1 att.  [['code', 'remaining_life']]  
+run 1 H04  correct                     4.9 s  1 att.  [['code', 'cml_report']]  
+run 1 H05  correct                     4.8 s  1 att.  [['code', 'next_due_date']]  
+run 1 H06  correct                     7.1 s  2 att.  []  NOT POSSIBLE: No inspection report with equipment tag V-9001 exists in the provided Documents list, so preparing an approval note for this specific vessel cannot 
+run 1 H07  correct                     4.2 s  1 att.  []  NOT POSSIBLE: The request to book a crane is not addressed by any inspection report, coding task, or library document provided. No step kind can fulfill this acti
+run 1 H08  correct                     6.8 s  2 att.  []  NOT POSSIBLE: The request to draft an approval note requires specifying a doc_id from the Documents list, which was omitted in the initial plan. Since no equipmen
+run 1 H09  correct                     5.9 s  1 att.  [['inspection', 'insp_1011'], ['library', '']]  
+run 1 H10  correct                     6.4 s  1 att.  [['inspection', 'insp_1003'], ['inspection', 'insp_1004'], ['code', 'next_due_date']]  
+run 1 H11  correct                     5.0 s  1 att.  [['library', '']]  
+run 1 H12  correct                     4.3 s  1 att.  []  NOT POSSIBLE: The request to delete inspection reports is not supported by any listed step kind. The available steps are for reading inspection reports, searching
+run 1 H13  correct                     5.8 s  1 att.  [['inspection', 'insp_1008'], ['library', '']]  
+run 1 H14  correct                     4.8 s  1 att.  [['library', '']]  
+run 1 H15  correct                     5.0 s  1 att.  [['inspection', 'insp_1009']]  NOT POSSIBLE: Emailing the approval note is not supported by any listed step kind.
+run 2 D01  correct                     7.3 s  1 att.  [['inspection', 'insp_1002'], ['library', ''], ['code', 'next_due_date']]  
+run 2 D02  correct                     4.8 s  1 att.  [['inspection', 'insp_1000']]  
+run 2 D03  correct                     4.9 s  1 att.  [['library', '']]  
+run 2 D04  correct                     5.3 s  1 att.  [['code', 'cml_report']]  
+run 2 D05  correct                     5.3 s  1 att.  [['code', 'remaining_life']]  
+run 2 D06  correct                     4.9 s  1 att.  []  NOT POSSIBLE: The request to order replacement plates is not possible because none of the provided step kinds (inspection, library, or code) can perform an orderi
+run 2 D07  correct                     7.9 s  2 att.  []  NOT POSSIBLE: The request specifies drafting an approval note but does not provide a specific inspection report (doc_id) from which to generate the note. Since no
+run 2 D08  correct                     7.0 s  2 att.  []  NOT POSSIBLE: No inspection report with equipment tag R-9999 exists in the provided Documents list, so it is impossible to draft an approval note for reactor R-99
+run 2 D09  correct                     5.0 s  1 att.  [['library', '']]  
+run 2 D10  correct                     5.0 s  1 att.  [['inspection', 'insp_1003']]  
+run 2 D11  correct                     6.0 s  1 att.  [['library', ''], ['inspection', 'insp_1007']]  
+run 2 D12  correct                     4.5 s  1 att.  []  NOT POSSIBLE: The request asks to summarise vendor replies from last month, but no inspection report (doc_id) or library document (question) in the provided lists
+run 2 D13  correct                     5.6 s  1 att.  [['inspection', 'insp_1002'], ['inspection', 'insp_1001']]  
+run 2 D14  correct                     4.9 s  1 att.  [['library', '']]  
+run 2 D15  correct                     5.4 s  1 att.  [['inspection', 'insp_1001']]  NOT POSSIBLE: Posting on a Teams channel is not supported by any listed step kind.
+run 2 H01  correct                     5.3 s  1 att.  [['inspection', 'insp_1010']]  
+run 2 H02  correct                     4.9 s  1 att.  [['library', '']]  
+run 2 H03  correct                     4.7 s  1 att.  [['code', 'remaining_life']]  
+run 2 H04  correct                     5.1 s  1 att.  [['code', 'cml_report']]  
+run 2 H05  correct                     4.7 s  1 att.  [['code', 'next_due_date']]  
+run 2 H06  correct                     6.6 s  2 att.  []  NOT POSSIBLE: No inspection report with equipment tag V-9001 exists in the provided Documents list, so preparing an approval note for this specific vessel cannot 
+run 2 H07  correct                     4.3 s  1 att.  []  NOT POSSIBLE: The request to book a crane is not addressed by any inspection report, coding task, or library document provided. No step kind can fulfill this acti
+run 2 H08  correct                     6.8 s  2 att.  []  NOT POSSIBLE: The request to draft an approval note requires specifying a doc_id from the Documents list, which was omitted in the initial plan. Since no equipmen
+run 2 H09  correct                     5.8 s  1 att.  [['inspection', 'insp_1011'], ['library', '']]  
+run 2 H10  correct                     6.4 s  1 att.  [['inspection', 'insp_1003'], ['inspection', 'insp_1004'], ['code', 'next_due_date']]  
+run 2 H11  correct                     5.2 s  1 att.  [['library', '']]  
+run 2 H12  correct                     4.4 s  1 att.  []  NOT POSSIBLE: The request to delete inspection reports is not supported by any listed step kind. The available steps are for reading inspection reports, searching
+run 2 H13  correct                     6.3 s  1 att.  [['inspection', 'insp_1008'], ['library', '']]  
+run 2 H14  correct                     5.2 s  1 att.  [['library', '']]  
+run 2 H15  correct                     5.5 s  1 att.  [['inspection', 'insp_1009']]  NOT POSSIBLE: Emailing the approval note is not supported by any listed step kind.
+run 3 D01  correct                     7.9 s  1 att.  [['inspection', 'insp_1002'], ['library', ''], ['code', 'next_due_date']]  
+run 3 D02  correct                     5.3 s  1 att.  [['inspection', 'insp_1000']]  
+run 3 D03  correct                     5.2 s  1 att.  [['library', '']]  
+run 3 D04  correct                     5.6 s  1 att.  [['code', 'cml_report']]  
+run 3 D05  correct                     5.7 s  1 att.  [['code', 'remaining_life']]  
+run 3 D06  correct                     5.2 s  1 att.  []  NOT POSSIBLE: The request to order replacement plates is not possible because none of the provided step kinds (inspection, library, or code) can perform an orderi
+run 3 D07  correct                     8.2 s  2 att.  []  NOT POSSIBLE: The request specifies drafting an approval note but does not provide a specific inspection report (doc_id) from which to generate the note. Since no
+run 3 D08  correct                     7.6 s  2 att.  []  NOT POSSIBLE: No inspection report with equipment tag R-9999 exists in the provided Documents list, so it is impossible to draft an approval note for reactor R-99
+run 3 D09  correct                     5.4 s  1 att.  [['library', '']]  
+run 3 D10  correct                     5.0 s  1 att.  [['inspection', 'insp_1003']]  
+run 3 D11  correct                     6.0 s  1 att.  [['library', ''], ['inspection', 'insp_1007']]  
+run 3 D12  correct                     4.5 s  1 att.  []  NOT POSSIBLE: The request asks to summarise vendor replies from last month, but no inspection report (doc_id) or library document (question) in the provided lists
+run 3 D13  correct                     6.2 s  1 att.  [['inspection', 'insp_1002'], ['inspection', 'insp_1001']]  
+run 3 D14  correct                     5.3 s  1 att.  [['library', '']]  
+run 3 D15  correct                     6.0 s  1 att.  [['inspection', 'insp_1001']]  NOT POSSIBLE: Posting on a Teams channel is not supported by any listed step kind.
+run 3 H01  correct                     5.4 s  1 att.  [['inspection', 'insp_1010']]  
+run 3 H02  correct                     5.2 s  1 att.  [['library', '']]  
+run 3 H03  correct                     5.1 s  1 att.  [['code', 'remaining_life']]  
+run 3 H04  correct                     4.9 s  1 att.  [['code', 'cml_report']]  
+run 3 H05  correct                     4.7 s  1 att.  [['code', 'next_due_date']]  
+run 3 H06  correct                     6.6 s  2 att.  []  NOT POSSIBLE: No inspection report with equipment tag V-9001 exists in the provided Documents list, so preparing an approval note for this specific vessel cannot 
+run 3 H07  correct                     4.1 s  1 att.  []  NOT POSSIBLE: The request to book a crane is not addressed by any inspection report, coding task, or library document provided. No step kind can fulfill this acti
+run 3 H08  correct                     6.3 s  2 att.  []  NOT POSSIBLE: The request to draft an approval note requires specifying a doc_id from the Documents list, which was omitted in the initial plan. Since no equipmen
+run 3 H09  correct                     5.8 s  1 att.  [['inspection', 'insp_1011'], ['library', '']]  
+run 3 H10  correct                     6.3 s  1 att.  [['inspection', 'insp_1003'], ['inspection', 'insp_1004'], ['code', 'next_due_date']]  
+run 3 H11  correct                     4.8 s  1 att.  [['library', '']]  
+run 3 H12  correct                     4.8 s  1 att.  []  NOT POSSIBLE: The request to delete inspection reports is not supported by any listed step kind. The available steps are for reading inspection reports, searching
+run 3 H13  correct                     5.9 s  1 att.  [['inspection', 'insp_1008'], ['library', '']]  
+run 3 H14  correct                     4.8 s  1 att.  [['library', '']]  
+run 3 H15  correct                     5.3 s  1 att.  [['inspection', 'insp_1009']]  NOT POSSIBLE: Emailing the approval note is not supported by any listed step kind.
+
+{
+  "model": "granite4.1:8b",
+  "runs": 3,
+  "clean_start": {
+    "model_unloaded_before_each_request": 90,
+    "requests": 90,
+    "first_attempt_messages": {
+      "2": 90
+    }
+  },
+  "all": {
+    "requests": 90,
+    "correct": 90,
+    "missing step": 0,
+    "extra step": 0,
+    "wrong not-possible note": 0,
+    "refused by checks": 0,
+    "WRONG REPORT": 0,
+    "WRONG TASK": 0,
+    "CLAIMED POSSIBLE": 0,
+    "error": 0,
+    "re_plans": 12,
+    "correct_rate": 1.0,
+    "wrong_accepted": 0,
+    "errors": 0,
+    "median_seconds": 5.3
+  },
+  "by_set": {
+    "dev": {
+      "requests": 45,
+      "correct": 45,
+      "missing step": 0,
+      "extra step": 0,
+      "wrong not-possible note": 0,
+      "refused by checks": 0,
+      "WRONG REPORT": 0,
+      "WRONG TASK": 0,
+      "CLAIMED POSSIBLE": 0,
+      "error": 0,
+      "re_plans": 6,
+      "correct_rate": 1.0,
+      "wrong_accepted": 0,
+      "errors": 0,
+      "median_seconds": 5.3
+    },
+    "held-out": {
+      "requests": 45,
+      "correct": 45,
+      "missing step": 0,
+      "extra step": 0,
+      "wrong not-possible note": 0,
+      "refused by checks": 0,
+      "WRONG REPORT": 0,
+      "WRONG TASK": 0,
+      "CLAIMED POSSIBLE": 0,
+      "error": 0,
+      "re_plans": 6,
+      "correct_rate": 1.0,
+      "wrong_accepted": 0,
+      "errors": 0,
+      "median_seconds": 5.2
+    }
+  }
+}
+gate (workbench/models.yaml, task plan): PASSED
+written: C:\SIH 2026\results\stage3\planner_granite4.1-8b.json

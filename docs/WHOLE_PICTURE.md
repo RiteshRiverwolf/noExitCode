@@ -89,7 +89,8 @@ human-in-the-loop gates, and the Sentinel proving nothing left the machine.
 
 | Agent | What it does | Powers | Status |
 |---|---|---|---|
-| **Planner** | Breaks a request into a plan, picks the mission type and the agents, re-plans when a step fails | delegates only | Proposed |
+| **Planner** | Breaks a request into a plan, picks the mission type and the agents, re-plans when a step fails | delegates only | **Built** (14 Sep) — `workbench/planner.py`; plans checked in code; qualified for single messages (40/40); chat memory off until follow-ups pass. Re-planning after a failed *step* still Proposed |
+| **Chat** | Greetings, "what can you do?", general questions — never a verdict, a document claim or a claim of work | none | **Built** (14 Sep) — `workbench/chat.py`; qualified on dev messages only (6/6) |
 | **Router** | Picks the model per step from task type and measured qualification results, logs the reason (R2) | model registry | **Built** — wired into the pipeline and the Coder |
 | **Reader** | Scans, PDFs, drawings, photos → evidence records with page, box and crop (R5) | OCR, vision, file read | **Proven** (§4) |
 | **Librarian** | Searches manuals, SOPs, past correspondence; answers with citations or says it doesn't know | knowledge base, file read | Proposed (§7) |
@@ -177,7 +178,7 @@ One workbench, several missions, one visible agent timeline.
 | # | What the judge sees | Status |
 |---|---|---|
 | 1 | **The machine is sealed.** Live panel: outbound attempts blocked, packet capture as evidence (R6) | Proven at container level; **panel live** (connection snapshot + audit-log chains, 2026-09-13) |
-| 2 | **"Read this inspection report and draft the approval note."** The Planner lays out steps; agents light up as they work | Graph, trace and **live streaming Built** — the frontend shows every stage event; the plan shown is the demo scenario (Planner not built) |
+| 2 | **"Read this inspection report and draft the approval note."** The Planner lays out steps; agents light up as they work | Graph, trace and **live streaming Built**; **the Planner plans the demo request** (14 Sep), code checks the plan, and only the damaged-digit beat is staged by the scenario, labelled so |
 | 3 | **Reader** extracts every finding and reading, each shown with the crop of its cell | **Built** |
 | 4 | **One cell is flagged** — the damaged digit. The run *pauses*; the engineer sees the crop and decides | Detection Proven; **pause and resume Built** (2026-09-13): the run pauses at `review_values`, the engineer enters the value from the original with their name, code checks it against the column, and the run resumes from that step (`review_resume_test.py` 27/27). Paused runs live in memory only |
 | 5 | **Rules fire in code** and say why: severity, or a reading below minimum | **Built** |

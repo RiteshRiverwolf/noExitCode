@@ -1,0 +1,814 @@
+{
+  "summary": {
+    "model": "granite4.1:8b",
+    "runs": 1,
+    "clean_start": {
+      "model_unloaded_before_each_request": 15,
+      "requests": 15,
+      "first_attempt_messages": {
+        "2": 15
+      }
+    },
+    "all": {
+      "requests": 15,
+      "correct": 8,
+      "missing step": 2,
+      "extra step": 0,
+      "wrong not-possible note": 0,
+      "refused by checks": 3,
+      "WRONG REPORT": 0,
+      "WRONG TASK": 0,
+      "CLAIMED POSSIBLE": 2,
+      "error": 0,
+      "re_plans": 3,
+      "correct_rate": 0.533,
+      "wrong_accepted": 2,
+      "errors": 0,
+      "median_seconds": 4.2
+    },
+    "by_set": {
+      "dev": {
+        "requests": 15,
+        "correct": 8,
+        "missing step": 2,
+        "extra step": 0,
+        "wrong not-possible note": 0,
+        "refused by checks": 3,
+        "WRONG REPORT": 0,
+        "WRONG TASK": 0,
+        "CLAIMED POSSIBLE": 2,
+        "error": 0,
+        "re_plans": 3,
+        "correct_rate": 0.533,
+        "wrong_accepted": 2,
+        "errors": 0,
+        "median_seconds": 4.2
+      }
+    }
+  },
+  "gate_passed": false,
+  "gate_problem": "wrong_accepted = 2 (needs 0)",
+  "requests": [
+    {
+      "run": 1,
+      "id": "D01",
+      "set": "dev",
+      "request": "Read the scanned inspection report for reactor R-2247, check it against our procedures, and draft the approval note. Then tell me when the next inspection is due.",
+      "kind": "missing step",
+      "outcome": "planned",
+      "planned": [
+        [
+          "inspection",
+          "insp_1002"
+        ],
+        [
+          "library",
+          ""
+        ]
+      ],
+      "expected": [
+        [
+          "inspection",
+          "insp_1002"
+        ],
+        [
+          "library"
+        ],
+        [
+          "code",
+          "next_due_date"
+        ]
+      ],
+      "not_possible": "",
+      "regulated_by": "\\b(draft|write|prepare|produce)\\b[^.?!]{0,60}\\bnotes?\\b",
+      "questions": [
+        "When is the next inspection due for a reactor given its last inspection date and remaining life calculated using the half-life rule?"
+      ],
+      "attempts": 1,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "steps": [
+              {
+                "kind": "inspection",
+                "doc_id": "insp_1002",
+                "question": "",
+                "task_id": "",
+                "why": "Read the scanned inspection report for reactor R-2247 and draft the approval note."
+              },
+              {
+                "kind": "library",
+                "doc_id": "",
+                "question": "When is the next inspection due for a reactor given its last inspection date and remaining life calculated using the half-life rule?",
+                "task_id": "",
+                "why": "Determine the next inspection due date based on the remaining life from the inspection report."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": []
+        }
+      ],
+      "seconds": 5.2,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "D02",
+      "set": "dev",
+      "request": "Draft the approval note for exchanger E-4461.",
+      "kind": "correct",
+      "outcome": "planned",
+      "planned": [
+        [
+          "inspection",
+          "insp_1000"
+        ]
+      ],
+      "expected": [
+        [
+          "inspection",
+          "insp_1000"
+        ]
+      ],
+      "not_possible": "",
+      "regulated_by": "\\b(draft|write|prepare|produce)\\b[^.?!]{0,60}\\bnotes?\\b",
+      "questions": [],
+      "attempts": 1,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "steps": [
+              {
+                "kind": "inspection",
+                "doc_id": "insp_1000",
+                "question": "",
+                "task_id": "",
+                "why": "Draft the approval note for exchanger E-4461 by reading its inspection report."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": []
+        }
+      ],
+      "seconds": 4.02,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "D03",
+      "set": "dev",
+      "request": "Which clause of our procedures covers external corrosion under insulation?",
+      "kind": "correct",
+      "outcome": "planned",
+      "planned": [
+        [
+          "library",
+          ""
+        ]
+      ],
+      "expected": [
+        [
+          "library"
+        ]
+      ],
+      "not_possible": "",
+      "regulated_by": null,
+      "questions": [
+        "Which clause of our procedures covers external corrosion under insulation?"
+      ],
+      "attempts": 1,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "steps": [
+              {
+                "kind": "library",
+                "doc_id": "",
+                "question": "Which clause of our procedures covers external corrosion under insulation?",
+                "task_id": "",
+                "why": "The request asks for a specific clause in the procedures, which is best answered by searching the reference library."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": []
+        }
+      ],
+      "seconds": 4.17,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "D04",
+      "set": "dev",
+      "request": "Write a program that lists every CML below its minimum thickness across the reports, worst first.",
+      "kind": "correct",
+      "outcome": "planned",
+      "planned": [
+        [
+          "code",
+          "cml_report"
+        ]
+      ],
+      "expected": [
+        [
+          "code",
+          "cml_report"
+        ]
+      ],
+      "not_possible": "",
+      "regulated_by": null,
+      "questions": [],
+      "attempts": 1,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "steps": [
+              {
+                "kind": "code",
+                "doc_id": "",
+                "question": "",
+                "task_id": "cml_report",
+                "why": "Compute which thickness readings across reports are below their minimum, worst first."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": []
+        }
+      ],
+      "seconds": 4.08,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "D05",
+      "set": "dev",
+      "request": "What are the corrosion rate and remaining life if a wall went from 20.0 mm to 19.5 mm over two years, with a 16.5 mm minimum?",
+      "kind": "correct",
+      "outcome": "planned",
+      "planned": [
+        [
+          "code",
+          "remaining_life"
+        ]
+      ],
+      "expected": [
+        [
+          "code",
+          "remaining_life"
+        ]
+      ],
+      "not_possible": "",
+      "regulated_by": null,
+      "questions": [],
+      "attempts": 1,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "steps": [
+              {
+                "kind": "code",
+                "doc_id": "",
+                "question": "",
+                "task_id": "remaining_life",
+                "why": "Compute corrosion rate and remaining life from thickness change over two years with a minimum thickness."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": []
+        }
+      ],
+      "seconds": 4.0,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "D06",
+      "set": "dev",
+      "request": "Order replacement plates for the tank from the vendor.",
+      "kind": "refused by checks",
+      "outcome": "failed checks",
+      "planned": [],
+      "expected": [],
+      "not_possible": "",
+      "regulated_by": null,
+      "questions": [],
+      "attempts": 2,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "steps": [
+              {
+                "kind": "inspection",
+                "doc_id": "insp_1000",
+                "question": "",
+                "task_id": "",
+                "why": "The request asks to order replacement plates for tank E-4461, which requires checking the inspection report for that equipment tag."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": [
+            "step 1 uses the report insp_1000 (E-4461), but the request does not name E-4461"
+          ]
+        },
+        {
+          "attempt": 2,
+          "messages_sent": 4,
+          "reply": {
+            "steps": [
+              {
+                "kind": "inspection",
+                "doc_id": "",
+                "question": "Which inspection report contains information about ordering replacement plates for a tank?",
+                "task_id": "",
+                "why": "The request asks to order replacement plates, which requires identifying the relevant inspection report that mentions the tank needing replacement plates."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": [
+            "step 1 (inspection) needs doc_id"
+          ]
+        }
+      ],
+      "seconds": 5.69,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "D07",
+      "set": "dev",
+      "request": "Draft the approval note.",
+      "kind": "refused by checks",
+      "outcome": "failed checks",
+      "planned": [],
+      "expected": [],
+      "not_possible": "",
+      "regulated_by": "\\b(draft|write|prepare|produce)\\b[^.?!]{0,60}\\bnotes?\\b",
+      "questions": [],
+      "attempts": 2,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "steps": [
+              {
+                "kind": "inspection",
+                "doc_id": "insp_1000",
+                "question": "",
+                "task_id": "",
+                "why": "Draft the approval note for the specified inspection report E-4461."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": [
+            "step 1 uses the report insp_1000 (E-4461), but the request does not name E-4461"
+          ]
+        },
+        {
+          "attempt": 2,
+          "messages_sent": 4,
+          "reply": {
+            "steps": [
+              {
+                "kind": "inspection",
+                "doc_id": "",
+                "question": "",
+                "task_id": "",
+                "why": "not_possible"
+              }
+            ],
+            "not_possible": "The request asks to draft an approval note but does not specify which inspection report (by equipment tag) should be used. Without a named report, the inspection step cannot proceed."
+          },
+          "problems": [
+            "step 1 (inspection) needs doc_id"
+          ]
+        }
+      ],
+      "seconds": 5.41,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "D08",
+      "set": "dev",
+      "request": "Draft the approval note for reactor R-9999.",
+      "kind": "refused by checks",
+      "outcome": "failed checks",
+      "planned": [],
+      "expected": [],
+      "not_possible": "",
+      "regulated_by": "\\b(draft|write|prepare|produce)\\b[^.?!]{0,60}\\bnotes?\\b",
+      "questions": [],
+      "attempts": 2,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "steps": [
+              {
+                "kind": "inspection",
+                "doc_id": "insp_1008",
+                "question": "",
+                "task_id": "",
+                "why": "Draft the approval note for reactor R-9999 by reading the relevant inspection report."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": [
+            "step 1 uses the report insp_1008 (R-3182), but the request does not name R-3182"
+          ]
+        },
+        {
+          "attempt": 2,
+          "messages_sent": 4,
+          "reply": {
+            "steps": [
+              {
+                "kind": "inspection",
+                "doc_id": "",
+                "question": "",
+                "task_id": "",
+                "why": ""
+              }
+            ],
+            "not_possible": "The request asks to draft an approval note for reactor R-9999, but no inspection report with the equipment tag R-9999 exists in the provided Documents list. Therefore, it is not possible to fulfill this request as specified."
+          },
+          "problems": [
+            "step 1 (inspection) needs doc_id"
+          ]
+        }
+      ],
+      "seconds": 5.56,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "D09",
+      "set": "dev",
+      "request": "Who may sign an approval note for a Major finding, according to our procedures?",
+      "kind": "correct",
+      "outcome": "planned",
+      "planned": [
+        [
+          "library",
+          ""
+        ]
+      ],
+      "expected": [
+        [
+          "library"
+        ]
+      ],
+      "not_possible": "",
+      "regulated_by": null,
+      "questions": [
+        "Who may sign an approval note for a Major finding according to our procedures?"
+      ],
+      "attempts": 1,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "steps": [
+              {
+                "kind": "library",
+                "doc_id": "",
+                "question": "Who may sign an approval note for a Major finding according to our procedures?",
+                "task_id": "",
+                "why": "The request asks for a procedural guideline on who can sign an approval note for a major finding, which is best answered by searching the reference library of procedures."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": []
+        }
+      ],
+      "seconds": 4.38,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "D10",
+      "set": "dev",
+      "request": "Check the scan for tank T-2839 and tell me whether it has to be escalated.",
+      "kind": "correct",
+      "outcome": "planned",
+      "planned": [
+        [
+          "inspection",
+          "insp_1003"
+        ]
+      ],
+      "expected": [
+        [
+          "inspection",
+          "insp_1003"
+        ]
+      ],
+      "not_possible": "",
+      "regulated_by": null,
+      "questions": [],
+      "attempts": 1,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "steps": [
+              {
+                "kind": "inspection",
+                "doc_id": "insp_1003",
+                "question": "",
+                "task_id": "",
+                "why": "Read the inspection report for tank T-2839 to determine if escalation is required."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": []
+        }
+      ],
+      "seconds": 4.06,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "D11",
+      "set": "dev",
+      "request": "What does the procedure say about escalating an inspection report? Also draft the note for vessel V-3859.",
+      "kind": "missing step",
+      "outcome": "planned",
+      "planned": [
+        [
+          "inspection",
+          "insp_1007"
+        ]
+      ],
+      "expected": [
+        [
+          "library"
+        ],
+        [
+          "inspection",
+          "insp_1007"
+        ]
+      ],
+      "not_possible": "",
+      "regulated_by": "\\b(draft|write|prepare|produce)\\b[^.?!]{0,60}\\bnotes?\\b",
+      "questions": [],
+      "attempts": 1,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "steps": [
+              {
+                "kind": "inspection",
+                "doc_id": "insp_1007",
+                "question": "",
+                "task_id": "",
+                "why": "To read the inspection report for vessel V-3859 and extract the escalation procedure details, as well as draft the approval note."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": []
+        }
+      ],
+      "seconds": 4.19,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "D12",
+      "set": "dev",
+      "request": "Summarise the vendor replies we received last month.",
+      "kind": "CLAIMED POSSIBLE",
+      "outcome": "planned",
+      "planned": [
+        [
+          "library",
+          ""
+        ]
+      ],
+      "expected": [],
+      "not_possible": "",
+      "regulated_by": null,
+      "questions": [
+        "Summarize the vendor replies received last month."
+      ],
+      "attempts": 1,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "steps": [
+              {
+                "kind": "library",
+                "doc_id": "",
+                "question": "Summarize the vendor replies received last month.",
+                "task_id": "",
+                "why": "The request asks for a summary of vendor replies, which is best answered by querying the reference library for relevant passages."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": []
+        }
+      ],
+      "seconds": 4.16,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "D13",
+      "set": "dev",
+      "request": "Draft approval notes for R-2247 and V-1668.",
+      "kind": "correct",
+      "outcome": "planned",
+      "planned": [
+        [
+          "inspection",
+          "insp_1002"
+        ],
+        [
+          "inspection",
+          "insp_1001"
+        ]
+      ],
+      "expected": [
+        [
+          "inspection",
+          "insp_1002"
+        ],
+        [
+          "inspection",
+          "insp_1001"
+        ]
+      ],
+      "not_possible": "",
+      "regulated_by": "\\b(draft|write|prepare|produce)\\b[^.?!]{0,60}\\bnotes?\\b",
+      "questions": [],
+      "attempts": 1,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "steps": [
+              {
+                "kind": "inspection",
+                "doc_id": "insp_1002",
+                "question": "",
+                "task_id": "",
+                "why": "Draft approval note for equipment tag R-2247."
+              },
+              {
+                "kind": "inspection",
+                "doc_id": "insp_1001",
+                "question": "",
+                "task_id": "",
+                "why": "Draft approval note for equipment tag V-1668."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": []
+        }
+      ],
+      "seconds": 4.62,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "D14",
+      "set": "dev",
+      "request": "Is there a procedure for re-inspecting a vessel after a weld repair?",
+      "kind": "correct",
+      "outcome": "planned",
+      "planned": [
+        [
+          "library",
+          ""
+        ]
+      ],
+      "expected": [
+        [
+          "library"
+        ]
+      ],
+      "not_possible": "",
+      "regulated_by": null,
+      "questions": [
+        "Is there a procedure for re-inspecting a vessel after a weld repair?"
+      ],
+      "attempts": 1,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "steps": [
+              {
+                "kind": "library",
+                "doc_id": "",
+                "question": "Is there a procedure for re-inspecting a vessel after a weld repair?",
+                "task_id": "",
+                "why": "The request asks for a procedural reference, which the library can provide."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": []
+        }
+      ],
+      "seconds": 4.09,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    },
+    {
+      "run": 1,
+      "id": "D15",
+      "set": "dev",
+      "request": "Read the report for V-1668 and draft the approval note, then post it on the Teams channel.",
+      "kind": "CLAIMED POSSIBLE",
+      "outcome": "planned",
+      "planned": [
+        [
+          "inspection",
+          "insp_1001"
+        ]
+      ],
+      "expected": [
+        [
+          "inspection",
+          "insp_1001"
+        ]
+      ],
+      "not_possible": "",
+      "regulated_by": "\\b(draft|write|prepare|produce)\\b[^.?!]{0,60}\\bnotes?\\b",
+      "questions": [],
+      "attempts": 1,
+      "attempt_log": [
+        {
+          "attempt": 1,
+          "messages_sent": 2,
+          "reply": {
+            "steps": [
+              {
+                "kind": "inspection",
+                "doc_id": "insp_1001",
+                "question": "",
+                "task_id": "",
+                "why": "Read the report for V-1668 to draft its approval note."
+              }
+            ],
+            "not_possible": ""
+          },
+          "problems": []
+        }
+      ],
+      "seconds": 4.06,
+      "model_unloaded_first": true,
+      "first_attempt_messages": 2
+    }
+  ]
+}

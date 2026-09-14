@@ -3,19 +3,21 @@
     POST /api/demo      (workbench/server.py) -- runs it as a job, events streamed live
     .venv\\Scripts\\python -m workbench.demo      -- the same run, printed
 
-The scenario -- which report, which question, which coding task -- is the one
-thing fixed, in workbench/demo.yaml. Each beat calls the code the rest of the
-workbench uses: run_inspection.run_job, library.search, the Router, coder.solve
-in the sandbox. Nothing on screen is animated; every event comes from a run.
+The Planner plans the scenario's request (workbench/planner.py) and code checks
+the plan; the steps then run as any mission's do (workbench/missions.py). The
+scenario -- workbench/demo.yaml, the one thing fixed -- supplies only what a plan
+cannot know (which scan, the fault injected on purpose) and the beats no plan
+would contain (a damaged copy of the same report), each labelled as the
+scenario's. When no plan can be made, the scenario's own beats run instead,
+labelled with the reason.
 
 Events, in order (each a dict passed to `emit`):
 
-    demo_start   title, request, plan_note, beats
+    route, plan  the Router's choice for planning; the plan as checked in code
+    demo_start   title, request, plan_note, beats (each with planned_by: planner | scenario)
     router       the Router's choice and every candidate's reason, per task
-    beat_start   index, id, title, caption, agents
-      ...        the beat's own events: run_start, stage_enter, stage, evidence,
-                 decision, route, summary, run_end (inspection); library (search);
-                 route, task, attempt_start, attempt, code_result (code)
+    beat_start   index, id, kind, title, caption, agents, planned_by
+      ...        the beat's own events (workbench/missions.py)
     beat_end     index, id, outcome, seconds
     demo_end     seconds
 """
@@ -24,16 +26,13 @@ from __future__ import annotations
 
 import json
 import time
-from dataclasses import asdict
 from pathlib import Path
 from typing import Callable
 
 import yaml
 
-from workbench import coder, coding_tasks, router, sandbox, tools
-from workbench.run_inspection import JobConfig, run_job
+from workbench import missions, planner, router
 
-ROOT = Path(__file__).resolve().parent.parent
 SCENARIO = Path(__file__).resolve().parent / "demo.yaml"
 
 Emit = Callable[[dict], None]
@@ -57,65 +56,35 @@ def router_view(tasks: list[str]) -> dict:
     return out
 
 
-def _inspection(beat: dict, emit: Emit) -> str:
-    cfg = JobConfig(doc_id=beat["doc_id"], source=beat.get("source", "scan"),
-                    scan_quality=beat.get("scan_quality", "medium"),
-                    image=[ROOT / p for p in beat["image"]] if beat.get("image") else None,
-                    inject_fault=beat.get("inject_fault"),
-                    pause_for_review=beat.get("pause_for_review", False))
-    return run_job(cfg, emit=emit)["end"]
+def plan_beats(p: planner.Plan, s: dict) -> tuple[list[dict], str]:
+    """The beats the demo runs, and the note shown with the plan.
 
-
-def _library(beat: dict, emit: Emit) -> str:
-    with tools.acting("librarian", emit, beat=beat["id"]):     # search only: its written answers are not qualified
-        hits = tools.call("search_library", query=beat["question"], k=beat.get("k"))
-    emit({"type": "library", "question": beat["question"],
-          "hits": [{"citation": h.citation(), "doc_id": h.doc_id, "title": h.title, "heading": h.heading,
-                    "origin": h.origin, "pages": list(h.pages), "text": h.text, "score": h.score,
-                    "why": h.why} for h in hits]})
-    return f"{len(hits)} passages cited"
-
-
-def _code(beat: dict, emit: Emit) -> str:
-    task = coding_tasks.TASKS[beat["task_id"]]
-    decision = router.route("code", {"demo_beat": beat["id"], "coding_task": task.task_id})
-    emit({"type": "route", "task": "code", "chosen": decision.chosen, "decision": decision.reason})
-    if decision.chosen is None:
-        emit({"type": "notice", "message": f"no model is qualified to write code: {decision.reason}"})
-        return "no qualified model"
-    if not (sandbox.docker_available() and sandbox.image_present()):
-        emit({"type": "notice", "message": "the sandbox is not available (Docker is not running or its image is "
-                                           "missing); the code step is skipped rather than run unsealed"})
-        return "sandbox unavailable"
-    emit({"type": "task", "task_id": task.task_id, "brief": task.brief, "max_attempts": task.max_attempts})
-    result = coder.solve(task, decision.chosen, emit=emit)
-    record = asdict(result)
-    record.pop("attempts")
-    emit({"type": "code_result", **record, "attempts": len(result.attempts), "summary": result.summary()})
-    return result.summary()
-
-
-BEATS = {"inspection": _inspection, "library": _library, "code": _code}
+    Planned: the Planner's checked steps with the scenario's settings, and each
+    `staged` beat placed after the last planned step of the kind it names in
+    `after` (at the end when there is none). Not planned: the scenario's own
+    beats, and why the Planner did not plan."""
+    if p.outcome != "planned":
+        return ([{**b, "planned_by": "scenario"} for b in s["beats"]],
+                s["plan_notes"]["scenario"].replace("{reason}", p.text))
+    beats = missions.beats_from_plan(p, s.get("step_settings"))
+    for staged in (b for b in s["beats"] if b.get("staged")):
+        after = [i for i, b in enumerate(beats) if b["kind"] == staged.get("after")]
+        beats.insert(after[-1] + 1 if after else len(beats), {**staged, "planned_by": "scenario"})
+    return beats, s["plan_notes"]["planned"].replace("{plan}", p.text)
 
 
 def run(emit: Emit) -> dict:
     s = scenario()
     started = time.monotonic()
-    emit({"type": "demo_start", "title": s["title"], "request": s["request"], "plan_note": s["plan_note"],
-          "beats": [{k: b[k] for k in ("id", "kind", "title", "caption", "agents")} for b in s["beats"]]})
+    p = planner.plan(s["request"], emit=emit)
+    beats, note = plan_beats(p, s)
+    emit({"type": "demo_start", "title": s["title"], "request": s["request"], "plan_note": note,
+          "beats": [{k: b.get(k) for k in missions.BEAT_FIELDS} for b in beats]})
     emit({"type": "router", "tasks": router_view(s["router_tasks"])})
-    outcomes = []
-    for i, beat in enumerate(s["beats"]):
-        emit({"type": "beat_start", "index": i, "id": beat["id"], "title": beat["title"],
-              "caption": beat["caption"], "agents": beat["agents"]})
-        t = time.monotonic()
-        outcome = BEATS[beat["kind"]](beat, emit)
-        outcomes.append({"id": beat["id"], "outcome": outcome})
-        emit({"type": "beat_end", "index": i, "id": beat["id"], "outcome": outcome,
-              "seconds": round(time.monotonic() - t, 1)})
+    outcomes = missions.run_beats(beats, emit)
     seconds = round(time.monotonic() - started, 1)
     emit({"type": "demo_end", "seconds": seconds, "outcomes": outcomes})
-    return {"seconds": seconds, "outcomes": outcomes}
+    return {"plan": p.outcome, "seconds": seconds, "outcomes": outcomes}
 
 
 def main() -> int:
@@ -123,6 +92,10 @@ def main() -> int:
         kind = e["type"]
         if kind in ("demo_start", "beat_start", "beat_end", "demo_end", "notice", "route", "decision"):
             print(json.dumps({k: v for k, v in e.items() if k not in ("beats", "caption")}, default=str)[:220])
+        elif kind == "plan":
+            print(f"plan [{e['outcome']}] {e['model']}: {e['text']}")
+            for i, step in enumerate(e["steps"], 1):
+                print(f"    {i}. {step['title']}  -- {step['why']}")
         elif kind == "stage":
             print(f"    [{e['status']:4}] {e['agent']:26} {e['node']:15} -> {e['next']:13} {e['note']}")
         elif kind == "library":

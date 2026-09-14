@@ -6,3 +6,59 @@
 #                     until LangGraph has replaced it in every check
 # Both produce identical traces on bench/stage3/engine_parity_test.py.
 engine: langgraph
+
+# The Planner (workbench/planner.py; its agent definition is `planner` in agents.yaml).
+#
+# step_kinds: the only work a plan may contain. Each is something the workbench
+# already runs (workbench/missions.py); the Planner chooses among them and fills
+# in `args`. Which reports exist comes from data/corpus/index.json and which
+# coding tasks exist from workbench/coding_tasks.py -- not from this file.
+#   description  what the model is told the step does
+#   title        what people see; {<arg>} and {tag} (a report's equipment tag) are filled in
+#   agents       who does the work, as the interface names them
+#   regulated    the step runs the fixed procedural graph
+#   no_documents its question may not name a report, equipment tag or library document (code refuses)
+planner:
+  max_steps: 4
+  no_step: none                    # the kind of a part of a request that no step kind can do
+  step_kinds:
+    inspection:
+      description: >-
+        Read one inspection report through the fixed inspection graph: every value with
+        its table cell, escalation rules in code, and a draft approval note checked by
+        reading the file back. Reading a report, checking it and drafting its approval note
+        are all one inspection step for that report.
+      args: [doc_id]
+      title: "Read the {tag} report and draft the approval note"
+      agents: [Document Reader, Evidence Builder, Rules Engine, Router, Report Writer, QA Checker]
+      regulated: true
+    library:
+      description: >-
+        Search the reference library of procedures, standards and memos, and show the
+        passages that answer one question, each with its citation.
+      args: [question]
+      title: "Search the library: {question}"
+      agents: [Librarian (search)]
+    code:
+      description: >-
+        Write a program for one listed coding task and run it in the sealed sandbox until
+        held-out tests accept it.
+      args: [task_id]
+      title: "Coding task: {task_id}"
+      agents: [Router, Coder, Sandbox]
+    reply:
+      description: >-
+        Answer the person directly in a few sentences: a greeting or thanks, a question about
+        what this workbench can do, or a general question that needs none of the organisation's
+        reports, documents or data. Needs question: the message to answer.
+      args: [question]
+      title: "Reply: {question}"
+      agents: [Chat]
+      no_documents: true
+
+  # A request matching any of these asks for regulated work: its plan must contain a
+  # regulated step, or no steps at all. Checked in code on every plan, whatever the
+  # model wrote -- a regulated request is never quietly planned without the graph.
+  regulated_request_patterns:
+    - '\b(draft|write|prepare|produce)\b[^.?!]{0,60}\bnotes?\b'
+    - '\b(read|review|process|go through)\b[^.?!]{0,60}\b(report|scan)\b'

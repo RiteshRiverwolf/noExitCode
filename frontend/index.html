@@ -462,7 +462,7 @@
           <button id="attachBtn" class="shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-ink-500 hover:text-indigo-300 hover:bg-indigo-400/10 transition-colors">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
           </button>
-          <textarea id="promptInput" rows="1" placeholder="Attach an inspection report, or run the demo…" class="flex-1 bg-transparent resize-none outline-none text-[13px] text-ink-100 placeholder:text-ink-600 py-1"></textarea>
+          <textarea id="promptInput" rows="1" placeholder="Ask for work in plain words, attach a report, or run the demo…" class="flex-1 bg-transparent resize-none outline-none text-[13px] text-ink-100 placeholder:text-ink-600 py-1"></textarea>
           <button id="runBtn" class="btn-lift send-btn shrink-0 w-7 h-7 rounded-md text-white flex items-center justify-center">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
@@ -655,11 +655,22 @@
           <div class="pb-3" style="min-width:0">
             <div class="text-[13px] font-medium ${textClass}">${esc(a.agent)}${a.tag ? ` <span class="pill ${a.tagClass || ''}">${esc(a.tag)}</span>` : ''}</div>
             <div class="text-[12px] text-ink-600 mt-0.5" style="word-break:break-word">${esc(a.detail || '')}</div>
+            ${toolLine(a.tools)}
           </div>
         </div>`;
     }).join('');
     stageList.scrollTop = stageList.scrollHeight;
   }
+
+  // Calls through the tool gate (workbench/tools.py), under the row of the agent that made them.
+  function toolLine(calls) {
+    if (!calls || !calls.length) return '';
+    return `<div class="font-mono mt-1" style="font-size:10.5px;word-break:break-word">${calls.map(t => t.status === 'refused'
+      ? `<span class="text-signal-danger">${esc(t.tool)} refused — ${esc(t.reason)}</span>`
+      : `<span class="${t.status === 'ok' ? 'text-ink-600' : 'text-signal-danger'}">${esc(t.tool)} ${t.status === 'ok' ? '✓' : '✗'} ${esc(t.seconds)}s</span>`).join(' · ')}</div>`;
+  }
+
+  const agentLabel = id => String(id).split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
   resetActivity();
 
@@ -962,6 +973,29 @@
 
   function saveChats() { try { localStorage.setItem(CHATS_KEY, JSON.stringify(chats)); } catch (e) { /* storage unavailable */ } }
 
+  // What each request in a chat was planned as. The service keeps no chat state: the most recent
+  // turns go with the next request, so the Planner can tell what "it" or "the same" refers to.
+  let historyLimit = 0;   // how many the service accepts (/api/health); none until it has said
+  function rememberTurn(e) {
+    const chat = chats.find(c => c.id === currentChatId);
+    if (!chat) return;
+    chat.turns = [...(chat.turns || []), { request: e.request, plan: e.steps.map(s => s.title), not_possible: e.not_possible || '' }];
+    saveChats();
+  }
+  function recentTurns() {
+    const chat = chats.find(c => c.id === currentChatId);
+    return historyLimit ? ((chat && chat.turns) || []).slice(-historyLimit) : [];
+  }
+
+  // What the workbench can be asked for: sent by the service with a plan that runs nothing (its catalogue, no model).
+  function renderHelp(h) {
+    return `<div class="mt-2 text-ink-100">${esc(h.intro)}</div>
+      ${h.kinds.map(k => `<div class="mt-1"><span class="text-indigo-300 font-mono">${esc(k.kind)}</span> <span class="text-ink-600">— ${esc(k.description)}</span></div>`).join('')}
+      <div class="mt-2 text-[11.5px] text-ink-600">Reports: ${esc(h.reports.join(', '))}</div>
+      <div class="mt-1 text-[11.5px] text-ink-600">Coding tasks: ${esc(h.tasks.map(t => `${t.task_id} (${t.purpose})`).join('; '))}</div>
+      <div class="mt-1 text-[11.5px] text-ink-600">Library: ${esc(h.library.map(d => `${d.doc_id} ${d.title}`).join('; '))}</div>`;
+  }
+
   function renderHistory() {
     historyList.innerHTML = chats.slice().reverse().map(c => `
       <button data-id="${esc(c.id)}" class="history-item block w-full text-left px-2.5 py-2 rounded-md text-[12.5px] truncate transition-colors ${c.id === currentChatId ? 'bg-indigo-400/10 text-indigo-200' : 'text-ink-500 hover:bg-base-900 hover:text-ink-300'}">${esc(c.title)}</button>
@@ -1083,7 +1117,7 @@
 
   function follow(jobId) {
     const source = new EventSource(`/api/jobs/${encodeURIComponent(jobId)}/events`);
-    const state = { beat: null, run: null };
+    const state = { beat: null, run: null, agentRow: {} };   // agentRow: agent id -> the row its tool calls go under
     source.onmessage = (message) => {
       let e;
       try { e = JSON.parse(message.data); } catch (err) { return; }
@@ -1102,15 +1136,48 @@
       case 'error': appendReply(`<span class="text-signal-danger">Error:</span> ${esc(e.message)}`); break;
 
       case 'demo_start':
-        appendReply(`<div class="text-ink-100 font-medium">${esc(e.title)}</div>
-          <div class="mt-1">Plan, ${e.beats.length} steps:</div>
-          ${e.beats.map((s, i) => `<div class="mt-1"><span class="text-indigo-300">${i + 1}.</span> ${esc(s.title)} <span class="text-ink-600">— ${esc(s.agents.join(', '))}</span></div>`).join('')}
-          <div class="text-[11.5px] text-ink-600 mt-2">${esc(e.plan_note)}</div>`);
+      case 'mission_start':
+        state.replyOnly = e.type === 'mission_start' && e.beats.length > 0 && e.beats.every(s => s.kind === 'reply');
+        if (state.replyOnly) break;   // just a reply: no plan to show
+        appendReply(`${e.title ? `<div class="text-ink-100 font-medium">${esc(e.title)}</div>` : ''}
+          ${e.beats.length ? `<div class="mt-1">Plan, ${e.beats.length} step${e.beats.length === 1 ? '' : 's'}:</div>` : ''}
+          ${e.beats.map((s, i) => `<div class="mt-1"><span class="text-indigo-300">${i + 1}.</span> ${esc(s.title)} <span class="text-ink-600">— ${esc(s.agents.join(', '))}${s.planned_by === 'scenario' ? ' · from the demo scenario' : ''}</span></div>`).join('')}
+          <div class="text-[11.5px] text-ink-600 mt-2">${esc(e.plan_note)}</div>
+          ${!e.beats.length && e.help ? renderHelp(e.help) : ''}`);
         break;
+      case 'plan': {
+        rememberTurn(e);
+        const ok = e.outcome === 'planned' || e.outcome === 'not possible';
+        const first = e.attempts[0] || {};
+        const replanned = e.attempts.length > 1 ? ` · re-planned after: ${(first.problems || []).join('; ')}` : '';
+        upsertRow(`${b}-agent-planner`, { agent: 'Planner', detail: `${e.model || 'no model'} · ${e.steps.length} step${e.steps.length === 1 ? '' : 's'}${e.regulated_by ? ' · regulated request: the inspection graph is required' : ''}${replanned}`, status: ok ? 'ok' : 'stop', tag: e.outcome, tagClass: ok ? 'info' : 'warn' });
+        break;
+      }
       case 'router': renderRouter(e.tasks); break;
       case 'beat_start': state.beat = e.index; addGroup(`${e.index + 1} · ${e.title}`, e.caption); break;
       case 'beat_end': break;
-      case 'demo_end': appendReply(`Mission finished in ${esc(e.seconds)} s. Every step above was a real run on this machine; the run folders and hash-chained logs hold the same facts.`); break;
+      case 'demo_end':
+      case 'mission_end': if (e.outcomes.length && !state.replyOnly) appendReply(`Mission finished in ${esc(e.seconds)} s. Every step above was a real run on this machine; the run folders and hash-chained logs hold the same facts.`); break;
+
+      // agents and the tool gate (workbench/tools.py): stage agents already have their rows, so
+      // their lifecycle only says where their tool calls go; other agents get a row of their own
+      case 'agent': {
+        if (e.node) { if (e.phase === 'started') state.agentRow[e.agent_id] = `${b}-${e.run_id}-${e.node}-${e.attempt}`; break; }
+        const key = `${b}-agent-${e.agent_id}`;
+        state.agentRow[e.agent_id] = key;
+        const exists = activity.some(a => a.key === key);
+        if (e.phase === 'started') upsertRow(key, exists ? { status: 'active' } : { agent: agentLabel(e.agent_id), detail: 'working…', status: 'active' });
+        else if (e.phase === 'completed') upsertRow(key, { status: 'ok' });
+        else upsertRow(key, { status: 'fail', detail: e.reason || e.error || 'failed', tag: 'failed', tagClass: 'bad' });
+        break;
+      }
+      case 'tool': {
+        const key = state.agentRow[e.agent_id] || `${b}-gate-${e.agent_id}`;
+        if (!activity.some(a => a.key === key)) upsertRow(key, { agent: `Tool gate · ${agentLabel(e.agent_id || 'no agent')}`, detail: '', status: e.status === 'ok' ? 'info' : 'fail' });
+        const row = activity.find(a => a.key === key);
+        upsertRow(key, { tools: [...(row.tools || []), { tool: e.tool, status: e.status, seconds: e.seconds, reason: e.reason || e.error }] });
+        break;
+      }
 
       // inspection
       case 'run_start': state.run = e.run_id; upsertRow(`${b}-run-${e.run_id}`, { agent: 'Procedural graph', detail: `${e.graph} · ${e.image && e.image.length ? 'uploaded / given file' : e.source + (e.source === 'scan' ? ' (' + e.scan_quality + ')' : '')}${e.inject_fault ? ' · fault injected on purpose' : ''}`, status: 'info' }); break;
@@ -1153,17 +1220,23 @@
       // library
       case 'library': {
         renderLibrary(e);
-        upsertRow(`${b}-library`, { agent: 'Librarian (search)', detail: `${e.hits.length} passages: ${e.hits.map(h => h.citation).join(' | ')}`, status: 'ok', tag: 'cited', tagClass: 'info' });
+        upsertRow(`${b}-agent-librarian`, { agent: 'Librarian (search)', detail: `${e.hits.length} passages: ${e.hits.map(h => h.citation).join(' | ')}`, status: 'ok', tag: 'cited', tagClass: 'info' });
         const top = e.hits[0];
         appendReply(top
-          ? `The procedure behind the escalation: <span class="font-mono text-indigo-200">${esc(top.citation)}</span> — ${esc(top.heading)}. <span class="text-ink-600">Passages are shown in Evidence; the answer is the cited text itself.</span>`
+          ? `“${esc(e.question)}” — the library's closest passage: <span class="font-mono text-indigo-200">${esc(top.citation)}</span> — ${esc(top.heading)}. <span class="text-ink-600">All ${e.hits.length} passages are shown in Evidence; the answer is the cited text itself.</span>`
           : 'The library returned nothing for that question.');
         break;
       }
 
+      // chat: a general answer, labelled as not from the organisation's documents
+      case 'reply':
+        upsertRow(`${b}-agent-chat`, { agent: 'Chat', detail: `${e.model || 'no model'} · ${e.outcome}`, status: e.outcome === 'answered' ? 'ok' : 'stop', tag: e.outcome === 'answered' ? 'general answer' : e.outcome, tagClass: e.outcome === 'answered' ? 'info' : 'warn' });
+        appendReply(`${esc(e.text)}${e.label ? `<div class="text-[11px] text-ink-700 mt-1">${esc(e.label)}</div>` : ''}`);
+        break;
+
       // coder
-      case 'task': upsertRow(`${b}-task`, { agent: 'Coder', detail: e.brief.split('\n')[0], status: 'info', tag: `up to ${e.max_attempts} attempts`, tagClass: '' }); break;
-      case 'attempt_start': upsertRow(`${b}-attempt-${e.n}`, { agent: 'Coder → Sandbox', detail: `attempt ${e.n}: writing the program and running our tests in the sealed sandbox…`, status: 'active' }); break;
+      case 'task': upsertRow(`${b}-agent-coder`, { agent: 'Coder', detail: e.brief.split('\n')[0], status: 'info', tag: `up to ${e.max_attempts} attempts`, tagClass: '' }); break;
+      case 'attempt_start': state.agentRow.coder = `${b}-attempt-${e.n}`; upsertRow(`${b}-attempt-${e.n}`, { agent: 'Coder → Sandbox', detail: `attempt ${e.n}: writing the program and running our tests in the sealed sandbox…`, status: 'active' }); break;
       case 'attempt': {
         const last = (e.stderr || e.stdout || '').trim().split('\n').pop();
         upsertRow(`${b}-attempt-${e.n}`, { agent: 'Coder → Sandbox', detail: `attempt ${e.n}: ${e.passed ? 'all acceptance tests passed' : (last || 'failed')} · ${e.seconds}s · ${e.isolation}`, status: e.passed ? 'ok' : 'fail', tag: e.passed ? 'passed' : 'failed — told why, trying again', tagClass: e.passed ? 'ok' : 'bad' });
@@ -1192,8 +1265,8 @@
     stagedFiles = [];
     renderStaged();
     if (!served) { appendReply(notServedMessage); return; }
-    if (!files.length) {
-      appendReply('Free-text missions need the Planner, which is not built yet. Attach an inspection report — a PDF or the page images of one report — to run it through the agents, or press <b>Run demo</b>.');
+    if (!files.length) {   // a request in plain words: the Planner plans it, code checks the plan, the steps run
+      startJob(api('/api/missions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ request: text, history: recentTurns() }) }));
       return;
     }
     const form = new FormData();
@@ -1239,6 +1312,7 @@
     api('/api/demo').then(s => { scenario = s; }).catch(() => {});
     api('/api/router').then(r => renderRouter(r.tasks)).catch(() => {});
     api('/api/health').then(h => {
+      historyLimit = h.mission_history_entries || 0;
       const missing = [!h.ollama && 'Ollama', !h.docker && 'Docker', h.docker && !h.sandbox_image && 'sandbox image', !h.ocr_environment && 'OCR environment'].filter(Boolean);
       document.getElementById('healthLine').textContent = missing.length
         ? `Not ready: ${missing.join(', ')}`

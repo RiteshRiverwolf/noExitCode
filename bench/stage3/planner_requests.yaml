@@ -1,0 +1,281 @@
+# Requests for the Planner's qualification test (bench/stage3/planner_score.py).
+#
+# expect: the steps a correct plan contains, each [kind, id] -- id is the doc_id or
+#   task_id; a library step is [library], its question not compared. Order is not
+#   compared.
+# alternatives: other step lists that are also correct, where a request can rightly be
+#   done more than one way. The plan is judged against `expect` unless it matches one.
+# not_possible: whether a correct plan says something in the request cannot be done.
+#
+# set: `dev` requests may be read while writing the Planner's instructions.
+#   `held-out` requests were written on 2026-09-14, before any model planned any
+#   request here, and are never used to tune. A change made after reading a
+#   held-out result must be recorded in results/stage3/NOTES.md as one.
+#
+# history (follow-up sets): the chat's earlier turns, as the interface sends them --
+#   [{request, plan: [step titles], not_possible}]. Follow-up requests and requests that
+#   are not tasks were added on 2026-09-14, after the first qualification run of the
+#   D and H requests had started and before any model planned any of them.
+#   The same day, at the user's request, the workbench gained a `reply` step for
+#   greetings and general questions: F06, G06, G07 and G08 were changed from "not
+#   possible" to a reply, and D16, G09 and G10 added -- all before any model planned them.
+#
+# Equipment tags come from data/corpus/index.json. V-9001 and R-9999 are not in it.
+
+requests:
+  # --- dev ---------------------------------------------------------------------
+  - id: D01
+    set: dev
+    request: Read the scanned inspection report for reactor R-2247, check it against our procedures, and draft the approval note. Then tell me when the next inspection is due.
+    expect: [[inspection, insp_1002], [library], [code, next_due_date]]
+    not_possible: false
+  - id: D02
+    set: dev
+    request: Draft the approval note for exchanger E-4461.
+    expect: [[inspection, insp_1000]]
+    not_possible: false
+  - id: D03
+    set: dev
+    request: Which clause of our procedures covers external corrosion under insulation?
+    expect: [[library]]
+    not_possible: false
+  - id: D04
+    set: dev
+    request: Write a program that lists every CML below its minimum thickness across the reports, worst first.
+    expect: [[code, cml_report]]
+    not_possible: false
+  - id: D05
+    set: dev
+    request: What are the corrosion rate and remaining life if a wall went from 20.0 mm to 19.5 mm over two years, with a 16.5 mm minimum?
+    expect: [[code, remaining_life]]
+    not_possible: false
+  - id: D06
+    set: dev
+    request: Order replacement plates for the tank from the vendor.
+    expect: []
+    not_possible: true
+  - id: D07
+    set: dev
+    request: Draft the approval note.
+    expect: []
+    not_possible: true
+  - id: D08
+    set: dev
+    request: Draft the approval note for reactor R-9999.
+    expect: []
+    not_possible: true
+  - id: D09
+    set: dev
+    request: Who may sign an approval note for a Major finding, according to our procedures?
+    expect: [[library]]
+    not_possible: false
+  - id: D10
+    set: dev
+    request: Check the scan for tank T-2839 and tell me whether it has to be escalated.
+    expect: [[inspection, insp_1003]]
+    not_possible: false
+  - id: D11
+    set: dev
+    request: What does the procedure say about escalating an inspection report? Also draft the note for vessel V-3859.
+    expect: [[library], [inspection, insp_1007]]
+    not_possible: false
+  - id: D12
+    set: dev
+    request: Summarise the vendor replies we received last month.
+    expect: []
+    not_possible: true
+  - id: D13
+    set: dev
+    request: Draft approval notes for R-2247 and V-1668.
+    expect: [[inspection, insp_1002], [inspection, insp_1001]]
+    not_possible: false
+  - id: D14
+    set: dev
+    request: Is there a procedure for re-inspecting a vessel after a weld repair?
+    expect: [[library]]
+    not_possible: false
+  - id: D15
+    set: dev
+    request: Read the report for V-1668 and draft the approval note, then post it on the Teams channel.
+    expect: [[inspection, insp_1001]]
+    not_possible: true
+  - id: D16
+    set: dev
+    request: Thanks, that's all for now.
+    expect: [[reply]]
+    not_possible: false
+
+  # --- held-out: never used to tune ------------------------------------------------
+  - id: H01
+    set: held-out
+    request: Please read the inspection report for column C-4544 and prepare the draft approval note.
+    expect: [[inspection, insp_1010]]
+    not_possible: false
+  - id: H02
+    set: held-out
+    request: According to the SOPs, how soon after an inspection must the report be submitted?
+    expect: [[library]]
+    not_possible: false
+  - id: H03
+    set: held-out
+    request: I need a script that works out the corrosion rate and remaining life from two thickness readings.
+    expect: [[code, remaining_life]]
+    not_possible: false
+  - id: H04
+    set: held-out
+    request: Across all the survey data, which readings are under their minimum? Write code for it.
+    expect: [[code, cml_report]]
+    not_possible: false
+  - id: H05
+    set: held-out
+    request: Work out when the next inspection falls due using the half-life rule.
+    expect: [[code, next_due_date]]
+    not_possible: false
+  - id: H06
+    set: held-out
+    request: Prepare the approval note for vessel V-9001.
+    expect: []
+    not_possible: true
+  - id: H07
+    set: held-out
+    request: Book a crane for the reactor shutdown next week.
+    expect: []
+    not_possible: true
+  - id: H08
+    set: held-out
+    request: Draft the note.
+    expect: []
+    not_possible: true
+  - id: H09
+    set: held-out
+    request: Review the scanned report for exchanger E-1524, then find the procedure section on thickness below the minimum.
+    expect: [[inspection, insp_1011], [library]]
+    not_possible: false
+  - id: H10
+    set: held-out
+    request: Draft the approval notes for T-2839 and E-6727, and work out when the next inspection is due using the half-life rule.
+    expect: [[inspection, insp_1003], [inspection, insp_1004], [code, next_due_date]]
+    not_possible: false
+  - id: H11
+    set: held-out
+    request: What does our memo say about temporary changes to the inspection interval?
+    expect: [[library]]
+    not_possible: false
+  - id: H12
+    set: held-out
+    request: Delete the old inspection reports from the archive.
+    expect: []
+    not_possible: true
+  - id: H13
+    set: held-out
+    request: Go through reactor R-3182's inspection report and write up the approval note, then tell me which procedure governs escalation.
+    expect: [[inspection, insp_1008], [library]]
+    not_possible: false
+  - id: H14
+    set: held-out
+    request: Who is allowed to sign approval notes for Critical findings?
+    expect: [[library]]
+    not_possible: false
+  - id: H15
+    set: held-out
+    request: Draft an approval note for V-4179 and email it to the vendor.
+    expect: [[inspection, insp_1009]]
+    not_possible: true
+
+  # --- follow-ups and messages that are not tasks: dev -------------------------------
+  - id: F01
+    set: dev-followup
+    history: [{request: "Draft the approval note for exchanger E-4461.", plan: ["Read the E-4461 report and draft the approval note"], not_possible: ""}]
+    request: Now do the same for V-1668.
+    expect: [[inspection, insp_1001]]
+    not_possible: false
+  - id: F02
+    set: dev-followup
+    history: [{request: "Which clause of our procedures covers external corrosion under insulation?", plan: ["Search the library: Which clause covers external corrosion under insulation?"], not_possible: ""}]
+    request: And what does it say about coatings?
+    expect: [[library]]
+    not_possible: false
+  - id: F03
+    set: dev-followup
+    history: [{request: "Read the report for R-2247 and draft the approval note.", plan: ["Read the R-2247 report and draft the approval note"], not_possible: ""}]
+    request: When is its next inspection due?
+    expect: [[code, next_due_date]]
+    # Widened after a dev run planned the inspection instead: the report prints its own
+    # next due date, so reading it answers the question too. Dev only; recorded in NOTES.
+    alternatives: [[[inspection, insp_1002]]]
+    not_possible: false
+  - id: F04
+    set: dev-followup
+    history: [{request: "Draft the approval note for T-2839.", plan: ["Read the T-2839 report and draft the approval note"], not_possible: ""}]
+    request: Order new plates for it.
+    expect: []
+    not_possible: true
+  - id: F05
+    set: dev-followup
+    history: [{request: "Draft the approval note for R-2247.", plan: ["Read the R-2247 report and draft the approval note"], not_possible: ""}]
+    request: Who may sign approval notes for Minor findings?
+    expect: [[library]]
+    not_possible: false
+  - id: F06
+    set: dev-followup
+    request: Hello, what can you do?
+    expect: [[reply]]
+    not_possible: false
+
+  # --- follow-ups and messages that are not tasks: held-out, never used to tune ------------
+  - id: G01
+    set: held-out-followup
+    history: [{request: "Draft the approval note for column C-4544.", plan: ["Read the C-4544 report and draft the approval note"], not_possible: ""}]
+    request: Do the same for E-1524 and E-2554.
+    expect: [[inspection, insp_1011], [inspection, insp_1006]]
+    not_possible: false
+  - id: G02
+    set: held-out-followup
+    history: [{request: "Review the scanned report for tank T-5520.", plan: ["Read the T-5520 report and draft the approval note"], not_possible: ""}]
+    request: Which procedure says when a finding like that must be escalated?
+    expect: [[library]]
+    not_possible: false
+  - id: G03
+    set: held-out-followup
+    history: [{request: "Draft the note for V-3859.", plan: ["Read the V-3859 report and draft the approval note"], not_possible: ""}]
+    request: Draft it again.
+    expect: [[inspection, insp_1007]]
+    not_possible: false
+  - id: G04
+    set: held-out-followup
+    history: [{request: "Which readings are below their minimum across the reports? Write code for it.", plan: ["Coding task: cml_report"], not_possible: ""}]
+    request: Now email that list to the plant manager.
+    expect: []
+    not_possible: true
+  - id: G05
+    set: held-out-followup
+    history: [{request: "Draft the approval note for R-3182.", plan: ["Read the R-3182 report and draft the approval note"], not_possible: ""}]
+    request: What does SOP-INSP-002 say about inspection intervals?
+    expect: [[library]]
+    not_possible: false
+  - id: G06
+    set: held-out-followup
+    history: [{request: "Hello", plan: ["Reply: Hello"], not_possible: ""}]
+    request: Draft the approval note.
+    expect: []
+    not_possible: true
+  - id: G07
+    set: held-out-followup
+    request: Good morning!
+    expect: [[reply]]
+    not_possible: false
+  - id: G08
+    set: held-out-followup
+    request: What is the capital of France?
+    expect: [[reply]]
+    not_possible: false
+  - id: G09
+    set: held-out-followup
+    request: How are you doing today?
+    expect: [[reply]]
+    not_possible: false
+  - id: G10
+    set: held-out-followup
+    request: In one sentence, what is a hash-chained audit log?
+    expect: [[reply]]
+    not_possible: false

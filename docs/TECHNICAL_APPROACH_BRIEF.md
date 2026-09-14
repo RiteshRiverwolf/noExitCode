@@ -182,7 +182,8 @@ they lack:
 
 | Agent | Job | May use | Status |
 |---|---|---|---|
-| Planner | Breaks a request into a plan, picks the mission type and agents | delegates only | Proposed |
+| Planner | Breaks a request into a plan of checked steps; a regulated request always runs the fixed graph | delegates only | **Built**; qualified for single messages |
+| Chat | Answers greetings and general questions; code refuses verdicts, document claims and claims of work | none | **Built**; qualified on dev messages only |
 | Router | Picks the model per step from measured qualification results, logs why | model registry | **Built** |
 | Document Reader | PDF text layer or on-device OCR; every piece of text with page and box | `read_pages` | **Proven** |
 | Evidence Builder | Places values in table cells; evidence records with page, box, crop; stops on doubt | `build_evidence` | **Proven** |
@@ -305,8 +306,10 @@ Nothing else changes.
   passages only.
 - Photographs and engineering drawings: **untested**. No model is routed to them.
 - Only Word deliverables are built. Excel and PowerPoint are Proposed.
-- The Planner is not built; the demo's plan is the scenario file, and the demo
-  labels it so.
+- The Planner is qualified for single messages only (40/40 on its current prompt;
+  a run of the earlier prompt scored 90/90). Follow-up messages failed their held-out
+  test, so chat memory is switched off. The Chat agent is qualified on 6 dev
+  messages, one run; its held-out messages are not yet run.
 - A run paused for a person is held in memory: restarting the service loses it.
 - The corpus is synthetic plus one public CSB report. Results on 12 documents do
   not prove results on a real refinery's library.

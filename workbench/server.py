@@ -23,6 +23,10 @@ POST /api/inspections                    start an inspection: JSON {doc_id, sour
 POST /api/code                           start a coding task: JSON {task_id, model}
 GET  /api/demo                           the pitch demo's scenario (workbench/demo.yaml)
 POST /api/demo                           run the pitch demo: every beat a real run, events streamed
+POST /api/missions                       a request in plain words: JSON {request, history}. The Planner plans
+                                         it, code checks the plan, the steps run (workbench/missions.py).
+                                         history: the chat's earlier turns [{request, plan, not_possible}] --
+                                         the interface keeps the chat; this service keeps no chat state
 GET  /api/runs/paused                    runs paused for a person, with what each one asks
 POST /api/runs/{run_id}/review           a person's decision on a paused run: JSON {action: confirm |
                                          remeasure, reviewer, values: {field: value as printed}};
@@ -75,7 +79,7 @@ from starlette.responses import FileResponse, JSONResponse, StreamingResponse
 from starlette.routing import Route
 
 from mcp_servers.audit import LOG_DIR, verify
-from workbench import coder, coding_tasks, demo, pagesource, router, run_inspection, sandbox
+from workbench import coder, coding_tasks, demo, missions, pagesource, router, run_inspection, sandbox
 from workbench.evidence import CORPUS
 from workbench.run_inspection import JobConfig, run_job
 
@@ -93,6 +97,10 @@ MAX_UPLOAD_BYTES = SETTINGS["max_upload_bytes"]
 UPLOAD_SUFFIXES = set(SETTINGS["upload_suffixes"])
 MAX_JOBS_KEPT = SETTINGS["max_jobs_kept"]
 WATCHED_EXES = {p.lower() for p in SETTINGS["watched_processes"]}
+MAX_REQUEST_CHARS = SETTINGS["max_request_chars"]
+MAX_HISTORY_ENTRIES = SETTINGS["max_history_entries"]
+MAX_HISTORY_ENTRY_CHARS = SETTINGS["max_history_entry_chars"]
+MISSION_STEP_SETTINGS = SETTINGS["mission_step_settings"]
 
 
 # --- replies ---------------------------------------------------------------------
@@ -318,6 +326,28 @@ async def demo_endpoint(request: Request) -> JSONResponse:
     return reply({"job": job.id, "events": f"/api/jobs/{job.id}/events"})
 
 
+async def start_mission(request: Request) -> JSONResponse:
+    """A request in plain words: planned by the Planner, checked in code, then run (workbench/missions.py)."""
+    try:
+        body = await request.json()
+    except Exception:
+        return reply({"error": "send JSON {request}"}, 400)
+    text = " ".join(str(body.get("request") or "").split())
+    if not text:
+        return reply({"error": "the request is empty"}, 400)
+    if len(text) > MAX_REQUEST_CHARS:
+        return reply({"error": f"the request is longer than {MAX_REQUEST_CHARS} characters"}, 413)
+    history = body.get("history") or []
+    if not isinstance(history, list) or len(history) > MAX_HISTORY_ENTRIES:
+        return reply({"error": f"history is a list of at most {MAX_HISTORY_ENTRIES} earlier turns"}, 400)
+    if any(len(json.dumps(t, ensure_ascii=False)) > MAX_HISTORY_ENTRY_CHARS for t in history):
+        return reply({"error": f"an earlier turn is longer than {MAX_HISTORY_ENTRY_CHARS} characters"}, 413)
+    job = Job("mission", text[:80])
+    _start(job, lambda job: missions.run(text, emit=lambda e: job.emit(_with_urls(e)),
+                                         settings=MISSION_STEP_SETTINGS, history=history))
+    return reply({"job": job.id, "events": f"/api/jobs/{job.id}/events"})
+
+
 async def review_run(request: Request) -> JSONResponse:
     """A person's decision on a paused run: checked, taken once, then resumed as a job of its own."""
     run_id = request.path_params["run_id"]
@@ -510,7 +540,8 @@ def health() -> dict:
     # "available": on the machine for Ollama (loaded on first use), answering for llama-server
     return {"ollama": ollama, "models_available": sorted(m for m, up in running.items() if up),
             "docker": docker, "sandbox_image": docker and sandbox.image_present(),
-            "ocr_environment": pagesource.OCR_PYTHON.exists(), "registry_sha256": sha}
+            "ocr_environment": pagesource.OCR_PYTHON.exists(), "registry_sha256": sha,
+            "mission_history_entries": MAX_HISTORY_ENTRIES}
 
 
 def corpus() -> list[dict]:
@@ -603,6 +634,7 @@ app = Starlette(routes=[
     Route("/api/code/tasks/{task_id}/acceptance", code_acceptance),
     Route("/api/code", start_code, methods=["POST"]),
     Route("/api/demo", demo_endpoint, methods=["GET", "POST"]),
+    Route("/api/missions", start_mission, methods=["POST"]),
     Route("/api/runs/paused", paused_list),
     Route("/api/runs/{run_id}/review", review_run, methods=["POST"]),
     Route("/api/jobs/{job}", job_snapshot),

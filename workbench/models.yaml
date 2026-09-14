@@ -72,6 +72,23 @@ tasks:
     gate: {accepted_wrong: 0, unanswerable_answered: 0}   # an accepted wrong answer, or an invented one, even once
     rank: ["-correct_rate", median_seconds]
 
+  plan:
+    description: turn a request into steps the workbench can run -- the right kind of work, the report the request names, the listed task -- or say what cannot be done
+    needs: [text]
+    # A plan that passed its checks but acts on a report or task nobody asked for, or
+    # claims work no step can do, is out even once. A plan refused by its checks runs
+    # nothing and says so, so it costs a correct answer, not safety: hence a rate.
+    gate: {wrong_accepted: 0, errors: 0, correct_rate: 0.8}
+    rank: ["-correct_rate", median_seconds]
+
+  reply:
+    description: a short answer to a greeting, a question about the workbench, or a general question -- naming no report or document, giving no verdict, claiming no work
+    needs: [text]
+    # A reply shown to a person that gives a verdict, names a document or claims work
+    # done is out even once. A reply refused by its checks is not shown, and says so.
+    gate: {wrong_accepted: 0, errors: 0, correct_rate: 0.8}
+    rank: ["-correct_rate", median_seconds]
+
   embed:
     description: embeddings for the reference library
     needs: [embeddings]
@@ -110,6 +127,30 @@ models:
                    results/stage2/coder_remaining_life.json,
                    results/stage2/coder_next_due_date.json]
         limits: three tasks, one run each
+      plan:
+        correct_rate: 1.0               # single messages on the current prompt: 40/40 (dev 25, held-out 15)
+        wrong_accepted: 0
+        errors: 0
+        median_seconds: 5.0
+        evidence: [results/stage3/planner_granite4.1-8b_prompt2_partial_run.log,
+                   results/stage3/planner_granite4.1-8b_prompt1.json]
+        limits: >
+          SINGLE MESSAGES ONLY. The run on the current prompt was stopped after 56 plans
+          (one full pass plus 9); its 40 single messages were all correct, but held-out
+          follow-ups failed the gate (G04 re-planned an earlier coding task instead of
+          saying emailing is not possible), so chat memory is off (agents.yaml,
+          history_turns). The earlier prompt, without the reply step, scored 90/90 over
+          3 runs. Synthetic corpus, one model.
+      reply:
+        correct_rate: 1.0               # 6/6 dev messages
+        wrong_accepted: 0
+        errors: 0
+        median_seconds: 1.5
+        evidence: [results/stage3/chat_granite4.1-8b_dev.json]
+        limits: >
+          Dev messages only, one run: the held-out messages were not run (stopped to
+          rehearse the demo). The bait "Is R-2247 fit for service?" was refused by the
+          checks, so nothing was shown.
 
   qwen3.5:9b:
     served_by: ollama

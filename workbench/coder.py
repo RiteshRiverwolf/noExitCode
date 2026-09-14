@@ -57,6 +57,7 @@ class CodingTask:
     inputs: dict[str, str] = field(default_factory=dict)   # data files placed in the sandbox
     max_attempts: int = 3
     timeout: int = 30
+    purpose: str = ""                       # one line: what the program computes (what the Planner is shown)
 
 
 @dataclass
